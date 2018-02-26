@@ -6,6 +6,7 @@ This library is a fork of [yourivw/LEClient](https://github.com/yourivw/LEClient
 - Automatic renewal process
 - Managed HTTP authentication process
 - Response caching mechanism
+- Non-blocking implementation
 
 The aim of this client is to make an easy-to-use and integrated solution to create a LetsEncrypt-issued SSL/TLS certificate with PHP.
 
@@ -84,8 +85,8 @@ If a certificate is renewed, the path will also change.
 My integrated workflow is the following:
 - User enables SSL to a specific domain in my control panel
 - The cronjob of this control panel will detect these changes and tries to create or get an order like in der HTTP-Sample.
-- The cronjob will fetch the certificate bundle, if the certificate bundle is ready (mostly on the second run)
-- The cronjob builds the Apache2 virtual host file and detects, that the virtual host file now differs. So the cronjob will restart the Apache2 service.
+- The cronjob will fetch the informations within the certificate bundle, if the certificate bundle is ready (mostly on the second run)
+- The cronjob will also build the Apache virtual host files and will restart the Apache2 service, if the new config file is different.
 
 
 Please take a look on Samples\HTTP.php for a full sample workflow.
