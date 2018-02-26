@@ -6,7 +6,7 @@
   "license": "MIT",
   "autoload": {
     "psr-0": {
-      "Fhp": "src/"
+      "LE_ACME2": "src/"
     }
   },
   "require": {
