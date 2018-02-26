@@ -16,7 +16,7 @@ Currently the authentication via HTTP is integrated. For that it is necessary, t
 This client was developed by using the LetsEncrypt staging server.
 Please come back on February 29, 2018 to see, if there are any required changes when using the live servers.
 
-### Prerequisites
+## Prerequisites
 
 The minimum required PHP version is 7.1.0 due to the implementation of ECDSA.
 
@@ -44,13 +44,13 @@ chown root:root /etc/ssl/le-storage
 chmod 0600 /etc/ssl/le-storage
 ```
 
-1. Create a directory for the acme challenges. It must be reachable by http/https.
+2. Create a directory for the acme challenges. It must be reachable by http/https.
 
 ```php
 mkdir /var/www/acme-challenges
 ```
 
-1. Redirect specific requests to your acme-challenges directory
+3. Redirect specific requests to your acme-challenges directory
 
 Example apache virtual host configuration:
 
@@ -64,7 +64,7 @@ Example apache virtual host configuration:
 </VirtualHost>
 ```
 
-1. Use the certificate bundle, if the certificate is issued:
+4. Use the certificate bundle, if the certificate is issued:
 
 ```php
 if($order->isCertificateBundleAvailable()) {
