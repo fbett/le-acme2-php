@@ -1,5 +1,5 @@
 {
-  "name": "fbett/LE_ACME2",
+  "name": "fbett/le_acme2",
   "description": "Letsencrypt PHP ACME v2 client",
   "homepage": "https://www.bett-ingenieure.de",
   "version": "1.0.0",
