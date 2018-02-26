@@ -27,7 +27,7 @@ This client also depends on cURL and OpenSSL.
 
 Install via composer:
 
-```php
+```
 composer require fbett/le-acme2-php
 ```
 
@@ -39,7 +39,7 @@ Also have a look at the [LetsEncrypt documentation](https://letsencrypt.org/docs
 Warning: This directory will also include private keys, so i suggest to place this directory somewhere not in the root document path of the web server. 
 Additionally this directory should be protected to be read from other web server users.
 
-```php
+```
 mkdir /etc/ssl/le-storage/
 chown root:root /etc/ssl/le-storage
 chmod 0600 /etc/ssl/le-storage
@@ -47,7 +47,7 @@ chmod 0600 /etc/ssl/le-storage
 
 2. Create a directory for the acme challenges. It must be reachable by http/https.
 
-```php
+```
 mkdir /var/www/acme-challenges
 ```
 
@@ -55,7 +55,7 @@ mkdir /var/www/acme-challenges
 
 Example apache virtual host configuration:
 
-```xml
+```
 <VirtualHost ...>
     <IfModule mod_rewrite.c>
         RewriteEngine On
@@ -67,7 +67,7 @@ Example apache virtual host configuration:
 
 4. Use the certificate bundle, if the certificate is issued:
 
-```php
+```
 if($order->isCertificateBundleAvailable()) {
 
     $bundle = $order->getCertificateBundle();
