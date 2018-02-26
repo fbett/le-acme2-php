@@ -1,0 +1,16 @@
+{
+  "name": "fbett/LE_ACME2",
+  "description": "Letsencrypt PHP ACME v2 client",
+  "homepage": "https://www.bett-ingenieure.de",
+  "version": "1.0.0",
+  "license": "MIT",
+  "autoload": {
+    "psr-0": {
+      "Fhp": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.1.0",
+    "psr/log": "~1.0"
+  }
+}
