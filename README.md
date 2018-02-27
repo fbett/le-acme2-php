@@ -6,7 +6,7 @@ This library is a fork of [yourivw/LEClient](https://github.com/yourivw/LEClient
 - Automatic renewal process
 - Managed HTTP authentication process
 - Response caching mechanism
-- Non-blocking implementation
+- Prevents blocking while waiting for server results
 
 The aim of this client is to make an easy-to-use and integrated solution to create a LetsEncrypt-issued SSL/TLS certificate with PHP.
 
