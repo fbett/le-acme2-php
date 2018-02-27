@@ -39,21 +39,27 @@ class Logger {
         $trace = $e->getTrace();
         unset($trace[0]);
 
-        echo '<b>' . date('d-m-Y H:i:s') . ': ' . $message . '</b><br>';
+        $output = '<b>' . date('d-m-Y H:i:s') . ': ' . $message . '</b><br>' . "\n";
 
         if($this->_desiredLevel == self::LEVEL_DEBUG) {
 
             $step = 0;
             foreach ($trace as $traceItem) {
-                echo 'Trace #' . $step . ': ' . $traceItem['class'] . '::' . $traceItem['function'] . ':<br/>';
+                $output .= 'Trace #' . $step . ': ' . $traceItem['class'] . '::' . $traceItem['function'] . ':<br/>' . "\n";
                 $step++;
             }
 
             if ((is_array($data) && count($data) > 0) || !is_array($data))
-                echo '<br/>Data:<br/><pre>' . var_export($data, true) . '</pre>';
+                $output .= "\n" .'<br/>Data:<br/>' . "\n" . '<pre>' . var_export($data, true) . '</pre>';
 
-            echo '<br><br>';
+            $output .= '<br><br>' . "\n\n";
         }
+
+        if(PHP_SAPI == 'cli') {
+
+            $output = strip_tags($output);
+        }
+        echo $output;
     }
 
 }
