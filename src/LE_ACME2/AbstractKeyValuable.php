@@ -15,16 +15,16 @@ abstract class AbstractKeyValuable {
 
     public static function setCommonKeyDirectoryPath($directoryPath) {
 
-        self::$_directoryPath = $directoryPath;
-
         if(!file_exists($directoryPath)) {
             throw new \RuntimeException('Common Key Directory Path does not exist');
         }
+
+        self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
     protected function _getKeyDirectoryPath($appendix = '') {
 
-        return self::$_directoryPath . DIRECTORY_SEPARATOR . $this->_identifier . $appendix . DIRECTORY_SEPARATOR;
+        return self::$_directoryPath . $this->_identifier . $appendix . DIRECTORY_SEPARATOR;
     }
 
     /**

@@ -17,11 +17,11 @@ class Order extends AbstractKeyValuable {
 
     public static function setHTTPAuthorizationDirectoryPath($directoryPath) {
 
-        self::$_HTTPAuthorizationDirectoryPath = $directoryPath;
-
         if(!file_exists($directoryPath)) {
             throw new \RuntimeException('HTTP authorization directory path does not exist');
         }
+
+        self::$_HTTPAuthorizationDirectoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
     protected $_account;
@@ -214,7 +214,7 @@ class Order extends AbstractKeyValuable {
                 mkdir($path);
                 rename($this->getKeyDirectoryPath() . 'private.pem', $path . 'private.pem');
                 file_put_contents($path . 'certificate.crt', $certificate);
-                file_put_contents($path . 'intermediate.crt', $intermediate);
+                file_put_contents($path . 'intermediate.pem', $intermediate);
 
                 Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Certificate received');
             }
@@ -246,11 +246,14 @@ class Order extends AbstractKeyValuable {
 
         $certificatePath = $this->getKeyDirectoryPath() . $this->_getLatestCertificateDirectory() . DIRECTORY_SEPARATOR;
 
+        // Changed intermediate file extension.
+        $intermediateFile = 'intermediate.' . (file_exists($certificatePath . 'intermediate.crt') ? 'crt' : 'pem');
+
         return new Struct\CertificateBundle(
             $certificatePath,
             'private.pem',
             'certificate.crt',
-            'intermediate.crt'
+            $intermediateFile
         );
     }
 
