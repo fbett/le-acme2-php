@@ -19,7 +19,8 @@ Please come back on February 29, 2018 to see, if there are any required changes 
 
 ## Prerequisites
 
-The minimum required PHP version is 7.1.0 due to the implementation of ECDSA.
+The minimum required PHP version is 5.6.0.
+To use ECDSA keys, PHP version from 7.1.0 is required.
 
 This client also depends on cURL and OpenSSL.
 
