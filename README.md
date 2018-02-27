@@ -1,5 +1,5 @@
 # le-acme2-php
-LetsEncrypt client library for ACME v2 in PHP.
+LetsEncrypt client library for ACME v2 written in PHP.
 
 This library is a fork of [yourivw/LEClient](https://github.com/yourivw/LEClient), but the code is completely restructured and enhanced with some new features:
 - Support for Composer autoload (including separated Namespaces)
@@ -15,7 +15,10 @@ Currently the authentication via HTTP is integrated. For that it is necessary, t
 ## Current version
 
 This client was developed by using the LetsEncrypt staging server.
-Please come back on February 29, 2018 to see, if there are any required changes when using the live servers.
+Please come back later to see, if there are any required changes when using the live servers.
+
+Today, February 27, 2018, there is currently no release date for the live servers. Please see:
+https://community.letsencrypt.org
 
 ## Prerequisites
 
