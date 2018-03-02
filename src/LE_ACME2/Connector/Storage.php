@@ -80,7 +80,7 @@ class Storage {
 
         $cacheFile = $account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse';
 
-        if(file_exists($cacheFile) && filemtime($cacheFile) > strtotime('-6 hours')) {
+        if(file_exists($cacheFile) && filemtime($cacheFile) > strtotime('-7 days')) {
 
             $directoryNewAccountResponse = new Response\Account\Create(unserialize(file_get_contents($cacheFile)));
 
