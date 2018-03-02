@@ -106,11 +106,6 @@ class Connector {
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', $result);
 
-        if(	(($method == self::METHOD_POST OR $method == self::METHOD_GET) AND strpos($header, "200 OK") === false AND strpos($header, "201 Created") === false) OR
-            ($method == self::METHOD_HEAD AND strpos($header, "204 No Content") === false))
-        {
-            throw new \RuntimeException('Invalid response, header: ' . $header);
-        }
 
         $getNewNonceResponse = new Response\GetNewNonce($result);
         if($getNewNonceResponse->isValid()) {
