@@ -82,7 +82,8 @@ class Storage {
 
         if(file_exists($cacheFile) && filemtime($cacheFile) > strtotime('-7 days')) {
 
-            $directoryNewAccountResponse = new Response\Account\Create(unserialize(file_get_contents($cacheFile)));
+            $rawResponse = Struct\RawResponse::getFromString(file_get_contents($cacheFile));
+            $directoryNewAccountResponse = new Response\Account\Create($rawResponse);
 
             $this->_directoryNewAccountResponse[$accountIdentifier] = $directoryNewAccountResponse;
             return $directoryNewAccountResponse;
@@ -93,7 +94,7 @@ class Storage {
     public function setDirectoryNewAccountResponse(Account $account, Response\Account\AbstractDirectoryNewAccount $response) {
 
         $this->_directoryNewAccountResponse[$this->_getObjectIdentifier($account)] = $response;
-        file_put_contents($account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse', serialize($response->getRaw()));
+        file_put_contents($account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse', $response->getRaw()->toString());
     }
 
     /**
@@ -113,7 +114,8 @@ class Storage {
 
         if(file_exists($cacheFile)) {
 
-            $directoryNewOrderResponse = new Response\Order\Create(unserialize(file_get_contents($cacheFile)));
+            $rawResponse = Struct\RawResponse::getFromString(file_get_contents($cacheFile));
+            $directoryNewOrderResponse = new Response\Order\Create($rawResponse);
 
             $this->_directoryNewOrderResponse[$accountIdentifier][$orderIdentifier] = $directoryNewOrderResponse;
             return $directoryNewOrderResponse;
@@ -129,6 +131,6 @@ class Storage {
     public function setDirectoryNewOrderResponse(Account $account, Order $order, Response\Order\AbstractDirectoryNewOrder $response) {
 
         $this->_directoryNewOrderResponse[$this->_getObjectIdentifier($account)][$this->_getObjectIdentifier($order)] = $response;
-        file_put_contents($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse', serialize($response->getRaw()));
+        file_put_contents($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse', $response->getRaw()->toString());
     }
 }

@@ -17,10 +17,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
             throw new \RuntimeException('Could not get or create order');
         }
 
-        preg_match('~Location: (\S+)~i', $this->_raw['header'], $matches);
-        if(!isset($matches[1])) {
-            Logger::getInstance()->add(null, "test", $this->_raw);
-        }
+        $matches = $this->_preg_match_headerLine($this->_pattern_header_location);
         return trim($matches[1]);
     }
 
@@ -29,7 +26,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
         if(!$this->isValid())
             throw new \RuntimeException('Could not get or create order');
 
-        return $this->_raw['body']['status'];
+        return $this->_raw->body['status'];
     }
 
     public function getExpires() {
@@ -37,7 +34,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
         if(!$this->isValid())
             throw new \RuntimeException('Could not get or create order');
 
-        return $this->_raw['body']['expires'];
+        return $this->_raw->body['expires'];
     }
 
     /**
@@ -48,7 +45,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
         if(!$this->isValid())
             throw new \RuntimeException('Could not get or create order');
 
-        return $this->_raw['body']['identifiers'];
+        return $this->_raw->body['identifiers'];
     }
 
     /**
@@ -59,7 +56,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
         if(!$this->isValid())
             throw new \RuntimeException('Could not get or create order');
 
-        return $this->_raw['body']['authorizations'];
+        return $this->_raw->body['authorizations'];
     }
 
     public function getFinalize() {
@@ -67,7 +64,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
         if(!$this->isValid())
             throw new \RuntimeException('Could not get or create order');
 
-        return $this->_raw['body']['finalize'];
+        return $this->_raw->body['finalize'];
     }
 
     public function getCertificate() {
@@ -75,6 +72,6 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
         if(!$this->isValid())
             throw new \RuntimeException('Could not get or create order');
 
-        return $this->_raw['body']['certificate'];
+        return $this->_raw->body['certificate'];
     }
 }

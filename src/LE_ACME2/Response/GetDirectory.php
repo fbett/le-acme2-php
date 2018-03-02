@@ -10,7 +10,7 @@ class GetDirectory extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['keyChange'];
+        return $this->_raw->body['keyChange'];
     }
 
     public function getNewAccount() {
@@ -19,7 +19,7 @@ class GetDirectory extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['newAccount'];
+        return $this->_raw->body['newAccount'];
     }
 
     public function getNewNonce() {
@@ -28,7 +28,7 @@ class GetDirectory extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['newNonce'];
+        return $this->_raw->body['newNonce'];
     }
 
     public function getNewOrder() {
@@ -37,7 +37,7 @@ class GetDirectory extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['newOrder'];
+        return $this->_raw->body['newOrder'];
     }
 
     public function getRevokeCert() {
@@ -46,6 +46,6 @@ class GetDirectory extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['revokeCert'];
+        return $this->_raw->body['revokeCert'];
     }
 }

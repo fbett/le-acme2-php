@@ -51,7 +51,7 @@ class Connector {
      * @param string 	$url 	The URL to make the request to.
      * @param string 	$data  	The body to attach to a POST request. Expected as a JSON encoded string.
      *
-     * @return array 	Returns an array with the keys 'request', 'header' and 'body'.
+     * @return Struct\RawResponse
      */
     public function request($method, $url, $data = null) {
 
@@ -92,22 +92,12 @@ class Connector {
 
         $header_size = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
 
-        $header = substr($response, 0, $header_size);
-        $body = substr($response, $header_size);
+        $rawResponse = new Struct\RawResponse();
+        $rawResponse->init($method, $url, $response, $header_size);
 
-        $body_json = json_decode($body, true);
+        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', $rawResponse);
 
-        $result = array(
-            'request' => $method . ' ' . $url,
-            'header' => $header,
-            'body' => $body_json === null ? $body : $body_json,
-            'body_original' => $body
-        );
-
-        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', $result);
-
-
-        $getNewNonceResponse = new Response\GetNewNonce($result);
+        $getNewNonceResponse = new Response\GetNewNonce($rawResponse);
         if($getNewNonceResponse->isValid()) {
 
             Storage::getInstance()->setNewNonceResponse($getNewNonceResponse);
@@ -118,7 +108,7 @@ class Connector {
             Storage::getInstance()->setNewNonceResponse($request->getResponse());
         }
 
-        return $result;
+        return $rawResponse;
     }
 
 }

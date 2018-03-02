@@ -12,7 +12,7 @@ abstract class AbstractLocation extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['id'];
+        return $this->_raw->body['id'];
     }
 
     public function getKey() {
@@ -21,7 +21,7 @@ abstract class AbstractLocation extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['key'];
+        return $this->_raw->body['key'];
     }
 
     public function getContact() {
@@ -30,7 +30,7 @@ abstract class AbstractLocation extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['contact'];
+        return $this->_raw->body['contact'];
     }
 
     public function getAgreement() {
@@ -39,7 +39,7 @@ abstract class AbstractLocation extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['agreement'];
+        return $this->_raw->body['agreement'];
     }
 
     public function getInitialIP() {
@@ -48,7 +48,7 @@ abstract class AbstractLocation extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['initialIp'];
+        return $this->_raw->body['initialIp'];
     }
 
     public function getCreatedAt() {
@@ -57,7 +57,7 @@ abstract class AbstractLocation extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['createdAt'];
+        return $this->_raw->body['createdAt'];
     }
 
     public function getStatus() {
@@ -66,6 +66,6 @@ abstract class AbstractLocation extends AbstractResponse {
             throw new \RuntimeException('Received response is invalid');
         }
 
-        return $this->_raw['body']['status'];
+        return $this->_raw->body['status'];
     }
 }

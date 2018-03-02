@@ -4,11 +4,11 @@ namespace LE_ACME2\Response;
 
 class GetNewNonce extends AbstractResponse {
 
-    protected $_pattern = '~Replay\-Nonce: (\S+)~i';
+    protected $_pattern = '/^Replay\-Nonce: (\S+)$/i';
 
     public function isValid() {
 
-        return preg_match($this->_pattern, $this->_raw['header'], $matches) === 1;
+        return $this->_preg_match_headerLine($this->_pattern) !== null;
     }
 
     public function getNonce() {
@@ -17,7 +17,7 @@ class GetNewNonce extends AbstractResponse {
             throw new \RuntimeException('Nonce not valid. Check validation by calling isValid first');
         }
 
-        preg_match($this->_pattern, $this->_raw['header'], $matches);
+        $matches = $this->_preg_match_headerLine($this->_pattern);
         return trim($matches[1]);
     }
 

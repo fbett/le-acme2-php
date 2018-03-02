@@ -12,7 +12,7 @@ abstract class AbstractDirectoryNewAccount extends AbstractResponse {
             throw new \RuntimeException('Could not get or create account');
         }
 
-        preg_match('~Location: (\S+)~i', $this->_raw['header'], $matches);
+        $matches = $this->_preg_match_headerLine($this->_pattern_header_location);
         return trim($matches[1]);
     }
 }

@@ -15,7 +15,7 @@ class GetCertificate extends AbstractResponse {
             throw new \RuntimeException('Response is not valid');
         }
 
-        if(preg_match_all($this->_pattern, $this->_raw['body'], $matches))  {
+        if(preg_match_all($this->_pattern, $this->_raw->body, $matches))  {
 
             return $matches[0][0];
         }
@@ -29,7 +29,7 @@ class GetCertificate extends AbstractResponse {
             throw new \RuntimeException('Response is not valid');
         }
 
-        if(preg_match_all($this->_pattern, $this->_raw['body'], $matches))  {
+        if(preg_match_all($this->_pattern, $this->_raw->body, $matches))  {
 
             $result = '';
 

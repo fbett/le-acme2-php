@@ -14,7 +14,7 @@ class Get extends AbstractResponse {
             throw new \RuntimeException('Could not get from authorization url');
         }
 
-        return new Identifier($this->_raw['body']['identifier']['type'], $this->_raw['body']['identifier']['value']);
+        return new Identifier($this->_raw->body['identifier']['type'], $this->_raw->body['identifier']['value']);
     }
 
     public function getStatus() {
@@ -23,7 +23,7 @@ class Get extends AbstractResponse {
             throw new \RuntimeException('Could not get from authorization url');
         }
 
-        return $this->_raw['body']['status'];
+        return $this->_raw->body['status'];
     }
 
     public function getExpires() {
@@ -32,7 +32,7 @@ class Get extends AbstractResponse {
             throw new \RuntimeException('Could not get from authorization url');
         }
 
-        return $this->_raw['body']['expires'];
+        return $this->_raw->body['expires'];
     }
 
     /**+
@@ -44,7 +44,7 @@ class Get extends AbstractResponse {
             throw new \RuntimeException('Could not get from authorization url');
         }
 
-        return $this->_raw['body']['challenges'];
+        return $this->_raw->body['challenges'];
     }
 
     /**

@@ -18,9 +18,6 @@ class GetNewNonce extends AbstractRequest {
             $storage->getGetDirectoryResponse()->getNewNonce()
         );
 
-        if(strpos($result['header'], "204 No Content") == false)
-            throw new \RuntimeException('No new nonce.');
-
         return new Response\GetNewNonce($result);
     }
 }
