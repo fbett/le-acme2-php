@@ -69,6 +69,10 @@ class Order extends AbstractKeyValuable {
         $response = $request->getResponse();
         if($response->isValid()) {
             Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $response);
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_INFO,
+                get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '"'
+            );
             return $this;
         }
         return null;
@@ -99,6 +103,10 @@ class Order extends AbstractKeyValuable {
 
         $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($account, $order);
         if($directoryNewOrderResponse->isValid() && $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_DEBUG,
+                get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '" (from cache)'
+            );
             return $order;
         }
 
@@ -106,6 +114,10 @@ class Order extends AbstractKeyValuable {
         $response = $request->getResponse();
         if($response->isValid()) {
             Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_INFO,
+                get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
+            );
             return $order;
         }
         return null;
@@ -267,7 +279,7 @@ class Order extends AbstractKeyValuable {
         if($directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID)
             return;
 
-        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO,'Auto renewal triggered');
+        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_DEBUG,'Auto renewal triggered');
 
         $directory = $this->_getLatestCertificateDirectory();
 
@@ -275,7 +287,7 @@ class Order extends AbstractKeyValuable {
 
         if(strtotime('+7 days', time()) > $expireTime) {
 
-            Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO,'Will recreate order');
+            Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO,'Auto renewal: Will recreate order');
 
             $this->_create($keyType, true);
         }

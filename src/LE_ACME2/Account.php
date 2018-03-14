@@ -40,6 +40,10 @@ class Account extends AbstractKeyValuable {
         $response = $request->getResponse();
         if($response->isValid()) {
             Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_INFO,
+                get_class() . '::' . __FUNCTION__ .  ' "' . $email . '"'
+            );
             return $account;
         }
         return null;
@@ -67,6 +71,10 @@ class Account extends AbstractKeyValuable {
 
         $directoryNewAccountResponse = Storage::getInstance()->getDirectoryNewAccountResponse($account);
         if($directoryNewAccountResponse !== NULl && $directoryNewAccountResponse->isValid()) {
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_DEBUG,
+                get_class() . '::' . __FUNCTION__ .  ' "' . $email . '" (from cache)'
+            );
             return $account;
         }
 
@@ -74,6 +82,10 @@ class Account extends AbstractKeyValuable {
         $response = $request->getResponse();
         if($response->isValid()) {
             Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_INFO,
+                get_class() . '::' . __FUNCTION__ .  ' "' . $email . '"'
+            );
             return $account;
         }
         return null;
