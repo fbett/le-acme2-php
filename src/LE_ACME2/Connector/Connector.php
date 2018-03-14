@@ -61,7 +61,7 @@ class Connector {
 
         $headers = array(
             'Accept: application/json',
-            'Content-Type: application/json'
+            'Content-Type: ' . ($method == self::METHOD_POST ? 'application/jose+json' : 'application/json') //  ACME draft-10, section 6.2
         );
 
         curl_setopt($handle, CURLOPT_URL, $url);
