@@ -60,7 +60,7 @@ Example apache virtual host configuration:
     <IfModule mod_rewrite.c>
         RewriteEngine On
         RewriteCond %{HTTPS} off
-        RewriteRule \.well-known/acme-challenge/(.*)$ https://your-domain.com/path/to/acme-challenges/$1 [R=302;L]
+        RewriteRule \.well-known/acme-challenge/(.*)$ https://your-domain.com/path/to/acme-challenges/$1 [R=302,L]
     </IfModule>
 </VirtualHost>
 ```
