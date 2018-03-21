@@ -28,7 +28,7 @@ This client also depends on cURL and OpenSSL.
 Install via composer:
 
 ```
-composer require fbett/le-acme2-php
+composer require fbett/le_acme2
 ```
 
 Also have a look at the [LetsEncrypt documentation](https://letsencrypt.org/docs/) for more information and documentation on LetsEncrypt and ACME.
