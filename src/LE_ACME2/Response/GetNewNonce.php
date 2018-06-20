@@ -6,7 +6,7 @@ class GetNewNonce extends AbstractResponse {
 
     protected $_pattern = '/^Replay\-Nonce: (\S+)$/i';
 
-    public function isValid() {
+    protected function _isValid() {
 
         return $this->_preg_match_headerLine($this->_pattern) !== null;
     }

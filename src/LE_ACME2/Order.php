@@ -75,6 +75,11 @@ class Order extends AbstractKeyValuable {
             );
             return $this;
         }
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '" - could not be created. Response: <br/>' . var_export($response->getRaw(), true)
+        );
+        $this->_clearKeyDirectory();
         return null;
     }
 
@@ -135,6 +140,10 @@ class Order extends AbstractKeyValuable {
                 $this->_existsNotValidChallenges = false;
                 return true;
             }
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_DEBUG,
+                get_class() . '::' . __FUNCTION__ . ' "Non valid challenges found."'
+            );
             return false;
         }
         throw new \RuntimeException('Challenge type not implemented');
@@ -148,7 +157,6 @@ class Order extends AbstractKeyValuable {
         }
 
         $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
-
         $existsNotValidChallenges = false;
 
         foreach($directoryNewOrderResponse->getAuthorizations() as $authorization) {
@@ -160,6 +168,12 @@ class Order extends AbstractKeyValuable {
                 $challenge = $response->getChallenge(self::CHALLENGE_TYPE_HTTP);
 
                 if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
+
+                    Utilities\Logger::getInstance()->add(
+                        Utilities\Logger::LEVEL_DEBUG,
+                        get_class() . '::' . __FUNCTION__ . ' "Non valid challenge found',
+                        $challenge
+                    );
 
                     $existsNotValidChallenges = true;
 
@@ -197,6 +211,11 @@ class Order extends AbstractKeyValuable {
 
             throw new \RuntimeException('Not all challenges are valid. Please check result of authorize() first!');
         }
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_DEBUG,
+            get_class() . '::' . __FUNCTION__ . ' "Will finalize'
+        );
 
         $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
 

@@ -34,7 +34,19 @@ abstract class AbstractResponse {
         return $this->_preg_match_headerLine('/^HTTP.* 429 .*$/i') !== null;
     }
 
-    public function isValid() {
+    final public function isValid() {
+
+        $result = $this->_isValid();
+        if(!$result) {
+            Logger::getInstance()->add(
+                Logger::LEVEL_DEBUG,
+                get_called_class() . '::' . __FUNCTION__ . ' "result false"'
+            );
+        }
+        return $result;
+    }
+
+    protected function _isValid() {
 
         if($this->isRateLimitReached()) {
             Logger::getInstance()->add(Logger::LEVEL_INFO, 'Invalid response: Rate limit reached', $this->_raw);

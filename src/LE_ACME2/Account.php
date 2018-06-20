@@ -46,6 +46,11 @@ class Account extends AbstractKeyValuable {
             );
             return $account;
         }
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $email) . '" - could not be created. Response: <br/>' . var_export($response->getRaw(), true)
+        );
+        $account->_clearKeyDirectory();
         return null;
     }
 
