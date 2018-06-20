@@ -9,6 +9,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
 
     const STATUS_PENDING = 'pending';
     const STATUS_VALID = 'valid';
+    const STATUS_READY = 'ready';
 
     public function getLocation() {
 

@@ -219,7 +219,10 @@ class Order extends AbstractKeyValuable {
 
         $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
 
-        if($directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_PENDING) {
+        if(
+            $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_PENDING /* DEPRECATED AFTER JULI 5TH 2018 */ ||
+            $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_READY   // ACME draft-12 Section 7.1.6
+        ) {
 
             $request = new Request\Order\Finalize($this->_account, $this);
             $directoryNewOrderResponse = $request->getResponse();
