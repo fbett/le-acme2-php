@@ -35,14 +35,17 @@ abstract class AbstractKeyValuable {
         return $this->_getKeyDirectoryPath('');
     }
 
-    protected function _initKeyDirectory($keyType = self::KEY_TYPE_RSA, $ignoreIfDirectoryExists = false) {
+    protected function _initKeyDirectory($keyType = self::KEY_TYPE_RSA, $ignoreIfKeysExist = false) {
 
         if(!file_exists($this->getKeyDirectoryPath())) {
 
             mkdir($this->getKeyDirectoryPath());
-        } else if(!$ignoreIfDirectoryExists) {
+        }
 
-            throw new \RuntimeException('Key directory does already exist. Exists the ' . get_class($this) . ' already?');
+        if(!$ignoreIfKeysExist && (file_exists($this->getKeyDirectoryPath() . 'private.pem') ||
+            file_exists($this->getKeyDirectoryPath() . 'public.pem')) ) {
+
+            throw new \RuntimeException('Keys exist already. Exists the ' . get_class($this) . ' already?');
         }
 
         if($keyType == self::KEY_TYPE_RSA) {
@@ -63,6 +66,12 @@ abstract class AbstractKeyValuable {
 
             throw new \RuntimeException('Key type "' . $keyType . '" not supported.');
         }
+    }
+
+    protected function _clearKeyDirectory() {
+
+        unlink($this->getKeyDirectoryPath() . 'private.pem');
+        unlink($this->getKeyDirectoryPath() . 'public.pem');
     }
 
     protected function _getAccountIdentifier(Account $account) {

@@ -61,9 +61,9 @@ class Order extends AbstractKeyValuable {
         return $order->_create($keyType, false);
     }
 
-    protected function _create($keyType, $ignoreIfKeyDirectoryExists = false) {
+    protected function _create($keyType, $ignoreIfKeysExist = false) {
 
-        $this->_initKeyDirectory($keyType, $ignoreIfKeyDirectoryExists);
+        $this->_initKeyDirectory($keyType, $ignoreIfKeysExist);
 
         $request = new Request\Order\Create($this->_account, $this);
         $response = $request->getResponse();
