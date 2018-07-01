@@ -13,10 +13,6 @@ class GetNewNonce extends AbstractResponse {
 
     public function getNonce() {
 
-        if(!$this->isValid()) {
-            throw new \RuntimeException('Nonce not valid. Check validation by calling isValid first');
-        }
-
         $matches = $this->_preg_match_headerLine($this->_pattern);
         return trim($matches[1]);
     }

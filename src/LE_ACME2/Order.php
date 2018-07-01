@@ -5,6 +5,7 @@ namespace LE_ACME2;
 use LE_ACME2\Request as Request;
 use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
+use LE_ACME2\Exception as Exception;
 
 use LE_ACME2\Connector\Storage;
 
@@ -53,7 +54,8 @@ class Order extends AbstractKeyValuable {
      * @param Account $account
      * @param array $subjects
      * @param string $keyType
-     * @return Order|null
+     * @return Order
+     * @throws Exception\AbstractException
      */
     public static function create(Account $account, array $subjects, $keyType = self::KEY_TYPE_RSA) {
 
@@ -61,26 +63,32 @@ class Order extends AbstractKeyValuable {
         return $order->_create($keyType, false);
     }
 
+    /**
+     * @param $keyType
+     * @param bool $ignoreIfKeysExist
+     * @return Order
+     * @throws Exception\AbstractException
+     */
     protected function _create($keyType, $ignoreIfKeysExist = false) {
 
         $this->_initKeyDirectory($keyType, $ignoreIfKeysExist);
 
         $request = new Request\Order\Create($this->_account, $this);
-        $response = $request->getResponse();
-        if($response->isValid()) {
+
+        try {
+            $response = $request->getResponse();
+
             Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $response);
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_INFO,
                 get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '"'
             );
             return $this;
+
+        } catch(Exception\AbstractException $e) {
+            $this->_clearKeyDirectory();
+            throw $e;
         }
-        Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '" - could not be created. Response: <br/>' . var_export($response->getRaw(), true)
-        );
-        $this->_clearKeyDirectory();
-        return null;
     }
 
     /**
@@ -97,7 +105,9 @@ class Order extends AbstractKeyValuable {
     /**
      * @param Account $account
      * @param array $subjects
-     * @return self
+     * @return Order
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public static function get(Account $account, array $subjects) {
 
@@ -107,7 +117,7 @@ class Order extends AbstractKeyValuable {
             throw new \RuntimeException('Order does not exist');
 
         $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($account, $order);
-        if($directoryNewOrderResponse->isValid() && $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
+        if($directoryNewOrderResponse !== NULL && $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
                 get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '" (from cache)'
@@ -117,17 +127,23 @@ class Order extends AbstractKeyValuable {
 
         $request = new Request\Order\Get($account, $order);
         $response = $request->getResponse();
-        if($response->isValid()) {
-            Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
-            Utilities\Logger::getInstance()->add(
-                Utilities\Logger::LEVEL_INFO,
-                get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
-            );
-            return $order;
-        }
-        return null;
+
+        Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
+        );
+
+        return $order;
     }
 
+    /**
+     * @param $type
+     * @return bool
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     * @throws Exception\HTTPAuthorizationInvalid
+     */
     public function authorize($type) {
 
         if(!file_exists($this->getKeyDirectoryPath() . 'private.pem')) // Order has finished already
@@ -149,6 +165,12 @@ class Order extends AbstractKeyValuable {
         throw new \RuntimeException('Challenge type not implemented');
     }
 
+    /**
+     * @return bool
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     * @throws Exception\HTTPAuthorizationInvalid
+     */
     protected function _continueHTTPAuthorizations() {
 
         if(self::$_HTTPAuthorizationDirectoryPath === NULL) {
@@ -163,48 +185,45 @@ class Order extends AbstractKeyValuable {
 
             $request = new Request\Authorization\Get($authorization);
             $response = $request->getResponse();
-            if($response->isValid()) {
 
-                $challenge = $response->getChallenge(self::CHALLENGE_TYPE_HTTP);
+            $challenge = $response->getChallenge(self::CHALLENGE_TYPE_HTTP);
 
-                if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
+            if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
 
-                    Utilities\Logger::getInstance()->add(
-                        Utilities\Logger::LEVEL_DEBUG,
-                        get_class() . '::' . __FUNCTION__ . ' "Non valid challenge found',
-                        $challenge
-                    );
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_DEBUG,
+                    get_class() . '::' . __FUNCTION__ . ' "Non valid challenge found',
+                    $challenge
+                );
 
-                    $existsNotValidChallenges = true;
+                $existsNotValidChallenges = true;
 
-                    Utilities\Challenge::writeHTTPAuthorizationFile(self::$_HTTPAuthorizationDirectoryPath, $this->_account, $challenge);
-                    if(Utilities\Challenge::validateHTTPAuthorizationFile($response->getIdentifier()->value, $this->_account, $challenge)) {
+                Utilities\Challenge::writeHTTPAuthorizationFile(self::$_HTTPAuthorizationDirectoryPath, $this->_account, $challenge);
+                if(Utilities\Challenge::validateHTTPAuthorizationFile($response->getIdentifier()->value, $this->_account, $challenge)) {
 
-                        $request = new Request\Authorization\Start($this->_account, $this, $challenge);
-                        $response = $request->getResponse();
-                        if(!$response->isValid())
-                            return false;
-                    } else {
+                    $request = new Request\Authorization\Start($this->_account, $this, $challenge);
+                    /* $response = */ $request->getResponse();
+                } else {
 
-                        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Could not validate HTTP Authorization file');
-                    }
+                    Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Could not validate HTTP Authorization file');
                 }
-                else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_VALID) {
+            }
+            else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_VALID) {
 
-                }
-                else {
+            }
+            else {
 
-                    throw new \RuntimeException('Challenge status "' . $challenge->status . '" is not implemented');
-                }
-            } else {
-
-                return false;
+                throw new \RuntimeException('Challenge status "' . $challenge->status . '" is not implemented');
             }
         }
 
         return !$existsNotValidChallenges;
     }
 
+    /**
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     */
     public function finalize() {
 
         if($this->_existsNotValidChallenges) {
@@ -226,32 +245,27 @@ class Order extends AbstractKeyValuable {
 
             $request = new Request\Order\Finalize($this->_account, $this);
             $directoryNewOrderResponse = $request->getResponse();
-            if($directoryNewOrderResponse->isValid()) {
-
-                Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $directoryNewOrderResponse);
-            }
+            Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $directoryNewOrderResponse);
         }
 
         if($directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
 
             $request = new Request\Order\GetCertificate($directoryNewOrderResponse);
             $response = $request->getResponse();
-            if($response->isValid()) {
 
-                $certificate = $response->getCertificate();
-                $intermediate = $response->getIntermediate();
+            $certificate = $response->getCertificate();
+            $intermediate = $response->getIntermediate();
 
-                $certificateInfo = openssl_x509_parse($certificate);
+            $certificateInfo = openssl_x509_parse($certificate);
 
-                $path = $this->getKeyDirectoryPath() . self::BUNDLE_DIRECTORY_PREFIX . $certificateInfo['validTo_time_t'] . DIRECTORY_SEPARATOR;
+            $path = $this->getKeyDirectoryPath() . self::BUNDLE_DIRECTORY_PREFIX . $certificateInfo['validTo_time_t'] . DIRECTORY_SEPARATOR;
 
-                mkdir($path);
-                rename($this->getKeyDirectoryPath() . 'private.pem', $path . 'private.pem');
-                file_put_contents($path . 'certificate.crt', $certificate);
-                file_put_contents($path . 'intermediate.pem', $intermediate);
+            mkdir($path);
+            rename($this->getKeyDirectoryPath() . 'private.pem', $path . 'private.pem');
+            file_put_contents($path . 'certificate.crt', $certificate);
+            file_put_contents($path . 'intermediate.pem', $intermediate);
 
-                Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Certificate received');
-            }
+            Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Certificate received');
         }
     }
 
@@ -291,6 +305,10 @@ class Order extends AbstractKeyValuable {
         );
     }
 
+    /**
+     * @param string $keyType
+     * @throws Exception\AbstractException
+     */
     public function enableAutoRenewal($keyType = self::KEY_TYPE_RSA) {
 
         if(!$this->isCertificateBundleAvailable()) {
@@ -318,21 +336,24 @@ class Order extends AbstractKeyValuable {
     /**
      * @param int $reason The reason to revoke the LetsEncrypt Order instance certificate. Possible reasons can be found in section 5.3.1 of RFC5280.
      * @return bool
+     * @throws Exception\RateLimitReached
      */
     public function revokeCertificate($reason = 0) {
 
         if(!$this->isCertificateBundleAvailable()) {
-            throw new \RuntimeException('There is no certificate available');
+            throw new \RuntimeException('There is no certificate available to revoke');
         }
 
         $bundle = $this->getCertificateBundle();
 
         $request = new Request\Order\RevokeCertificate($bundle, $reason);
-        $response = $request->getResponse();
-        if($response->isValid()) {
+
+        try {
+            /* $response = */ $request->getResponse();
             rename($this->getKeyDirectoryPath(), $this->_getKeyDirectoryPath('-revoked-' . microtime(true)));
             return true;
+        } catch(Exception\InvalidResponse $e) {
+            return false;
         }
-        return false;
     }
 }

@@ -23,6 +23,11 @@ class Update extends AbstractLocation {
         ];
     }
 
+    /**
+     * @return Response\AbstractResponse|Response\Account\Update
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse() {
 
         return new Response\Account\Update($this->_getRawResponse());

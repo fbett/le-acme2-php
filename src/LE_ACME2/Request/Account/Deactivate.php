@@ -13,6 +13,11 @@ class Deactivate extends AbstractLocation {
         ];
     }
 
+    /**
+     * @return Response\AbstractResponse|Response\Account\Deactivate
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse() {
 
         return new Response\Account\Deactivate($this->_getRawResponse());

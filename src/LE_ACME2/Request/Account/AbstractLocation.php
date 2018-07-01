@@ -19,6 +19,11 @@ abstract class AbstractLocation extends AbstractRequest {
         $this->_account = $account;
     }
 
+    /**
+     * @return \LE_ACME2\Connector\Struct\RawResponse
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     protected function _getRawResponse()
     {
         $connector = Connector::getInstance();

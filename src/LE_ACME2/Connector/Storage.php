@@ -6,6 +6,7 @@ use LE_ACME2\Account;
 use LE_ACME2\Order;
 use LE_ACME2\Request as Request;
 use LE_ACME2\Response as Response;
+use LE_ACME2\Exception as Exception;
 
 class Storage {
 
@@ -27,6 +28,8 @@ class Storage {
 
     /**
      * @return Response\GetDirectory
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getGetDirectoryResponse() {
 
@@ -44,6 +47,8 @@ class Storage {
 
     /**
      * @return Response\GetNewNonce
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getNewNonceResponse() {
 
@@ -83,10 +88,15 @@ class Storage {
         if(file_exists($cacheFile) && filemtime($cacheFile) > strtotime('-7 days')) {
 
             $rawResponse = Struct\RawResponse::getFromString(file_get_contents($cacheFile));
-            $directoryNewAccountResponse = new Response\Account\Create($rawResponse);
 
-            $this->_directoryNewAccountResponse[$accountIdentifier] = $directoryNewAccountResponse;
-            return $directoryNewAccountResponse;
+            try {
+                $directoryNewAccountResponse = new Response\Account\Create($rawResponse);
+                $this->_directoryNewAccountResponse[$accountIdentifier] = $directoryNewAccountResponse;
+                return $directoryNewAccountResponse;
+
+            } catch(Exception\AbstractException $e) {
+                unlink($cacheFile);
+            }
         }
         return null;
     }
@@ -115,10 +125,17 @@ class Storage {
         if(file_exists($cacheFile)) {
 
             $rawResponse = Struct\RawResponse::getFromString(file_get_contents($cacheFile));
-            $directoryNewOrderResponse = new Response\Order\Create($rawResponse);
 
-            $this->_directoryNewOrderResponse[$accountIdentifier][$orderIdentifier] = $directoryNewOrderResponse;
-            return $directoryNewOrderResponse;
+            try {
+                $directoryNewOrderResponse = new Response\Order\Create($rawResponse);
+
+                $this->_directoryNewOrderResponse[$accountIdentifier][$orderIdentifier] = $directoryNewOrderResponse;
+                return $directoryNewOrderResponse;
+
+            } catch(Exception\AbstractException $e) {
+
+                unlink($cacheFile);
+            }
         }
         return null;
     }

@@ -20,6 +20,11 @@ class RevokeCertificate extends AbstractRequest {
         $this->_reason = $reason;
     }
 
+    /**
+     * @return Response\AbstractResponse|Response\Order\RevokeCertificate
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse()
     {
         $connector = Connector::getInstance();

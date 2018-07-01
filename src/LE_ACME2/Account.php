@@ -6,6 +6,7 @@ use LE_ACME2\Connector\Storage;
 use LE_ACME2\Request as Request;
 use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
+use LE_ACME2\Exception as Exception;
 
 class Account extends AbstractKeyValuable {
 
@@ -29,7 +30,8 @@ class Account extends AbstractKeyValuable {
 
     /**
      * @param string $email
-     * @return self|null
+     * @return Account|null
+     * @throws Exception\AbstractException
      */
     public static function create($email) {
 
@@ -37,21 +39,23 @@ class Account extends AbstractKeyValuable {
         $account->_initKeyDirectory();
 
         $request = new Request\Account\Create($account);
-        $response = $request->getResponse();
-        if($response->isValid()) {
+
+        try {
+            $response = $request->getResponse();
+
             Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_INFO,
                 get_class() . '::' . __FUNCTION__ .  ' "' . $email . '"'
             );
+
             return $account;
+
+        } catch(Exception\AbstractException $e) {
+
+            $account->_clearKeyDirectory();
+            throw $e;
         }
-        Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $email) . '" - could not be created. Response: <br/>' . var_export($response->getRaw(), true)
-        );
-        $account->_clearKeyDirectory();
-        return null;
     }
 
     public static function exists($email) {
@@ -65,17 +69,19 @@ class Account extends AbstractKeyValuable {
 
     /**
      * @param string $email
-     * @return self
+     * @return Account
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public static function get($email) {
 
         $account = new self($email);
 
         if(!self::exists($email))
-            throw new \RuntimeException('Keys not found.');
+            throw new \RuntimeException('Keys not found - does this account exist?');
 
         $directoryNewAccountResponse = Storage::getInstance()->getDirectoryNewAccountResponse($account);
-        if($directoryNewAccountResponse !== NULl && $directoryNewAccountResponse->isValid()) {
+        if($directoryNewAccountResponse !== NULL) {
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
                 get_class() . '::' . __FUNCTION__ .  ' "' . $email . '" (from cache)'
@@ -85,39 +91,38 @@ class Account extends AbstractKeyValuable {
 
         $request = new Request\Account\Get($account);
         $response = $request->getResponse();
-        if($response->isValid()) {
-            Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
-            Utilities\Logger::getInstance()->add(
-                Utilities\Logger::LEVEL_INFO,
-                get_class() . '::' . __FUNCTION__ .  ' "' . $email . '"'
-            );
-            return $account;
-        }
-        return null;
+
+        Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' "' . $email . '"'
+        );
+        return $account;
     }
 
     /**
-     * @return \LE_ACME2\Response\Account\GetData|null
+     * @return Response\AbstractResponse|Response\Account\GetData
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getData() {
 
         $request = new Request\Account\GetData($this);
-        $response = $request->getResponse();
-        if($response->isValid()) {
-            return $response;
-        }
-        return null;
+        return $request->getResponse();
     }
 
     /**
      * @param string $email
      * @return bool
+     * @throws Exception\RateLimitReached
      */
     public function update($email) {
 
         $request = new Request\Account\Update($this, $email);
-        $response = $request->getResponse();
-        if($response->isValid()) {
+
+        try {
+            /* $response = */ $request->getResponse();
 
             $previousKeyDirectoryPath = $this->getKeyDirectoryPath();
 
@@ -127,40 +132,51 @@ class Account extends AbstractKeyValuable {
                 rename($previousKeyDirectoryPath, $this->getKeyDirectoryPath());
 
             return true;
+
+        } catch(Exception\InvalidResponse $e) {
+            return false;
         }
-        return false;
     }
 
     /**
      * @return bool
+     * @throws Exception\RateLimitReached
      */
     public function changeKeys() {
 
         Utilities\KeyGenerator::RSA($this->getKeyDirectoryPath(), 'private-replacement.pem', 'public-replacement.pem');
 
         $request = new Request\Account\ChangeKeys($this);
-        $response = $request->getResponse();
-        if($response->isValid()) {
+        try {
+            /* $response = */ $request->getResponse();
 
             unlink($this->getKeyDirectoryPath() . 'private.pem');
             unlink($this->getKeyDirectoryPath() . 'public.pem');
             rename($this->getKeyDirectoryPath() . 'private-replacement.pem', $this->getKeyDirectoryPath() . 'private.pem');
             rename($this->getKeyDirectoryPath() . 'private-replacement.pem', $this->getKeyDirectoryPath() . 'public.pem');
             return true;
+
+        } catch(Exception\InvalidResponse $e) {
+
+            return false;
         }
-        return false;
     }
 
     /**
      * @return bool
+     * @throws Exception\RateLimitReached
      */
     public function deactivate() {
 
         $request = new Request\Account\Deactivate($this);
-        $response = $request->getResponse();
-        if($response->isValid()) {
+
+        try {
+            /* $response = */ $request->getResponse();
+
             return true;
+
+        } catch(Exception\InvalidResponse $e) {
+            return false;
         }
-        return false;
     }
 }

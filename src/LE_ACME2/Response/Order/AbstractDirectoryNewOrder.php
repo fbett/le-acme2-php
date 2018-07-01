@@ -13,28 +13,17 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
 
     public function getLocation() {
 
-        if(!$this->isValid()) {
-            var_dump($this->_raw);
-            throw new \RuntimeException('Could not get or create order');
-        }
-
         $matches = $this->_preg_match_headerLine($this->_pattern_header_location);
         return trim($matches[1]);
     }
 
     public function getStatus() {
 
-        if(!$this->isValid())
-            throw new \RuntimeException('Could not get or create order');
-
         return $this->_raw->body['status'];
     }
 
     public function getExpires() {
-
-        if(!$this->isValid())
-            throw new \RuntimeException('Could not get or create order');
-
+        
         return $this->_raw->body['expires'];
     }
 
@@ -42,10 +31,7 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
      * @return array()
      */
     public function getIdentifiers() {
-
-        if(!$this->isValid())
-            throw new \RuntimeException('Could not get or create order');
-
+        
         return $this->_raw->body['identifiers'];
     }
 
@@ -53,26 +39,17 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
      * @return array
      */
     public function getAuthorizations() {
-
-        if(!$this->isValid())
-            throw new \RuntimeException('Could not get or create order');
-
+        
         return $this->_raw->body['authorizations'];
     }
 
     public function getFinalize() {
-
-        if(!$this->isValid())
-            throw new \RuntimeException('Could not get or create order');
-
+        
         return $this->_raw->body['finalize'];
     }
 
     public function getCertificate() {
-
-        if(!$this->isValid())
-            throw new \RuntimeException('Could not get or create order');
-
+        
         return $this->_raw->body['certificate'];
     }
 }

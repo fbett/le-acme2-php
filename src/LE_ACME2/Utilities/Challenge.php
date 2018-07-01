@@ -4,6 +4,8 @@ namespace LE_ACME2\Utilities;
 
 use LE_ACME2\Account;
 
+use LE_ACME2\Exception as Exception;
+
 class Challenge {
 
     public static function buildAuthorizationKey($token, $digest) {
@@ -31,6 +33,13 @@ class Challenge {
         file_put_contents($directoryPath . $challenge->token,  self::buildAuthorizationKey($challenge->token, $digest));
     }
 
+    /**
+     * @param string $domain
+     * @param Account $account
+     * @param \LE_ACME2\Response\Authorization\Struct\Challenge $challenge
+     * @return bool
+     * @throws Exception\HTTPAuthorizationInvalid
+     */
     public static function validateHTTPAuthorizationFile($domain, Account $account, \LE_ACME2\Response\Authorization\Struct\Challenge $challenge) {
 
         $digest = self::getDigest($account);
@@ -46,10 +55,8 @@ class Challenge {
 
         if(!$result) {
 
-            Logger::getInstance()->add(Logger::LEVEL_INFO, 'HTTP challenge for "' . $domain . '"": ' . $domain . '/.well-known/acme-challenge/' . $challenge->token . ' tested, found invalid. CURL response: ', $response);
-            return false;
+            throw new Exception\HTTPAuthorizationInvalid($domain, $challenge->token, $response);
         }
         return true;
     }
-
 }

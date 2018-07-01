@@ -2,6 +2,4 @@
 
 namespace LE_ACME2\Response\Account;
 
-class Update extends AbstractLocation {
-
-}
+class Update extends AbstractLocation {}

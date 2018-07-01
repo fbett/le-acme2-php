@@ -16,6 +16,11 @@ class GetCertificate extends AbstractRequest {
         $this->_directoryNewOrderResponse = $directoryNewOrderResponse;
     }
 
+    /**
+     * @return Response\AbstractResponse|Response\Order\GetCertificate
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse()
     {
         $connector = Connector::getInstance();

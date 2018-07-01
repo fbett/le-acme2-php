@@ -2,6 +2,8 @@
 
 namespace LE_ACME2\Response;
 
+use LE_ACME2\Exception as Exception;
+
 use LE_ACME2\Connector\Struct\RawResponse;
 use LE_ACME2\Utilities\Logger;
 
@@ -11,9 +13,25 @@ abstract class AbstractResponse {
 
     protected $_pattern_header_location = '/^Location: (\S+)$/i';
 
+    /**
+     * AbstractResponse constructor.
+     *
+     * @param RawResponse $raw
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     */
     public function __construct(RawResponse $raw) {
 
         $this->_raw = $raw;
+
+        if($this->_isRateLimitReached()) {
+            throw new Exception\RateLimitReached();
+        }
+
+        $result = $this->_isValid();
+        if(!$result) {
+            throw new Exception\InvalidResponse($raw);
+        }
     }
 
     /**
@@ -30,27 +48,16 @@ abstract class AbstractResponse {
         return null;
     }
 
-    public function isRateLimitReached() {
+    protected function _isRateLimitReached() {
         return $this->_preg_match_headerLine('/^HTTP.* 429 .*$/i') !== null;
     }
 
     final public function isValid() {
 
-        $result = $this->_isValid();
-        if(!$result) {
-            Logger::getInstance()->add(
-                Logger::LEVEL_DEBUG,
-                get_called_class() . '::' . __FUNCTION__ . ' "result false"'
-            );
-        }
-        return $result;
+
     }
 
     protected function _isValid() {
-
-        if($this->isRateLimitReached()) {
-            Logger::getInstance()->add(Logger::LEVEL_INFO, 'Invalid response: Rate limit reached', $this->_raw);
-        }
 
         return $this->_preg_match_headerLine('/^HTTP.* 201 Created$/i') !== null ||
             $this->_preg_match_headerLine('/^HTTP.* 200 OK$/i') !== null;

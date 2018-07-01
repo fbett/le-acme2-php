@@ -16,6 +16,11 @@ class Get extends AbstractRequest {
         $this->_authorizationURL = $authorizationURL;
     }
 
+    /**
+     * @return Response\AbstractResponse|Response\Authorization\Get
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse() {
 
         $connector = Connector::getInstance();

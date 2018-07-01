@@ -8,6 +8,11 @@ use LE_ACME2\Response as Response;
 
 class GetNewNonce extends AbstractRequest {
 
+    /**
+     * @return Response\AbstractResponse|Response\GetNewNonce
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse() {
 
         $connector = Connector::getInstance();

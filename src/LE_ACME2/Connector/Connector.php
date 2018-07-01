@@ -5,6 +5,7 @@ namespace LE_ACME2\Connector;
 use LE_ACME2\Request as Request;
 use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
+use LE_ACME2\Exception as Exception;
 
 class Connector {
     
@@ -52,6 +53,8 @@ class Connector {
      * @param string 	$data  	The body to attach to a POST request. Expected as a JSON encoded string.
      *
      * @return Struct\RawResponse
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function request($method, $url, $data = null) {
 
@@ -97,15 +100,17 @@ class Connector {
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', $rawResponse);
 
-        $getNewNonceResponse = new Response\GetNewNonce($rawResponse);
-        if($getNewNonceResponse->isValid()) {
 
+        try {
+            $getNewNonceResponse = new Response\GetNewNonce($rawResponse);
             Storage::getInstance()->setNewNonceResponse($getNewNonceResponse);
-        }
-        else if($method == self::METHOD_POST) {
 
-            $request = new Request\GetNewNonce();
-            Storage::getInstance()->setNewNonceResponse($request->getResponse());
+        } catch(Exception\InvalidResponse $e) {
+
+            if($method == self::METHOD_POST) {
+                $request = new Request\GetNewNonce();
+                Storage::getInstance()->setNewNonceResponse($request->getResponse());
+            }
         }
 
         return $rawResponse;

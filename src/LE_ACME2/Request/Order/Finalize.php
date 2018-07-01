@@ -22,6 +22,11 @@ class Finalize extends AbstractRequest {
         $this->_order = $order;
     }
 
+    /**
+     * @return Response\AbstractResponse|Response\Order\Finalize
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse() {
 
         $connector = Connector::getInstance();

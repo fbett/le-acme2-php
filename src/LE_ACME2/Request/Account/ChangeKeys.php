@@ -19,6 +19,11 @@ class ChangeKeys extends AbstractRequest {
         $this->_account = $account;
     }
 
+    /**
+     * @return Response\AbstractResponse|Response\Account\ChangeKeys
+     * @throws \LE_ACME2\Exception\InvalidResponse
+     * @throws \LE_ACME2\Exception\RateLimitReached
+     */
     public function getResponse()
     {
         $connector = Connector::getInstance();

@@ -11,10 +11,6 @@ class GetCertificate extends AbstractResponse {
 
     public function getCertificate() {
 
-        if(!$this->isValid()) {
-            throw new \RuntimeException('Response is not valid');
-        }
-
         if(preg_match_all($this->_pattern, $this->_raw->body, $matches))  {
 
             return $matches[0][0];
@@ -24,10 +20,6 @@ class GetCertificate extends AbstractResponse {
     }
 
     public function getIntermediate() {
-
-        if(!$this->isValid()) {
-            throw new \RuntimeException('Response is not valid');
-        }
 
         if(preg_match_all($this->_pattern, $this->_raw->body, $matches))  {
 
