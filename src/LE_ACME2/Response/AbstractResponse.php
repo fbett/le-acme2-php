@@ -52,11 +52,6 @@ abstract class AbstractResponse {
         return $this->_preg_match_headerLine('/^HTTP.* 429 .*$/i') !== null;
     }
 
-    final public function isValid() {
-
-
-    }
-
     protected function _isValid() {
 
         return $this->_preg_match_headerLine('/^HTTP.* 201 Created$/i') !== null ||
