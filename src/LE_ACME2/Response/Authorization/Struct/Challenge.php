@@ -6,6 +6,7 @@ class Challenge {
 
     const STATUS_PENDING = 'pending';
     const STATUS_VALID = 'valid';
+    const STATUS_INVALID = 'invalid';
 
     public $type;
     public $status;

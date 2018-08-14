@@ -211,6 +211,11 @@ class Order extends AbstractKeyValuable {
             else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_VALID) {
 
             }
+            else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_INVALID) {
+                throw new Exception\HTTPAuthorizationInvalid(
+                    'Received status "' . Response\Authorization\Struct\Challenge::STATUS_INVALID . '" while challenge should be verified'
+                );
+            }
             else {
 
                 throw new \RuntimeException('Challenge status "' . $challenge->status . '" is not implemented');

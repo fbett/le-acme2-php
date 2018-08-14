@@ -55,7 +55,11 @@ class Challenge {
 
         if(!$result) {
 
-            throw new Exception\HTTPAuthorizationInvalid($domain, $challenge->token, $response);
+            throw new Exception\HTTPAuthorizationInvalid(
+                'HTTP challenge for "' . $domain . '"": ' .
+                $domain . '/.well-known/acme-challenge/' . $challenge->token .
+                ' tested, found invalid. CURL response: ' . var_export($response, true)
+            );
         }
         return true;
     }
