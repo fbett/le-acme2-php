@@ -85,7 +85,7 @@ If a certificate is renewed, the path will also change.
 My integrated workflow is the following:
 - User enables SSL to a specific domain in my control panel
 - The cronjob of this control panel will detect these changes and tries to create or get an order like in der HTTP-Sample.
-- The cronjob will fetch the informations within the certificate bundle, if the certificate bundle is ready (mostly on the second run)
+- The cronjob will fetch the information within the certificate bundle, if the certificate bundle is ready (mostly on the second run)
 - The cronjob will also build the Apache virtual host files and will restart the Apache2 service, if the new config file is different.
 
 
@@ -94,7 +94,6 @@ Please take a look on Samples\HTTP.php for a full sample workflow.
 ## Known Issues
 
 - The DNS based authentication is not currently not implemented, so wildcard certificates can not be validated. All PR's are welcome.
-- There should be a mechanism if a rate limit is reached
 
 
 ## License
