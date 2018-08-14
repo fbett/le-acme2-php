@@ -29,17 +29,32 @@ class ChangeKeys extends AbstractRequest {
         $connector = Connector::getInstance();
         $storage = Storage::getInstance();
 
-        $privateKey = openssl_pkey_get_private(
+        $currentPrivateKey = openssl_pkey_get_private(
+            file_get_contents($this->_account->getKeyDirectoryPath() . 'private.pem')
+        );
+        $currentPrivateKeyDetails = openssl_pkey_get_details($currentPrivateKey);
+
+        /**
+         *  draft-13 Section 7.3.6
+         *  "newKey" is deprecated after August 23rd 2018
+         *  TODO: TEST
+         */
+        $newPrivateKey = openssl_pkey_get_private(
             file_get_contents($this->_account->getKeyDirectoryPath() . 'private-replacement.pem')
         );
-        $details = openssl_pkey_get_details($privateKey);
+        $newPrivateKeyDetails = openssl_pkey_get_details($newPrivateKey);
 
         $innerPayload = [
             'account' => $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
+            'oldKey' => [
+                "kty" => "RSA",
+                "n" => Utilities\Base64::UrlSafeEncode($currentPrivateKeyDetails["rsa"]["n"]),
+                "e" => Utilities\Base64::UrlSafeEncode($currentPrivateKeyDetails["rsa"]["e"])
+            ],
             'newKey' => [
                 "kty" => "RSA",
-                "n" => Utilities\Base64::UrlSafeEncode($details["rsa"]["n"]),
-                "e" => Utilities\Base64::UrlSafeEncode($details["rsa"]["e"])
+                "n" => Utilities\Base64::UrlSafeEncode($newPrivateKeyDetails["rsa"]["n"]),
+                "e" => Utilities\Base64::UrlSafeEncode($newPrivateKeyDetails["rsa"]["e"])
             ]
         ];
 
