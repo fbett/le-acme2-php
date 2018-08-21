@@ -21,7 +21,7 @@ class HTTP extends AbstractAuthorizer {
         self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
-    public function shouldStartAuthentication() {
+    public function shouldStartAuthorization() {
 
         foreach($this->_authorizationResponses as $response) {
 

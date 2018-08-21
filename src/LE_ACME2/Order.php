@@ -164,7 +164,10 @@ class Order extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
+    public function shouldStartAuthorization($type) {
 
+        return $this->_getAuthorizer($type)->shouldStartAuthorization();
+    }
 
     /**
      * @param $type

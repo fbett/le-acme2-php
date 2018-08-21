@@ -57,7 +57,7 @@ abstract class AbstractAuthorizer {
         return count($this->_authorizationResponses) > 0;
     }
 
-    abstract public function shouldStartAuthentication();
+    abstract public function shouldStartAuthorization();
     abstract public function progress();
 
     protected $_finished = false;
