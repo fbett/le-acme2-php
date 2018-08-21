@@ -6,6 +6,7 @@ use LE_ACME2\Request as Request;
 use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
 use LE_ACME2\Exception as Exception;
+use \LE_ACME2\Authorizer as Authorizer;
 
 use LE_ACME2\Connector\Storage;
 
@@ -14,15 +15,13 @@ class Order extends AbstractKeyValuable {
     const CHALLENGE_TYPE_HTTP = 'http-01';
     const CHALLENGE_TYPE_DNS = 'dns-01';
 
-    protected static $_HTTPAuthorizationDirectoryPath = null;
-
+    /**
+     * @deprecated
+     * @param $directoryPath
+     */
     public static function setHTTPAuthorizationDirectoryPath($directoryPath) {
 
-        if(!file_exists($directoryPath)) {
-            throw new \RuntimeException('HTTP authorization directory path does not exist');
-        }
-
-        self::$_HTTPAuthorizationDirectoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
+        Authorizer\HTTP::setDirectoryPath($directoryPath);
     }
 
     protected $_account;
@@ -137,6 +136,36 @@ class Order extends AbstractKeyValuable {
         return $order;
     }
 
+    /** @var Authorizer\AbstractAuthorizer|Authorizer\HTTP|null $_authorizer  */
+    protected $_authorizer = null;
+
+    /**
+     * @param $type
+     * @return Authorizer\AbstractAuthorizer|Authorizer\HTTP|null
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     */
+    protected function _getAuthorizer($type) {
+
+        if($this->_authorizer === null) {
+
+            if($type == self::CHALLENGE_TYPE_HTTP) {
+                $this->_authorizer = new Authorizer\HTTP($this->_account, $this);
+            } else {
+                throw new \RuntimeException('Challenge type not implemented');
+            }
+        }
+        return $this->_authorizer;
+    }
+
+    /**
+     * @return bool
+     * @param $type
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     */
+
+
     /**
      * @param $type
      * @return bool
@@ -146,83 +175,11 @@ class Order extends AbstractKeyValuable {
      */
     public function authorize($type) {
 
-        if(!file_exists($this->getKeyDirectoryPath() . 'private.pem')) // Order has finished already
-            return false;
+        /** @var Authorizer\HTTP $authorizer */
+        $authorizer = $this->_getAuthorizer($type);
+        $authorizer->progress();
 
-        if($type == self::CHALLENGE_TYPE_HTTP) {
-
-            if($this->_continueHTTPAuthorizations()) {
-
-                $this->_existsNotValidChallenges = false;
-                return true;
-            }
-            Utilities\Logger::getInstance()->add(
-                Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ . ' "Non valid challenges found."'
-            );
-            return false;
-        }
-        throw new \RuntimeException('Challenge type not implemented');
-    }
-
-    /**
-     * @return bool
-     * @throws Exception\InvalidResponse
-     * @throws Exception\RateLimitReached
-     * @throws Exception\HTTPAuthorizationInvalid
-     */
-    protected function _continueHTTPAuthorizations() {
-
-        if(self::$_HTTPAuthorizationDirectoryPath === NULL) {
-
-            throw new \RuntimeException('HTTP authorization directory path is not set');
-        }
-
-        $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
-        $existsNotValidChallenges = false;
-
-        foreach($directoryNewOrderResponse->getAuthorizations() as $authorization) {
-
-            $request = new Request\Authorization\Get($authorization);
-            $response = $request->getResponse();
-
-            $challenge = $response->getChallenge(self::CHALLENGE_TYPE_HTTP);
-
-            if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
-
-                Utilities\Logger::getInstance()->add(
-                    Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ . ' "Non valid challenge found',
-                    $challenge
-                );
-
-                $existsNotValidChallenges = true;
-
-                Utilities\Challenge::writeHTTPAuthorizationFile(self::$_HTTPAuthorizationDirectoryPath, $this->_account, $challenge);
-                if(Utilities\Challenge::validateHTTPAuthorizationFile($response->getIdentifier()->value, $this->_account, $challenge)) {
-
-                    $request = new Request\Authorization\Start($this->_account, $this, $challenge);
-                    /* $response = */ $request->getResponse();
-                } else {
-
-                    Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Could not validate HTTP Authorization file');
-                }
-            }
-            else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_VALID) {
-
-            }
-            else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_INVALID) {
-                throw new Exception\HTTPAuthorizationInvalid(
-                    'Received status "' . Response\Authorization\Struct\Challenge::STATUS_INVALID . '" while challenge should be verified'
-                );
-            }
-            else {
-
-                throw new \RuntimeException('Challenge status "' . $challenge->status . '" is not implemented');
-            }
-        }
-
-        return !$existsNotValidChallenges;
+        return $authorizer->hasFinished();
     }
 
     /**
@@ -231,7 +188,7 @@ class Order extends AbstractKeyValuable {
      */
     public function finalize() {
 
-        if($this->_existsNotValidChallenges) {
+        if(!is_object($this->_authorizer) || !$this->_authorizer->hasFinished()) {
 
             throw new \RuntimeException('Not all challenges are valid. Please check result of authorize() first!');
         }

@@ -4,6 +4,7 @@ namespace LE_ACME2\Response\Authorization\Struct;
 
 class Challenge {
 
+    const STATUS_PROGRESSING = 'processing';
     const STATUS_PENDING = 'pending';
     const STATUS_VALID = 'valid';
     const STATUS_INVALID = 'invalid';

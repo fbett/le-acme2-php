@@ -4,7 +4,7 @@ require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'autolo
 
 // Config the desired paths
 \LE_ACME2\Account::setCommonKeyDirectoryPath('/etc/ssl/le-storage/');
-\LE_ACME2\Order::setHTTPAuthorizationDirectoryPath('/var/www/acme-challenges/');
+\LE_ACME2\Authorizer\HTTP::setDirectoryPath('/var/www/acme-challenges/');
 
 // General configs
 \LE_ACME2\Connector\Connector::getInstance()->useStagingServer(true);
