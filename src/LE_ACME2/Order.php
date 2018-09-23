@@ -301,7 +301,7 @@ class Order extends AbstractKeyValuable
             'private.pem',
             'certificate.crt',
             $intermediateFile,
-            $expireTime
+            (int) $expireTime
         );
     }
 
