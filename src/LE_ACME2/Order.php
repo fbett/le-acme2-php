@@ -31,6 +31,12 @@ class Order extends AbstractKeyValuable
 
     protected $_existsNotValidChallenges = true;
 
+    /**
+     * @var $renewBeforeDays
+     * Days before expiration that we allow to renew
+     */
+    protected $renewBeforeDays = 7;
+
     public function __construct(Account $account, array $subjects)
     {
 
@@ -53,6 +59,13 @@ class Order extends AbstractKeyValuable
         return $this->_subjects;
     }
 
+    public function setRenewBeforeDays(int $days)
+    {
+        $this->renewBeforeDays = $days;
+
+        return $this;
+    }
+
     /**
      * @param Account $account
      * @param array $subjects
@@ -62,9 +75,14 @@ class Order extends AbstractKeyValuable
      */
     public static function create(Account $account, array $subjects, $keyType = self::KEY_TYPE_RSA)
     {
-
         $order = new self($account, $subjects);
         return $order->_create($keyType, false);
+    }
+
+    public static function createForce(Account $account, array $subjects, $keyType = self::KEY_TYPE_RSA)
+    {
+        $order = new self($account, $subjects);
+        return $order->_create($keyType, true);
     }
 
     /**
@@ -236,6 +254,7 @@ class Order extends AbstractKeyValuable
             rename($this->getKeyDirectoryPath() . 'private.pem', $path . 'private.pem');
             file_put_contents($path . 'certificate.crt', $certificate);
             file_put_contents($path . 'intermediate.pem', $intermediate);
+            file_put_contents($path . 'expire_ts.txt', $certificateInfo['validTo_time_t']);
 
             Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Certificate received');
         }
@@ -273,11 +292,14 @@ class Order extends AbstractKeyValuable
         // Changed intermediate file extension.
         $intermediateFile = 'intermediate.' . (file_exists($certificatePath . 'intermediate.crt') ? 'crt' : 'pem');
 
+        $expireTime = substr($certificatePath, strlen(self::BUNDLE_DIRECTORY_PREFIX));
+
         return new Struct\CertificateBundle(
             $certificatePath,
             'private.pem',
             'certificate.crt',
-            $intermediateFile
+            $intermediateFile,
+            $expireTime
         );
     }
 
@@ -303,7 +325,7 @@ class Order extends AbstractKeyValuable
 
         $expireTime = substr($directory, strlen(self::BUNDLE_DIRECTORY_PREFIX));
 
-        if (strtotime('+7 days', time()) > $expireTime) {
+        if (strtotime('+' . $this->renewBeforeDays . ' days', time()) > $expireTime) {
             Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Auto renewal: Will recreate order');
 
             $this->_create($keyType, true);
