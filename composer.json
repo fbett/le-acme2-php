@@ -1,13 +1,13 @@
 {
-  "name": "fbett/le_acme2",
+  "name": "raulp/le_acme2",
   "description": "Letsencrypt PHP ACME v2 client",
-  "homepage": "https://github.com/fbett/le-acme2-php",
-  "version": "1.1.3",
+  "homepage": "https://github.com/raulp/le-acme2-php",
+  "version": "0.0.1",
   "license": "MIT",
   "authors": [
     {
-      "name": "Fabian Bett",
-      "homepage": "https://www.bett-ingenieure.de",
+      "name": "Raul Predescu",
+      "homepage": "",
       "role": "Developer"
     }
   ],

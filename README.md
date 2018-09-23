@@ -1,14 +1,7 @@
 # le-acme2-php
 LetsEncrypt client library for ACME v2 written in PHP.
 
-This library is inspired by [yourivw/LEClient](https://github.com/yourivw/LEClient) and enhanced with some new features:
-- Support for Composer autoload (including separated Namespaces)
-- Automatic renewal process
-- Managed HTTP authentication process
-- Response caching mechanism
-- Prevents blocking while waiting for server results
-
-The aim of this client is to make an easy-to-use and integrated solution to create a LetsEncrypt-issued SSL/TLS certificate with PHP.
+This library is forked from [fbett/le-acme2-php](https://github.com/fbett/le-acme2-php). The goal of this fork is to create a PSR-2 compliant library, and add more flexibility to library, like constants, order information, implementing dns-01 authentication, etc.
 
 Currently the authentication via HTTP is integrated. For that it is necessary, that you are able to place a redirect on the web server of the domain.
 
@@ -28,7 +21,7 @@ This client also depends on cURL and OpenSSL.
 Install via composer:
 
 ```
-composer require fbett/le_acme2
+composer require raulp/le_acme2
 ```
 
 Also have a look at the [LetsEncrypt documentation](https://letsencrypt.org/docs/) for more information and documentation on LetsEncrypt and ACME.
@@ -82,18 +75,12 @@ if($order->isCertificateBundleAvailable()) {
 
 If a certificate is renewed, the path will also change. 
 
-My integrated workflow is the following:
-- User enables SSL to a specific domain in my control panel
-- The cronjob of this control panel will detect these changes and tries to create or get an order like in der HTTP-Sample.
-- The cronjob will fetch the information within the certificate bundle, if the certificate bundle is ready (mostly on the second run)
-- The cronjob will also build the Apache virtual host files and will restart the Apache2 service, if the new config file is different.
-
-
 Please take a look on Samples\HTTP.php for a full sample workflow.
 
 ## Known Issues
 
 - The DNS based authentication is not currently not implemented, so wildcard certificates can not be validated. All PR's are welcome.
+- Certificate renewal is hardcoded to 7 days before expiration.
 
 
 ## License
