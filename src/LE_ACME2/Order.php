@@ -287,12 +287,14 @@ class Order extends AbstractKeyValuable
             throw new \RuntimeException('There is no certificate available');
         }
 
-        $certificatePath = $this->getKeyDirectoryPath() . $this->_getLatestCertificateDirectory() . DIRECTORY_SEPARATOR;
+        $directory = $this->_getLatestCertificateDirectory();
+
+        $certificatePath = $this->getKeyDirectoryPath() . $directory . DIRECTORY_SEPARATOR;
 
         // Changed intermediate file extension.
         $intermediateFile = 'intermediate.' . (file_exists($certificatePath . 'intermediate.crt') ? 'crt' : 'pem');
 
-        $expireTime = substr($certificatePath, strlen(self::BUNDLE_DIRECTORY_PREFIX));
+        $expireTime = substr($directory, strlen(self::BUNDLE_DIRECTORY_PREFIX));
 
         return new Struct\CertificateBundle(
             $certificatePath,
