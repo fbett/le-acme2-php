@@ -5,7 +5,8 @@ namespace LE_ACME2\Request\Account;
 use LE_ACME2\Account;
 use LE_ACME2\Response as Response;
 
-class Update extends AbstractLocation {
+class Update extends AbstractLocation
+{
 
     protected $_newEmail;
 
@@ -16,7 +17,8 @@ class Update extends AbstractLocation {
         $this->_newEmail = $newEmail;
     }
 
-    protected function _getPayload() {
+    protected function _getPayload()
+    {
 
         return [
             'contact' => $this->_buildContactPayload($this->_newEmail),
@@ -28,7 +30,8 @@ class Update extends AbstractLocation {
      * @throws \LE_ACME2\Exception\InvalidResponse
      * @throws \LE_ACME2\Exception\RateLimitReached
      */
-    public function getResponse() {
+    public function getResponse()
+    {
 
         return new Response\Account\Update($this->_getRawResponse());
     }

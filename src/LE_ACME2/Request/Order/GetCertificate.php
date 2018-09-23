@@ -7,11 +7,13 @@ use LE_ACME2\Response as Response;
 
 use LE_ACME2\Request\AbstractRequest;
 
-class GetCertificate extends AbstractRequest {
+class GetCertificate extends AbstractRequest
+{
 
     protected $_directoryNewOrderResponse;
 
-    public function __construct(Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse) {
+    public function __construct(Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse)
+    {
 
         $this->_directoryNewOrderResponse = $directoryNewOrderResponse;
     }
@@ -31,5 +33,4 @@ class GetCertificate extends AbstractRequest {
         );
         return new Response\Order\GetCertificate($result);
     }
-
 }

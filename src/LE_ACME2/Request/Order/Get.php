@@ -10,12 +10,14 @@ use LE_ACME2\Response as Response;
 use LE_ACME2\Account;
 use LE_ACME2\Connector\Connector;
 
-class Get extends AbstractRequest {
+class Get extends AbstractRequest
+{
 
     protected $_account;
     protected $_order;
 
-    public function __construct(Account $account, Order $order) {
+    public function __construct(Account $account, Order $order)
+    {
 
         $this->_account = $account;
         $this->_order = $order;

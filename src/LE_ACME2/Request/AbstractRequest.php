@@ -6,7 +6,8 @@ use LE_ACME2\Exception as Exception;
 
 use LE_ACME2\Response\AbstractResponse;
 
-abstract class AbstractRequest {
+abstract class AbstractRequest
+{
 
     /**
      * @return AbstractResponse
@@ -19,7 +20,8 @@ abstract class AbstractRequest {
      * @param string $email
      * @return array
      */
-    protected function _buildContactPayload($email) {
+    protected function _buildContactPayload($email)
+    {
 
         $result = [
             'mailto:' . $email

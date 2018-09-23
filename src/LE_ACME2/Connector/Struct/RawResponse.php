@@ -2,7 +2,8 @@
 
 namespace LE_ACME2\Connector\Struct;
 
-class RawResponse {
+class RawResponse
+{
 
     /** @var string */
     public $request;
@@ -13,7 +14,8 @@ class RawResponse {
     /** @var array */
     public $body;
 
-    public function init($method, $url, $response, $headerSize) {
+    public function init($method, $url, $response, $headerSize)
+    {
 
         $header = substr($response, 0, $headerSize);
         $body = substr($response, $headerSize);
@@ -22,14 +24,15 @@ class RawResponse {
 
         $this->request = $method . ' ' . $url;
 
-        $this->header = array_map(function($line) {
+        $this->header = array_map(function ($line) {
             return trim($line);
         }, explode("\n", $header));
 
         $this->body = $body_json === null ? $body : $body_json;
     }
 
-    public function toString() {
+    public function toString()
+    {
 
         return serialize([
             'request' => $this->request,
@@ -38,7 +41,8 @@ class RawResponse {
         ]);
     }
 
-    public static function getFromString($string) {
+    public static function getFromString($string)
+    {
 
         $array = unserialize($string);
 

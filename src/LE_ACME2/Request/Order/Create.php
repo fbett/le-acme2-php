@@ -11,12 +11,14 @@ use LE_ACME2\Utilities as Utilities;
 use LE_ACME2\Account;
 use LE_ACME2\Connector\Connector;
 
-class Create extends AbstractRequest {
+class Create extends AbstractRequest
+{
 
     protected $_account;
     protected $_order;
 
-    public function __construct(Account $account, Order $order) {
+    public function __construct(Account $account, Order $order)
+    {
 
         $this->_account = $account;
         $this->_order = $order;
@@ -33,8 +35,7 @@ class Create extends AbstractRequest {
         $storage = Storage::getInstance();
 
         $identifiers = [];
-        foreach($this->_order->getSubjects() as $subject) {
-
+        foreach ($this->_order->getSubjects() as $subject) {
             $identifiers[] = [
                 'type' => 'dns',
                 'value' => $subject

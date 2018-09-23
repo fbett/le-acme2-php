@@ -7,23 +7,25 @@ use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
 use LE_ACME2\Exception as Exception;
 
-class Connector {
+class Connector
+{
     
     const METHOD_GET = 'GET';
     const METHOD_HEAD = 'HEAD';
     const METHOD_POST = 'POST';
 
-    private static $_instance = NULL;
+    private static $_instance = null;
     
-    public static function getInstance() {
+    public static function getInstance()
+    {
         
-        if(self::$_instance === NULL) {
+        if (self::$_instance === null) {
             self::$_instance = new self();
         }
         return self::$_instance;
     }
 
-    protected $_baseURL = 		 'https://acme-v02.api.letsencrypt.org';
+    protected $_baseURL =        'https://acme-v02.api.letsencrypt.org';
     protected $_stagingBaseURL = 'https://acme-staging-v02.api.letsencrypt.org';
 
     protected $_useStagingServer = true;
@@ -31,32 +33,36 @@ class Connector {
     /**
      * @param bool $useStagingServer
      */
-    public function useStagingServer($useStagingServer) {
+    public function useStagingServer($useStagingServer)
+    {
 
         $this->_useStagingServer = $useStagingServer;
     }
 
-    public function isUsingStagingServer() {
+    public function isUsingStagingServer()
+    {
 
         return $this->_useStagingServer;
     }
 
-    public function getBaseURL() {
+    public function getBaseURL()
+    {
         return $this->_useStagingServer ? $this->_stagingBaseURL : $this->_baseURL;
     }
 
     /**
      * Makes a Curl request.
      *
-     * @param string	$method	The HTTP method to use. Accepting GET, POST and HEAD requests.
-     * @param string 	$url 	The URL to make the request to.
-     * @param string 	$data  	The body to attach to a POST request. Expected as a JSON encoded string.
+     * @param string    $method The HTTP method to use. Accepting GET, POST and HEAD requests.
+     * @param string    $url    The URL to make the request to.
+     * @param string    $data   The body to attach to a POST request. Expected as a JSON encoded string.
      *
      * @return Struct\RawResponse
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function request($method, $url, $data = null) {
+    public function request($method, $url, $data = null)
+    {
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'will request from ' . $url, $data);
 
@@ -89,7 +95,7 @@ class Connector {
         }
         $response = curl_exec($handle);
 
-        if(curl_errno($handle)) {
+        if (curl_errno($handle)) {
             throw new \RuntimeException('Curl: ' . curl_error($handle));
         }
 
@@ -104,10 +110,8 @@ class Connector {
         try {
             $getNewNonceResponse = new Response\GetNewNonce($rawResponse);
             Storage::getInstance()->setNewNonceResponse($getNewNonceResponse);
-
-        } catch(Exception\InvalidResponse $e) {
-
-            if($method == self::METHOD_POST) {
+        } catch (Exception\InvalidResponse $e) {
+            if ($method == self::METHOD_POST) {
                 $request = new Request\GetNewNonce();
                 Storage::getInstance()->setNewNonceResponse($request->getResponse());
             }
@@ -115,5 +119,4 @@ class Connector {
 
         return $rawResponse;
     }
-
 }

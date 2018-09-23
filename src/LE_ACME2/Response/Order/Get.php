@@ -4,7 +4,8 @@ namespace LE_ACME2\Response\Order;
 
 use LE_ACME2\Connector\Struct\RawResponse;
 
-class Get extends AbstractDirectoryNewOrder {
+class Get extends AbstractDirectoryNewOrder
+{
 
     /**
      * Get constructor.

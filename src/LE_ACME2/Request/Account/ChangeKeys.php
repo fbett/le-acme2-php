@@ -10,11 +10,13 @@ use LE_ACME2\Utilities as Utilities;
 use LE_ACME2\Account;
 use LE_ACME2\Connector\Connector;
 
-class ChangeKeys extends AbstractRequest {
+class ChangeKeys extends AbstractRequest
+{
 
     protected $_account;
 
-    public function __construct(Account $account) {
+    public function __construct(Account $account)
+    {
 
         $this->_account = $account;
     }

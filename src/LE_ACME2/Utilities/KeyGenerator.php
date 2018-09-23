@@ -2,14 +2,15 @@
 
 namespace LE_ACME2\Utilities;
 
-class KeyGenerator {
+class KeyGenerator
+{
 
     /**
      * Generates a new RSA keypair and saves both keys to a new file.
      *
-     * @param string	$directory		The directory in which to store the new keys.
-     * @param string	$privateKeyFile	The filename for the private key file.
-     * @param string	$publicKeyFile  The filename for the public key file.
+     * @param string    $directory      The directory in which to store the new keys.
+     * @param string    $privateKeyFile The filename for the private key file.
+     * @param string    $publicKeyFile  The filename for the public key file.
      */
     public static function RSA($directory, $privateKeyFile = 'private.pem', $publicKeyFile = 'public.pem')
     {
@@ -18,8 +19,9 @@ class KeyGenerator {
             "private_key_bits" => 4096,
         ]);
 
-        if(!openssl_pkey_export($res, $privateKey))
+        if (!openssl_pkey_export($res, $privateKey)) {
             throw new \RuntimeException("RSA keypair export failed!");
+        }
 
         $details = openssl_pkey_get_details($res);
 
@@ -34,22 +36,24 @@ class KeyGenerator {
     /**
      * Generates a new EC prime256v1 keypair and saves both keys to a new file.
      *
-     * @param string	$directory		The directory in which to store the new keys.
-     * @param string	$privateKeyFile	The filename for the private key file.
-     * @param string	$publicKeyFile  The filename for the public key file.
+     * @param string    $directory      The directory in which to store the new keys.
+     * @param string    $privateKeyFile The filename for the private key file.
+     * @param string    $publicKeyFile  The filename for the public key file.
      */
     public static function EC($directory, $privateKeyFile = 'private.pem', $publicKeyFile = 'public.pem')
     {
-        if (version_compare(PHP_VERSION, '7.1.0') == -1)
+        if (version_compare(PHP_VERSION, '7.1.0') == -1) {
             throw new \RuntimeException("PHP 7.1+ required for EC keys");
+        }
 
         $res = openssl_pkey_new([
             "private_key_type" => OPENSSL_KEYTYPE_EC,
             "curve_name" => "prime256v1",
         ]);
 
-        if(!openssl_pkey_export($res, $privateKey))
+        if (!openssl_pkey_export($res, $privateKey)) {
             throw new \RuntimeException("EC keypair export failed!");
+        }
 
         $details = openssl_pkey_get_details($res);
 
@@ -58,5 +62,4 @@ class KeyGenerator {
 
         openssl_pkey_free($res);
     }
-
 }

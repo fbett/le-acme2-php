@@ -2,20 +2,22 @@
 
 namespace LE_ACME2\Utilities;
 
-class RequestSigner {
+class RequestSigner
+{
 
     /**
      * Generates a JSON Web Key signature to attach to the request.
      *
-     * @param array 	$payload		The payload to add to the signature.
-     * @param string	$url 			The URL to use in the signature.
+     * @param array     $payload        The payload to add to the signature.
+     * @param string    $url            The URL to use in the signature.
      * @param string    $nonce
-     * @param string 	$privateKeyDir  The directory to get the private key from. Default to the account keys directory given in the constructor. (optional)
-     * @param string 	$privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
+     * @param string    $privateKeyDir  The directory to get the private key from. Default to the account keys directory given in the constructor. (optional)
+     * @param string    $privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
      *
-     * @return array	Returns an array containing the signature.
+     * @return array    Returns an array containing the signature.
      */
-    public static function JWK($payload, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem') {
+    public static function JWK($payload, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem')
+    {
 
         Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'JWK sign request for ' . $url, $payload);
 
@@ -51,15 +53,16 @@ class RequestSigner {
     /**
      * Generates a JSON Web Key signature to attach to the request.
      *
-     * @param array 	$payload		The payload to add to the signature.
-     * @param string	$url 			The URL to use in the signature.
+     * @param array     $payload        The payload to add to the signature.
+     * @param string    $url            The URL to use in the signature.
      * @param string    $nonce
-     * @param string 	$privateKeyDir  The directory to get the private key from. Default to the account keys directory given in the constructor. (optional)
-     * @param string 	$privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
+     * @param string    $privateKeyDir  The directory to get the private key from. Default to the account keys directory given in the constructor. (optional)
+     * @param string    $privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
      *
-     * @return string	Returns a JSON encoded string containing the signature.
+     * @return string   Returns a JSON encoded string containing the signature.
      */
-    public static function JWKString($payload, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem') {
+    public static function JWKString($payload, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem')
+    {
 
         $jwk = self::JWK($payload, $url, $nonce, $privateKeyDir, $privateKeyFile);
         return json_encode($jwk);
@@ -68,16 +71,17 @@ class RequestSigner {
     /**
      * Generates a Key ID signature to attach to the request.
      *
-     * @param array 	$payload		The payload to add to the signature.
-     * @param string	$kid			The Key ID to use in the signature.
-     * @param string	$url 			The URL to use in the signature.
+     * @param array     $payload        The payload to add to the signature.
+     * @param string    $kid            The Key ID to use in the signature.
+     * @param string    $url            The URL to use in the signature.
      * @param string    $nonce
-     * @param string 	$privateKeyDir  The directory to get the private key from.
-     * @param string 	$privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
+     * @param string    $privateKeyDir  The directory to get the private key from.
+     * @param string    $privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
      *
-     * @return string	Returns a JSON encoded string containing the signature.
+     * @return string   Returns a JSON encoded string containing the signature.
      */
-    public static function KID($payload, $kid, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem') {
+    public static function KID($payload, $kid, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem')
+    {
 
         Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID sign request for ' . $url, $payload);
 

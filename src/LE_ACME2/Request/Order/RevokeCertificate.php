@@ -9,12 +9,14 @@ use LE_ACME2\Response as Response;
 use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Utilities as Utilities;
 
-class RevokeCertificate extends AbstractRequest {
+class RevokeCertificate extends AbstractRequest
+{
 
     protected $_certificateBundle;
     protected $_reason;
 
-    public function __construct(\LE_ACME2\Struct\CertificateBundle $certificateBundle, $reason) {
+    public function __construct(\LE_ACME2\Struct\CertificateBundle $certificateBundle, $reason)
+    {
 
         $this->_certificateBundle = $certificateBundle;
         $this->_reason = $reason;
@@ -55,5 +57,4 @@ class RevokeCertificate extends AbstractRequest {
 
         return new Response\Order\RevokeCertificate($result);
     }
-
 }
