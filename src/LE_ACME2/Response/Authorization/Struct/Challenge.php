@@ -2,7 +2,8 @@
 
 namespace LE_ACME2\Response\Authorization\Struct;
 
-class Challenge {
+class Challenge
+{
 
     const STATUS_PROGRESSING = 'processing';
     const STATUS_PENDING = 'pending';
@@ -14,7 +15,8 @@ class Challenge {
     public $url;
     public $token;
 
-    public function __construct($type, $status, $url, $token) {
+    public function __construct($type, $status, $url, $token)
+    {
 
         $this->type = $type;
         $this->status = $status;

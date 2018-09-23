@@ -9,12 +9,14 @@ use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
 
-abstract class AbstractLocation extends AbstractRequest {
+abstract class AbstractLocation extends AbstractRequest
+{
 
     protected $_account;
     protected $_directoryNewAccountResponse;
 
-    public function __construct(Account $account) {
+    public function __construct(Account $account)
+    {
 
         $this->_account = $account;
     }

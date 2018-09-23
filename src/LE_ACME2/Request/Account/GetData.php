@@ -4,9 +4,11 @@ namespace LE_ACME2\Request\Account;
 
 use LE_ACME2\Response as Response;
 
-class GetData extends AbstractLocation {
+class GetData extends AbstractLocation
+{
     
-    protected function _getPayload() {
+    protected function _getPayload()
+    {
         
         return [];
     }
@@ -16,7 +18,8 @@ class GetData extends AbstractLocation {
      * @throws \LE_ACME2\Exception\InvalidResponse
      * @throws \LE_ACME2\Exception\RateLimitReached
      */
-    public function getResponse() {
+    public function getResponse()
+    {
         
         return new Response\Account\GetData($this->_getRawResponse());
     }

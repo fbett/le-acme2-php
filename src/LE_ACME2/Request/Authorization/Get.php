@@ -7,11 +7,13 @@ use LE_ACME2\Request\AbstractRequest;
 
 use LE_ACME2\Response as Response;
 
-class Get extends AbstractRequest {
+class Get extends AbstractRequest
+{
 
     protected $_authorizationURL;
 
-    public function __construct($authorizationURL) {
+    public function __construct($authorizationURL)
+    {
 
         $this->_authorizationURL = $authorizationURL;
     }
@@ -21,7 +23,8 @@ class Get extends AbstractRequest {
      * @throws \LE_ACME2\Exception\InvalidResponse
      * @throws \LE_ACME2\Exception\RateLimitReached
      */
-    public function getResponse() {
+    public function getResponse()
+    {
 
         $connector = Connector::getInstance();
 

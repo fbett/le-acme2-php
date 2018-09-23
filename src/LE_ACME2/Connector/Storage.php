@@ -8,20 +8,22 @@ use LE_ACME2\Request as Request;
 use LE_ACME2\Response as Response;
 use LE_ACME2\Exception as Exception;
 
-class Storage {
+class Storage
+{
 
-    private static $_instance = NULL;
+    private static $_instance = null;
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
 
-        if(self::$_instance === NULL) {
+        if (self::$_instance === null) {
             self::$_instance = new self();
         }
         return self::$_instance;
     }
 
-    protected $_getDirectoryResponse = NULL;
-    protected $_getNewNonceResponse = NULL;
+    protected $_getDirectoryResponse = null;
+    protected $_getNewNonceResponse = null;
 
     protected $_directoryNewAccountResponse = [];
     protected $_directoryNewOrderResponse = [];
@@ -31,16 +33,18 @@ class Storage {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getGetDirectoryResponse() {
+    public function getGetDirectoryResponse()
+    {
 
-        if($this->_getDirectoryResponse === NULL) {
+        if ($this->_getDirectoryResponse === null) {
             $request = new Request\GetDirectory();
             $this->_getDirectoryResponse = $request->getResponse();
         }
         return $this->_getDirectoryResponse;
     }
 
-    public function setGetDirectoryResponse($response) {
+    public function setGetDirectoryResponse($response)
+    {
 
         $this->_getDirectoryResponse = $response;
     }
@@ -50,16 +54,18 @@ class Storage {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getNewNonceResponse() {
+    public function getNewNonceResponse()
+    {
 
-        if($this->_getNewNonceResponse === NULL) {
+        if ($this->_getNewNonceResponse === null) {
             $request = new Request\GetNewNonce();
             $this->_getNewNonceResponse = $request->getResponse();
         }
         return $this->_getNewNonceResponse;
     }
 
-    public function setNewNonceResponse($response) {
+    public function setNewNonceResponse($response)
+    {
 
         $this->_getNewNonceResponse = $response;
     }
@@ -68,7 +74,8 @@ class Storage {
      * @param $object
      * @return string
      */
-    protected function _getObjectIdentifier($object) {
+    protected function _getObjectIdentifier($object)
+    {
         return get_class($object) . "_" . spl_object_hash($object);
     }
 
@@ -76,32 +83,33 @@ class Storage {
      * @param Account $account
      * @return Response\Account\AbstractDirectoryNewAccount|null
      */
-    public function getDirectoryNewAccountResponse(Account $account) {
+    public function getDirectoryNewAccountResponse(Account $account)
+    {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
 
-        if(isset($this->_directoryNewAccountResponse[$accountIdentifier]))
+        if (isset($this->_directoryNewAccountResponse[$accountIdentifier])) {
             return $this->_directoryNewAccountResponse[$accountIdentifier];
+        }
 
         $cacheFile = $account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse';
 
-        if(file_exists($cacheFile) && filemtime($cacheFile) > strtotime('-7 days')) {
-
+        if (file_exists($cacheFile) && filemtime($cacheFile) > strtotime('-7 days')) {
             $rawResponse = Struct\RawResponse::getFromString(file_get_contents($cacheFile));
 
             try {
                 $directoryNewAccountResponse = new Response\Account\Create($rawResponse);
                 $this->_directoryNewAccountResponse[$accountIdentifier] = $directoryNewAccountResponse;
                 return $directoryNewAccountResponse;
-
-            } catch(Exception\AbstractException $e) {
+            } catch (Exception\AbstractException $e) {
                 unlink($cacheFile);
             }
         }
         return null;
     }
 
-    public function setDirectoryNewAccountResponse(Account $account, Response\Account\AbstractDirectoryNewAccount $response) {
+    public function setDirectoryNewAccountResponse(Account $account, Response\Account\AbstractDirectoryNewAccount $response)
+    {
 
         $this->_directoryNewAccountResponse[$this->_getObjectIdentifier($account)] = $response;
         file_put_contents($account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse', $response->getRaw()->toString());
@@ -112,18 +120,19 @@ class Storage {
      * @param Order $order
      * @return Response\Order\AbstractDirectoryNewOrder|null
      */
-    public function getDirectoryNewOrderResponse(Account $account, Order $order) {
+    public function getDirectoryNewOrderResponse(Account $account, Order $order)
+    {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
         $orderIdentifier = $this->_getObjectIdentifier($order);
 
-        if(isset($this->_directoryNewOrderResponse[$accountIdentifier][$orderIdentifier]))
+        if (isset($this->_directoryNewOrderResponse[$accountIdentifier][$orderIdentifier])) {
             return $this->_directoryNewOrderResponse[$accountIdentifier][$orderIdentifier];
+        }
 
         $cacheFile = $order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse';
 
-        if(file_exists($cacheFile)) {
-
+        if (file_exists($cacheFile)) {
             $rawResponse = Struct\RawResponse::getFromString(file_get_contents($cacheFile));
 
             try {
@@ -131,9 +140,7 @@ class Storage {
 
                 $this->_directoryNewOrderResponse[$accountIdentifier][$orderIdentifier] = $directoryNewOrderResponse;
                 return $directoryNewOrderResponse;
-
-            } catch(Exception\AbstractException $e) {
-
+            } catch (Exception\AbstractException $e) {
                 unlink($cacheFile);
             }
         }
@@ -145,7 +152,8 @@ class Storage {
      * @param Order $order
      * @param Response\Order\AbstractDirectoryNewOrder $response
      */
-    public function setDirectoryNewOrderResponse(Account $account, Order $order, Response\Order\AbstractDirectoryNewOrder $response) {
+    public function setDirectoryNewOrderResponse(Account $account, Order $order, Response\Order\AbstractDirectoryNewOrder $response)
+    {
 
         $this->_directoryNewOrderResponse[$this->_getObjectIdentifier($account)][$this->_getObjectIdentifier($order)] = $response;
         file_put_contents($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse', $response->getRaw()->toString());

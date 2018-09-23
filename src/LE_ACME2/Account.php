@@ -8,22 +8,26 @@ use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
 use LE_ACME2\Exception as Exception;
 
-class Account extends AbstractKeyValuable {
+class Account extends AbstractKeyValuable
+{
 
-    private $_email = NULL;
+    private $_email = null;
 
-    public function __construct($email) {
+    public function __construct($email)
+    {
 
         $this->setEmail($email);
     }
 
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
 
         $this->_email = $email;
         $this->_identifier = $this->_getAccountIdentifier($this);
     }
 
-    public function getEmail() {
+    public function getEmail()
+    {
 
         return $this->_email;
     }
@@ -33,7 +37,8 @@ class Account extends AbstractKeyValuable {
      * @return Account|null
      * @throws Exception\AbstractException
      */
-    public static function create($email) {
+    public static function create($email)
+    {
 
         $account = new self($email);
         $account->_initKeyDirectory();
@@ -50,15 +55,14 @@ class Account extends AbstractKeyValuable {
             );
 
             return $account;
-
-        } catch(Exception\AbstractException $e) {
-
+        } catch (Exception\AbstractException $e) {
             $account->_clearKeyDirectory();
             throw $e;
         }
     }
 
-    public static function exists($email) {
+    public static function exists($email)
+    {
 
         $account = new self($email);
 
@@ -73,15 +77,17 @@ class Account extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public static function get($email) {
+    public static function get($email)
+    {
 
         $account = new self($email);
 
-        if(!self::exists($email))
+        if (!self::exists($email)) {
             throw new \RuntimeException('Keys not found - does this account exist?');
+        }
 
         $directoryNewAccountResponse = Storage::getInstance()->getDirectoryNewAccountResponse($account);
-        if($directoryNewAccountResponse !== NULL) {
+        if ($directoryNewAccountResponse !== null) {
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
                 get_class() . '::' . __FUNCTION__ .  ' "' . $email . '" (from cache)'
@@ -106,7 +112,8 @@ class Account extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getData() {
+    public function getData()
+    {
 
         $request = new Request\Account\GetData($this);
         return $request->getResponse();
@@ -117,7 +124,8 @@ class Account extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\RateLimitReached
      */
-    public function update($email) {
+    public function update($email)
+    {
 
         $request = new Request\Account\Update($this, $email);
 
@@ -128,12 +136,12 @@ class Account extends AbstractKeyValuable {
 
             $this->setEmail($email);
 
-            if($previousKeyDirectoryPath != $this->getKeyDirectoryPath())
+            if ($previousKeyDirectoryPath != $this->getKeyDirectoryPath()) {
                 rename($previousKeyDirectoryPath, $this->getKeyDirectoryPath());
+            }
 
             return true;
-
-        } catch(Exception\InvalidResponse $e) {
+        } catch (Exception\InvalidResponse $e) {
             return false;
         }
     }
@@ -142,7 +150,8 @@ class Account extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\RateLimitReached
      */
-    public function changeKeys() {
+    public function changeKeys()
+    {
 
         Utilities\KeyGenerator::RSA($this->getKeyDirectoryPath(), 'private-replacement.pem', 'public-replacement.pem');
 
@@ -155,9 +164,7 @@ class Account extends AbstractKeyValuable {
             rename($this->getKeyDirectoryPath() . 'private-replacement.pem', $this->getKeyDirectoryPath() . 'private.pem');
             rename($this->getKeyDirectoryPath() . 'private-replacement.pem', $this->getKeyDirectoryPath() . 'public.pem');
             return true;
-
-        } catch(Exception\InvalidResponse $e) {
-
+        } catch (Exception\InvalidResponse $e) {
             return false;
         }
     }
@@ -166,7 +173,8 @@ class Account extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\RateLimitReached
      */
-    public function deactivate() {
+    public function deactivate()
+    {
 
         $request = new Request\Account\Deactivate($this);
 
@@ -174,8 +182,7 @@ class Account extends AbstractKeyValuable {
             /* $response = */ $request->getResponse();
 
             return true;
-
-        } catch(Exception\InvalidResponse $e) {
+        } catch (Exception\InvalidResponse $e) {
             return false;
         }
     }

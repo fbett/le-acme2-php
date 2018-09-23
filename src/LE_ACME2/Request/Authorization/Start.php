@@ -11,13 +11,15 @@ use LE_ACME2\Account;
 use LE_ACME2\Response as Response;
 use LE_ACME2\Utilities as Utilities;
 
-class Start extends AbstractRequest {
+class Start extends AbstractRequest
+{
 
     protected $_account;
     protected $_order;
     protected $_challenge;
 
-    public function __construct(Account $account, Order $order, Response\Authorization\Struct\Challenge $challenge) {
+    public function __construct(Account $account, Order $order, Response\Authorization\Struct\Challenge $challenge)
+    {
 
         $this->_account = $account;
         $this->_order = $order;
@@ -29,7 +31,8 @@ class Start extends AbstractRequest {
      * @throws \LE_ACME2\Exception\InvalidResponse
      * @throws \LE_ACME2\Exception\RateLimitReached
      */
-    public function getResponse() {
+    public function getResponse()
+    {
 
         $connector = Connector::getInstance();
         $storage = Storage::getInstance();

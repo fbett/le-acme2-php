@@ -7,9 +7,10 @@ use LE_ACME2\Exception as Exception;
 use LE_ACME2\Connector\Struct\RawResponse;
 use LE_ACME2\Utilities\Logger;
 
-abstract class AbstractResponse {
+abstract class AbstractResponse
+{
 
-    protected $_raw = NULL;
+    protected $_raw = null;
 
     protected $_pattern_header_location = '/^Location: (\S+)$/i';
 
@@ -20,16 +21,17 @@ abstract class AbstractResponse {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function __construct(RawResponse $raw) {
+    public function __construct(RawResponse $raw)
+    {
 
         $this->_raw = $raw;
 
-        if($this->_isRateLimitReached()) {
+        if ($this->_isRateLimitReached()) {
             throw new Exception\RateLimitReached();
         }
 
         $result = $this->_isValid();
-        if(!$result) {
+        if (!$result) {
             throw new Exception\InvalidResponse($raw);
         }
     }
@@ -38,27 +40,31 @@ abstract class AbstractResponse {
      * @param $pattern
      * @return null|array
      */
-    protected function _preg_match_headerLine($pattern) {
+    protected function _preg_match_headerLine($pattern)
+    {
 
-        foreach($this->_raw->header as $line) {
-
-            if(preg_match($pattern, $line, $matches) === 1)
+        foreach ($this->_raw->header as $line) {
+            if (preg_match($pattern, $line, $matches) === 1) {
                 return $matches;
+            }
         }
         return null;
     }
 
-    protected function _isRateLimitReached() {
+    protected function _isRateLimitReached()
+    {
         return $this->_preg_match_headerLine('/^HTTP.* 429 .*$/i') !== null;
     }
 
-    protected function _isValid() {
+    protected function _isValid()
+    {
 
         return $this->_preg_match_headerLine('/^HTTP.* 201 Created$/i') !== null ||
             $this->_preg_match_headerLine('/^HTTP.* 200 OK$/i') !== null;
     }
 
-    public function getRaw() {
+    public function getRaw()
+    {
 
         return $this->_raw;
     }

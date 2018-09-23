@@ -2,14 +2,15 @@
 
 namespace LE_ACME2\Utilities;
 
-class Base64 {
+class Base64
+{
 
     /**
      * Encodes a string input to a base64 encoded string which is URL safe.
      *
-     * @param string	$input 	The input string to encode.
+     * @param string    $input  The input string to encode.
      *
-     * @return string	Returns a URL safe base64 encoded string.
+     * @return string   Returns a URL safe base64 encoded string.
      */
     public static function UrlSafeEncode($input)
     {
@@ -19,9 +20,9 @@ class Base64 {
     /**
      * Decodes a string that is URL safe base64 encoded.
      *
-     * @param string	$input	The encoded input string to decode.
+     * @param string    $input  The encoded input string to decode.
      *
-     * @return string	Returns the decoded input string.
+     * @return string   Returns the decoded input string.
      */
     public static function UrlSafeDecode($input)
     {
