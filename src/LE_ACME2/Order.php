@@ -257,24 +257,23 @@ class Order extends AbstractKeyValuable {
             throw new \RuntimeException('There is no certificate available');
         }
 
-        $certificatePath = $this->getKeyDirectoryPath() . $this->_getLatestCertificateDirectory() . DIRECTORY_SEPARATOR;
-
-        // Changed intermediate file extension.
-        $intermediateFile = 'intermediate.' . (file_exists($certificatePath . 'intermediate.crt') ? 'crt' : 'pem');
+        $certificatePath = $this->getKeyDirectoryPath() . $this->_getLatestCertificateDirectory();
 
         return new Struct\CertificateBundle(
-            $certificatePath,
+            $certificatePath . DIRECTORY_SEPARATOR,
             'private.pem',
             'certificate.crt',
-            $intermediateFile
+            'intermediate.pem',
+            self::_getExpireTimeFromCertificateDirectoryPath($certificatePath)
         );
     }
 
     /**
      * @param string $keyType
+     * @param int $renewBefore Unix timestamp
      * @throws Exception\AbstractException
      */
-    public function enableAutoRenewal($keyType = self::KEY_TYPE_RSA) {
+    public function enableAutoRenewal($keyType = self::KEY_TYPE_RSA, $renewBefore = null) {
 
         if(!$this->isCertificateBundleAvailable()) {
             throw new \RuntimeException('There is no certificate available');
@@ -288,9 +287,13 @@ class Order extends AbstractKeyValuable {
 
         $directory = $this->_getLatestCertificateDirectory();
 
-        $expireTime = substr($directory, strlen(self::BUNDLE_DIRECTORY_PREFIX));
+        $expireTime = self::_getExpireTimeFromCertificateDirectoryPath($directory);
 
-        if(strtotime('+7 days', time()) > $expireTime) {
+        if($renewBefore === null) {
+            $renewBefore = strtotime('-7 days', $expireTime);
+        }
+
+        if($renewBefore < time()) {
 
             Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO,'Auto renewal: Will recreate order');
 
@@ -320,5 +323,19 @@ class Order extends AbstractKeyValuable {
         } catch(Exception\InvalidResponse $e) {
             return false;
         }
+    }
+
+    protected static function _getExpireTimeFromCertificateDirectoryPath($path) {
+
+        $stringPosition = strrpos($path, self::BUNDLE_DIRECTORY_PREFIX);
+        if($stringPosition === false) {
+            throw new \RuntimeException('ExpireTime not found in' . $path);
+        }
+
+        $expireTime = substr($path, $stringPosition + strlen(self::BUNDLE_DIRECTORY_PREFIX));
+        if(!is_numeric($expireTime) || $expireTime < strtotime('-10 years') || $expireTime > strtotime('+10 years')) {
+            throw new \RuntimeException('Unexpected expireTime: ' . $expireTime);
+        }
+        return $expireTime;
     }
 }
