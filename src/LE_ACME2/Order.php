@@ -215,7 +215,7 @@ class Order extends AbstractKeyValuable {
 
         if($directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
 
-            $request = new Request\Order\GetCertificate($directoryNewOrderResponse);
+            $request = new Request\Order\GetCertificate($this->_account, $directoryNewOrderResponse);
             $response = $request->getResponse();
 
             $certificate = $response->getCertificate();

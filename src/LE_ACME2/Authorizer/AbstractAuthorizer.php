@@ -47,7 +47,7 @@ abstract class AbstractAuthorizer {
 
         foreach($directoryNewOrderResponse->getAuthorizations() as $authorization) {
 
-            $request = new Request\Authorization\Get($authorization);
+            $request = new Request\Authorization\Get($this->_account, $authorization);
             $this->_authorizationResponses[] = $request->getResponse();
         }
     }

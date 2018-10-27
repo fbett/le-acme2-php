@@ -5,7 +5,8 @@ namespace LE_ACME2\Request\Order;
 use LE_ACME2\Connector\Storage;
 use LE_ACME2\Order;
 use LE_ACME2\Request\AbstractRequest;
-use LE_ACME2\Response as Response;
+use LE_ACME2\Response;
+use LE_ACME2\Utilities;
 
 use LE_ACME2\Account;
 use LE_ACME2\Connector\Connector;
@@ -31,9 +32,18 @@ class Get extends AbstractRequest {
         $connector = Connector::getInstance();
         $storage = Storage::getInstance();
 
+        $kid = Utilities\RequestSigner::KID(
+            null,
+            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
+            $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation(),
+            $storage->getNewNonceResponse()->getNonce(),
+            $this->_account->getKeyDirectoryPath()
+        );
+
         $result = $connector->request(
-            Connector::METHOD_GET,
-            $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation()
+            Connector::METHOD_POST,
+            $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation(),
+            $kid
         );
 
         return new Response\Order\Get($result, $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation());
