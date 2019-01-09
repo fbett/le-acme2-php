@@ -55,7 +55,8 @@ abstract class AbstractResponse {
     protected function _isValid() {
 
         return $this->_preg_match_headerLine('/^HTTP.* 201 Created$/i') !== null ||
-            $this->_preg_match_headerLine('/^HTTP.* 200 OK$/i') !== null;
+            $this->_preg_match_headerLine('/^HTTP.* 200 OK$/i') !== null ||
+            $this->_preg_match_headerLine('/^HTTP.* 204 .*$/i') !== null;
     }
 
     public function getRaw() {
