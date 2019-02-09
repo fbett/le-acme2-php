@@ -2,13 +2,14 @@
 
 namespace LE_ACME2\Request\Authorization;
 
-use LE_ACME2\Account;
-use LE_ACME2\Connector\Connector;
-use LE_ACME2\Connector\Storage;
 use LE_ACME2\Request\AbstractRequest;
 
+use LE_ACME2\Connector;
+use LE_ACME2\Exception;
 use LE_ACME2\Response;
 use LE_ACME2\Utilities;
+
+use LE_ACME2\Account;
 
 class Get extends AbstractRequest {
 
@@ -23,13 +24,14 @@ class Get extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\Authorization\Get
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     * @throws Exception\ExpiredAuthorization
      */
     public function getResponse() {
 
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $kid = Utilities\RequestSigner::KID(
             null,
@@ -40,7 +42,7 @@ class Get extends AbstractRequest {
         );
 
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $this->_authorizationURL,
             $kid
         );

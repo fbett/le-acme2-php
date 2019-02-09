@@ -2,11 +2,13 @@
 
 namespace LE_ACME2\Connector;
 
+use LE_ACME2\Request;
+use LE_ACME2\Response;
+
+use LE_ACME2\Exception;
+
 use LE_ACME2\Account;
 use LE_ACME2\Order;
-use LE_ACME2\Request as Request;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Exception as Exception;
 
 class Storage {
 

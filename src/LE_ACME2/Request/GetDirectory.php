@@ -2,15 +2,17 @@
 
 namespace LE_ACME2\Request;
 
+use LE_ACME2\Response;
+
 use LE_ACME2\Connector\Connector;
-use LE_ACME2\Response as Response;
+use LE_ACME2\Exception;
 
 class GetDirectory extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\GetDirectory
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getResponse() {
 

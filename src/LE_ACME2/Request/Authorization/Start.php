@@ -2,14 +2,15 @@
 
 namespace LE_ACME2\Request\Authorization;
 
-use LE_ACME2\Connector\Connector;
-use LE_ACME2\Connector\Storage;
-use LE_ACME2\Order;
 use LE_ACME2\Request\AbstractRequest;
-use LE_ACME2\Account;
 
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
+use LE_ACME2\Connector;
+use LE_ACME2\Exception;
+use LE_ACME2\Response;
+use LE_ACME2\Utilities;
+
+use LE_ACME2\Account;
+use LE_ACME2\Order;
 
 class Start extends AbstractRequest {
 
@@ -26,13 +27,14 @@ class Start extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\Authorization\Start
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     * @throws Exception\ExpiredAuthorization
      */
     public function getResponse() {
 
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $payload = [
             'keyAuthorization' => Utilities\Challenge::buildAuthorizationKey($this->_challenge->token, Utilities\Challenge::getDigest($this->_account))
@@ -47,7 +49,7 @@ class Start extends AbstractRequest {
         );
 
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $this->_challenge->url,
             $kid
         );

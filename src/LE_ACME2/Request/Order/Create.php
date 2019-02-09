@@ -2,14 +2,15 @@
 
 namespace LE_ACME2\Request\Order;
 
-use LE_ACME2\Connector\Storage;
-use LE_ACME2\Order;
 use LE_ACME2\Request\AbstractRequest;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
+use LE_ACME2\Response;
+
+use LE_ACME2\Connector;
+use LE_ACME2\Exception;
+use LE_ACME2\Utilities;
 
 use LE_ACME2\Account;
-use LE_ACME2\Connector\Connector;
+use LE_ACME2\Order;
 
 class Create extends AbstractRequest {
 
@@ -24,13 +25,13 @@ class Create extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\Order\Create
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getResponse()
     {
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $identifiers = [];
         foreach($this->_order->getSubjects() as $subject) {
@@ -55,7 +56,7 @@ class Create extends AbstractRequest {
             $this->_account->getKeyDirectoryPath()
         );
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $storage->getGetDirectoryResponse()->getNewOrder(),
             $kid
         );

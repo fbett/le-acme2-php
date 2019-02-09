@@ -2,11 +2,13 @@
 
 namespace LE_ACME2\Authorizer;
 
+use LE_ACME2\Request;
+use LE_ACME2\Response;
+
+use LE_ACME2\Utilities;
+use LE_ACME2\Exception;
+
 use LE_ACME2\Order;
-use LE_ACME2\Request as Request;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
-use LE_ACME2\Exception as Exception;
 
 class HTTP extends AbstractAuthorizer {
 
@@ -44,6 +46,7 @@ class HTTP extends AbstractAuthorizer {
      * @throws Exception\HTTPAuthorizationInvalid
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ExpiredAuthorization
      */
     public function progress() {
 

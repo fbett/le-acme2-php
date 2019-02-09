@@ -3,6 +3,7 @@
 namespace LE_ACME2\Response\Order;
 
 use LE_ACME2\Connector\Struct\RawResponse;
+use LE_ACME2\Exception;
 
 class Get extends AbstractDirectoryNewOrder {
 
@@ -11,8 +12,8 @@ class Get extends AbstractDirectoryNewOrder {
      *
      * @param RawResponse $raw
      * @param $orderURL
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function __construct(RawResponse $raw, $orderURL)
     {

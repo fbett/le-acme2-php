@@ -2,13 +2,14 @@
 
 namespace LE_ACME2\Request\Account;
 
-use LE_ACME2\Connector\Storage;
 use LE_ACME2\Request\AbstractRequest;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
+use LE_ACME2\Response;
+
+use LE_ACME2\Connector;
+use LE_ACME2\Exception;
+use LE_ACME2\Utilities;
 
 use LE_ACME2\Account;
-use LE_ACME2\Connector\Connector;
 
 class Get extends AbstractRequest {
 
@@ -21,13 +22,13 @@ class Get extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\Account\Get
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getResponse()
     {
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $payload = [
             'onlyReturnExisting' => true,
@@ -41,7 +42,7 @@ class Get extends AbstractRequest {
         );
 
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $storage->getGetDirectoryResponse()->getNewAccount(),
             $jwk
         );

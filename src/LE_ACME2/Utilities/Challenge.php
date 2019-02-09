@@ -2,9 +2,11 @@
 
 namespace LE_ACME2\Utilities;
 
-use LE_ACME2\Account;
+use LE_ACME2\Response;
 
-use LE_ACME2\Exception as Exception;
+use LE_ACME2\Exception;
+
+use LE_ACME2\Account;
 
 class Challenge {
 
@@ -27,7 +29,7 @@ class Challenge {
         return Base64::UrlSafeEncode(hash('sha256', json_encode($header), true));
     }
 
-    public static function writeHTTPAuthorizationFile($directoryPath, Account $account, \LE_ACME2\Response\Authorization\Struct\Challenge $challenge) {
+    public static function writeHTTPAuthorizationFile($directoryPath, Account $account, Response\Authorization\Struct\Challenge $challenge) {
 
         $digest = self::getDigest($account);
         file_put_contents($directoryPath . $challenge->token,  self::buildAuthorizationKey($challenge->token, $digest));
@@ -36,11 +38,11 @@ class Challenge {
     /**
      * @param string $domain
      * @param Account $account
-     * @param \LE_ACME2\Response\Authorization\Struct\Challenge $challenge
+     * @param Response\Authorization\Struct\Challenge $challenge
      * @return bool
      * @throws Exception\HTTPAuthorizationInvalid
      */
-    public static function validateHTTPAuthorizationFile($domain, Account $account, \LE_ACME2\Response\Authorization\Struct\Challenge $challenge) {
+    public static function validateHTTPAuthorizationFile($domain, Account $account, Response\Authorization\Struct\Challenge $challenge) {
 
         $digest = self::getDigest($account);
 

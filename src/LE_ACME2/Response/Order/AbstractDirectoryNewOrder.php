@@ -3,7 +3,6 @@
 namespace LE_ACME2\Response\Order;
 
 use LE_ACME2\Response\AbstractResponse;
-use LE_ACME2\Utilities\Logger;
 
 abstract class AbstractDirectoryNewOrder extends AbstractResponse {
 

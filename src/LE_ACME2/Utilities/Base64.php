@@ -11,8 +11,8 @@ class Base64 {
      *
      * @return string	Returns a URL safe base64 encoded string.
      */
-    public static function UrlSafeEncode($input)
-    {
+    public static function UrlSafeEncode($input) {
+
         return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
     }
 
@@ -23,8 +23,8 @@ class Base64 {
      *
      * @return string	Returns the decoded input string.
      */
-    public static function UrlSafeDecode($input)
-    {
+    public static function UrlSafeDecode($input) {
+
         $remainder = strlen($input) % 4;
         if ($remainder) {
             $padlen = 4 - $remainder;

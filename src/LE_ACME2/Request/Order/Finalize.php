@@ -2,14 +2,15 @@
 
 namespace LE_ACME2\Request\Order;
 
+use LE_ACME2\Request\AbstractRequest;
+use LE_ACME2\Response;
+
+use LE_ACME2\Connector;
+use LE_ACME2\Exception;
+use LE_ACME2\Utilities;
+
 use LE_ACME2\Account;
 use LE_ACME2\Order;
-use LE_ACME2\Connector\Connector;
-use LE_ACME2\Connector\Storage;
-use LE_ACME2\Request\AbstractRequest;
-
-use LE_ACME2\Utilities as Utilities;
-use LE_ACME2\Response as Response;
 
 class Finalize extends AbstractRequest {
 
@@ -24,13 +25,13 @@ class Finalize extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\Order\Finalize
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getResponse() {
 
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $csr = Utilities\Certificate::generateCSR($this->_order);
 
@@ -52,7 +53,7 @@ class Finalize extends AbstractRequest {
         );
 
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getFinalize(),
             $kid
         );

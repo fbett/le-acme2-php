@@ -2,14 +2,15 @@
 
 namespace LE_ACME2\Request\Order;
 
-use LE_ACME2\Connector\Storage;
-use LE_ACME2\Order;
 use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Response;
+
+use LE_ACME2\Connector;
+use LE_ACME2\Exception;
 use LE_ACME2\Utilities;
 
 use LE_ACME2\Account;
-use LE_ACME2\Connector\Connector;
+use LE_ACME2\Order;
 
 class Get extends AbstractRequest {
 
@@ -24,13 +25,13 @@ class Get extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\Order\Get
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     public function getResponse()
     {
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $kid = Utilities\RequestSigner::KID(
             null,
@@ -41,7 +42,7 @@ class Get extends AbstractRequest {
         );
 
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation(),
             $kid
         );

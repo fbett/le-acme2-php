@@ -2,12 +2,14 @@
 
 namespace LE_ACME2\Authorizer;
 
-use LE_ACME2\Request as Request;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
+use LE_ACME2\Request;
+use LE_ACME2\Response;
+
+use LE_ACME2\Connector;
+use LE_ACME2\Utilities;
+use LE_ACME2\Exception;
 
 use LE_ACME2\Account;
-use LE_ACME2\Connector\Storage;
 use LE_ACME2\Order;
 
 abstract class AbstractAuthorizer {
@@ -20,8 +22,9 @@ abstract class AbstractAuthorizer {
      *
      * @param Account $account
      * @param Order $order
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     * @throws Exception\ExpiredAuthorization
      */
     public function __construct(Account $account, Order $order) {
 
@@ -35,15 +38,16 @@ abstract class AbstractAuthorizer {
     protected $_authorizationResponses = [];
 
     /**
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     * @throws Exception\ExpiredAuthorization
      */
     protected function _fetchAuthorizationResponses() {
 
         if(!file_exists($this->_order->getKeyDirectoryPath() . 'private.pem')) // Order has finished already
             return;
 
-        $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this->_order);
+        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this->_order);
 
         foreach($directoryNewOrderResponse->getAuthorizations() as $authorization) {
 

@@ -2,15 +2,13 @@
 
 namespace LE_ACME2\Response\Authorization;
 
-use LE_ACME2\Response\AbstractResponse;
-use LE_ACME2\Response\Authorization\Struct\Challenge;
-use LE_ACME2\Response\Authorization\Struct\Identifier;
+use LE_ACME2\Response\Authorization\Struct;
 
-class Get extends AbstractResponse {
+class Get extends AbstractAuthorization {
 
     public function getIdentifier() {
 
-        return new Identifier($this->_raw->body['identifier']['type'], $this->_raw->body['identifier']['value']);
+        return new Struct\Identifier($this->_raw->body['identifier']['type'], $this->_raw->body['identifier']['value']);
     }
 
     public function getStatus() {
@@ -33,14 +31,14 @@ class Get extends AbstractResponse {
 
     /**
      * @param $type
-     * @return Challenge
+     * @return Struct\Challenge
      */
     public function getChallenge($type) {
 
         foreach($this->getChallenges() as $challenge) {
 
             if($type == $challenge['type'])
-                return new Challenge($challenge['type'], $challenge['status'], $challenge['url'], $challenge['token']);
+                return new Struct\Challenge($challenge['type'], $challenge['status'], $challenge['url'], $challenge['token']);
         }
         throw new \RuntimeException('No challenge found with given type');
     }

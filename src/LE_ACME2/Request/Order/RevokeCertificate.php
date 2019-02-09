@@ -2,19 +2,20 @@
 
 namespace LE_ACME2\Request\Order;
 
-use LE_ACME2\Connector\Connector;
-use LE_ACME2\Connector\Storage;
-use LE_ACME2\Response as Response;
-
+use LE_ACME2\Response;
 use LE_ACME2\Request\AbstractRequest;
-use LE_ACME2\Utilities as Utilities;
+
+use LE_ACME2\Connector;
+use LE_ACME2\Exception;
+use LE_ACME2\Struct;
+use LE_ACME2\Utilities;
 
 class RevokeCertificate extends AbstractRequest {
 
     protected $_certificateBundle;
     protected $_reason;
 
-    public function __construct(\LE_ACME2\Struct\CertificateBundle $certificateBundle, $reason) {
+    public function __construct(Struct\CertificateBundle $certificateBundle, $reason) {
 
         $this->_certificateBundle = $certificateBundle;
         $this->_reason = $reason;
@@ -22,13 +23,13 @@ class RevokeCertificate extends AbstractRequest {
 
     /**
      * @return Response\AbstractResponse|Response\Order\RevokeCertificate
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
-    public function getResponse()
-    {
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+    public function getResponse() {
+
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $certificate = file_get_contents($this->_certificateBundle->path . $this->_certificateBundle->certificate);
         preg_match('~-----BEGIN\sCERTIFICATE-----(.*)-----END\sCERTIFICATE-----~s', $certificate, $matches);
@@ -48,7 +49,7 @@ class RevokeCertificate extends AbstractRequest {
         );
 
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $storage->getGetDirectoryResponse()->getRevokeCert(),
             $jwk
         );

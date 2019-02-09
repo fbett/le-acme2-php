@@ -16,6 +16,4 @@ class GetNewNonce extends AbstractResponse {
         $matches = $this->_preg_match_headerLine($this->_pattern);
         return trim($matches[1]);
     }
-
-
 }

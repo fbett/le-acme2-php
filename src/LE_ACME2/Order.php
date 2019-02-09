@@ -2,13 +2,13 @@
 
 namespace LE_ACME2;
 
-use LE_ACME2\Request as Request;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
-use LE_ACME2\Exception as Exception;
-use \LE_ACME2\Authorizer as Authorizer;
+use LE_ACME2\Request;
+use LE_ACME2\Response;
 
-use LE_ACME2\Connector\Storage;
+use LE_ACME2\Connector;
+use LE_ACME2\Authorizer;
+use LE_ACME2\Exception;
+use LE_ACME2\Utilities;
 
 class Order extends AbstractKeyValuable {
 
@@ -77,7 +77,7 @@ class Order extends AbstractKeyValuable {
         try {
             $response = $request->getResponse();
 
-            Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $response);
+            Connector\Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $response);
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_INFO,
                 get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '"'
@@ -115,7 +115,7 @@ class Order extends AbstractKeyValuable {
         if(!self::exists($account, $subjects))
             throw new \RuntimeException('Order does not exist');
 
-        $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($account, $order);
+        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($account, $order);
         if($directoryNewOrderResponse !== NULL && $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
@@ -127,7 +127,7 @@ class Order extends AbstractKeyValuable {
         $request = new Request\Order\Get($account, $order);
         $response = $request->getResponse();
 
-        Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
+        Connector\Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
             get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
@@ -201,7 +201,7 @@ class Order extends AbstractKeyValuable {
             get_class() . '::' . __FUNCTION__ . ' "Will finalize'
         );
 
-        $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
+        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
 
         if(
             $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_PENDING /* DEPRECATED AFTER JULI 5TH 2018 */ ||
@@ -210,7 +210,7 @@ class Order extends AbstractKeyValuable {
 
             $request = new Request\Order\Finalize($this->_account, $this);
             $directoryNewOrderResponse = $request->getResponse();
-            Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $directoryNewOrderResponse);
+            Connector\Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $directoryNewOrderResponse);
         }
 
         if($directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {

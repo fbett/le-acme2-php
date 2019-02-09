@@ -2,10 +2,11 @@
 
 namespace LE_ACME2\Connector;
 
-use LE_ACME2\Request as Request;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
-use LE_ACME2\Exception as Exception;
+use LE_ACME2\Request;
+use LE_ACME2\Response;
+
+use LE_ACME2\Utilities;
+use LE_ACME2\Exception;
 
 class Connector {
     
@@ -115,5 +116,4 @@ class Connector {
 
         return $rawResponse;
     }
-
 }

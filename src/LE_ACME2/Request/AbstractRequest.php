@@ -2,9 +2,9 @@
 
 namespace LE_ACME2\Request;
 
-use LE_ACME2\Exception as Exception;
-
 use LE_ACME2\Response\AbstractResponse;
+
+use LE_ACME2\Exception;
 
 abstract class AbstractRequest {
 

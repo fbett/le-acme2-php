@@ -6,8 +6,8 @@ use LE_ACME2\Order;
 
 class Certificate {
 
-    public static function generateCSR(Order $order)
-    {
+    public static function generateCSR(Order $order) {
+
         $dn = [
             "commonName" => $order->getSubjects()[0]
         ];
@@ -20,7 +20,8 @@ class Certificate {
 
         $config_file = $order->getKeyDirectoryPath() . 'csr_config';
 
-        file_put_contents($config_file,
+        file_put_contents(
+            $config_file,
             'HOME = .
 			RANDFILE = ' . $order->getKeyDirectoryPath() . '.rnd
 			[ req ]
@@ -33,15 +34,21 @@ class Certificate {
 			[ v3_req ]
 			basicConstraints = CA:FALSE
 			subjectAltName = ' . $san . '
-			keyUsage = nonRepudiation, digitalSignature, keyEncipherment');
+			keyUsage = nonRepudiation, digitalSignature, keyEncipherment'
+        );
 
-        $privateKey = openssl_pkey_get_private(file_get_contents($order->getKeyDirectoryPath() . 'private.pem'));
-        $csr = openssl_csr_new($dn, $privateKey, array('config' => $config_file, 'digest_alg' => 'sha256'));
+        $privateKey = openssl_pkey_get_private(file_get_contents(
+            $order->getKeyDirectoryPath() . 'private.pem')
+        );
+        $csr = openssl_csr_new(
+            $dn,
+            $privateKey,
+            array('config' => $config_file, 'digest_alg' => 'sha256')
+        );
         openssl_csr_export ($csr, $csr);
 
         unlink($config_file);
 
         return $csr;
     }
-
 }

@@ -2,10 +2,9 @@
 
 namespace LE_ACME2\Response;
 
-use LE_ACME2\Exception as Exception;
+use LE_ACME2\Exception;
 
 use LE_ACME2\Connector\Struct\RawResponse;
-use LE_ACME2\Utilities\Logger;
 
 abstract class AbstractResponse {
 

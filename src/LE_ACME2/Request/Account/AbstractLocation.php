@@ -2,12 +2,13 @@
 
 namespace LE_ACME2\Request\Account;
 
-use LE_ACME2\Account;
-use LE_ACME2\Connector\Connector;
-use LE_ACME2\Connector\Storage;
 use LE_ACME2\Request\AbstractRequest;
-use LE_ACME2\Response as Response;
-use LE_ACME2\Utilities as Utilities;
+
+use LE_ACME2\Connector;
+use LE_ACME2\Utilities;
+use LE_ACME2\Exception;
+
+use LE_ACME2\Account;
 
 abstract class AbstractLocation extends AbstractRequest {
 
@@ -20,14 +21,14 @@ abstract class AbstractLocation extends AbstractRequest {
     }
 
     /**
-     * @return \LE_ACME2\Connector\Struct\RawResponse
-     * @throws \LE_ACME2\Exception\InvalidResponse
-     * @throws \LE_ACME2\Exception\RateLimitReached
+     * @return Connector\Struct\RawResponse
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
      */
     protected function _getRawResponse()
     {
-        $connector = Connector::getInstance();
-        $storage = Storage::getInstance();
+        $connector = Connector\Connector::getInstance();
+        $storage = Connector\Storage::getInstance();
 
         $payload = $this->_getPayload();
 
@@ -40,7 +41,7 @@ abstract class AbstractLocation extends AbstractRequest {
         );
 
         $result = $connector->request(
-            Connector::METHOD_POST,
+            Connector\Connector::METHOD_POST,
             $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
             $kid
         );
