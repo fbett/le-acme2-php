@@ -31,7 +31,7 @@ class AbstractAuthorization extends AbstractResponse {
             if(
                 is_array($this->_raw->body) &&
                 isset($this->_raw->body['status']) && $this->_raw->body['status'] == '404' &&
-                isset($this->_raw->body['detail']) && $this->_raw->body['status'] == 'Expired authorization'
+                isset($this->_raw->body['detail']) && $this->_raw->body['detail'] == 'Expired authorization'
             ) {
                 throw new Exception\ExpiredAuthorization($this->_raw);
             }
