@@ -144,6 +144,7 @@ class Order extends AbstractKeyValuable {
      * @return Authorizer\AbstractAuthorizer|Authorizer\HTTP|null
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ExpiredAuthorization
      */
     protected function _getAuthorizer($type) {
 
@@ -159,6 +160,20 @@ class Order extends AbstractKeyValuable {
     }
 
     /**
+     * The Authorization has expired, so we clean the complete order to restart again on the next call
+     */
+    protected function _clearAfterExpiredAuthorization() {
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ . ' "Will clear after expired authorization'
+        );
+
+        Connector\Storage::getInstance()->purgeDirectoryNewOrderResponse($this->_account, $this);
+        $this->_clearKeyDirectory();
+    }
+
+    /**
      * @return bool
      * @param $type
      * @throws Exception\InvalidResponse
@@ -166,7 +181,14 @@ class Order extends AbstractKeyValuable {
      */
     public function shouldStartAuthorization($type) {
 
-        return $this->_getAuthorizer($type)->shouldStartAuthorization();
+        try {
+            return $this->_getAuthorizer($type)->shouldStartAuthorization();
+        } catch(Exception\ExpiredAuthorization $e) {
+
+            $this->_clearAfterExpiredAuthorization();
+
+            return false;
+        }
     }
 
     /**
@@ -178,11 +200,18 @@ class Order extends AbstractKeyValuable {
      */
     public function authorize($type) {
 
-        /** @var Authorizer\HTTP $authorizer */
-        $authorizer = $this->_getAuthorizer($type);
-        $authorizer->progress();
+        try {
+            /** @var Authorizer\HTTP $authorizer */
+            $authorizer = $this->_getAuthorizer($type);
+            $authorizer->progress();
 
-        return $authorizer->hasFinished();
+            return $authorizer->hasFinished();
+        } catch(Exception\ExpiredAuthorization $e) {
+
+            $this->_clearAfterExpiredAuthorization();
+
+            return false;
+        }
     }
 
     /**
@@ -279,8 +308,8 @@ class Order extends AbstractKeyValuable {
             throw new \RuntimeException('There is no certificate available');
         }
 
-        $directoryNewOrderResponse = Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
-        if($directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID)
+        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
+        if($directoryNewOrderResponse === null || $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID)
             return;
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_DEBUG,'Auto renewal triggered');

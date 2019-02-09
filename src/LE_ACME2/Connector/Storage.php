@@ -152,4 +152,11 @@ class Storage {
         $this->_directoryNewOrderResponse[$this->_getObjectIdentifier($account)][$this->_getObjectIdentifier($order)] = $response;
         file_put_contents($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse', $response->getRaw()->toString());
     }
+
+    public function purgeDirectoryNewOrderResponse(Account $account, Order $order) {
+        unset($this->_directoryNewOrderResponse[$this->_getObjectIdentifier($account)][$this->_getObjectIdentifier($order)]);
+        if(file_exists($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse')) {
+            unlink($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse');
+        }
+    }
 }
