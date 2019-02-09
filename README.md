@@ -18,8 +18,7 @@ Tested with LetsEncrypt staging and production servers.
 
 ## Prerequisites
 
-The minimum required PHP version is 5.6.0.
-To use ECDSA keys, PHP version from 7.1.0 is required.
+The minimum required PHP version is 7.1.
 
 This client also depends on cURL and OpenSSL.
 
