@@ -6,11 +6,6 @@ use LE_ACME2\Response\AbstractResponse;
 
 abstract class AbstractLocation extends AbstractResponse {
 
-    public function getId() {
-
-        return $this->_raw->body['id'];
-    }
-
     public function getKey() {
 
         return $this->_raw->body['key'];
