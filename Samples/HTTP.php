@@ -10,7 +10,8 @@ require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'autolo
 \LE_ACME2\Connector\Connector::getInstance()->useStagingServer(true);
 \LE_ACME2\Utilities\Logger::getInstance()->setDesiredLevel(\LE_ACME2\Utilities\Logger::LEVEL_INFO);
 
-
+// Optional configs
+//\LE_ACME2\Utilities\Certificate::enableFeatureOCSPMustStaple();
 
 $account_email = 'test@example.org';
 

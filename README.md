@@ -1,12 +1,13 @@
 # le-acme2-php
 LetsEncrypt client library for ACME v2 written in PHP.
 
-This library is inspired by [yourivw/LEClient](https://github.com/yourivw/LEClient) and enhanced with some new features:
+This library is inspired by [yourivw/LEClient](https://github.com/yourivw/LEClient), completely rewritten and enhanced with some new features:
 - Support for Composer autoload (including separated Namespaces)
 - Automatic renewal process
 - Managed HTTP authentication process
 - Response caching mechanism
 - Prevents blocking while waiting for server results
+- Optional certificate feature "OCSP Must-Staple"
 
 The aim of this client is to make an easy-to-use and integrated solution to create a LetsEncrypt-issued SSL/TLS certificate with PHP.
 
