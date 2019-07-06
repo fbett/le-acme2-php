@@ -15,7 +15,7 @@ class RequestSigner {
      *
      * @return array	Returns an array containing the signature.
      */
-    public static function JWK(array $payload, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem') {
+    public static function JWK(array $payload, string $url, string $nonce, string $privateKeyDir, string $privateKeyFile = 'private.pem') : array {
 
         Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'JWK sign request for ' . $url, $payload);
 
@@ -59,7 +59,7 @@ class RequestSigner {
      *
      * @return string	Returns a JSON encoded string containing the signature.
      */
-    public static function JWKString(array $payload, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem') {
+    public static function JWKString(array $payload, string $url, string $nonce, string $privateKeyDir, string $privateKeyFile = 'private.pem') : string {
 
         $jwk = self::JWK($payload, $url, $nonce, $privateKeyDir, $privateKeyFile);
         return json_encode($jwk);
@@ -77,7 +77,7 @@ class RequestSigner {
      *
      * @return string	Returns a JSON encoded string containing the signature.
      */
-    public static function KID(array $payload = null, $kid, $url, $nonce, $privateKeyDir, $privateKeyFile = 'private.pem') {
+    public static function KID(array $payload = null, string $kid, string $url, string $nonce, string $privateKeyDir, string $privateKeyFile = 'private.pem') : string {
 
         Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID sign request for ' . $url, $payload);
 

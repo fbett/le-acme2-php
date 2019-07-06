@@ -33,11 +33,7 @@ abstract class AbstractResponse {
         }
     }
 
-    /**
-     * @param $pattern
-     * @return null|array
-     */
-    protected function _preg_match_headerLine($pattern) {
+    protected function _preg_match_headerLine(string $pattern) : ?array {
 
         foreach($this->_raw->header as $line) {
 
@@ -47,19 +43,18 @@ abstract class AbstractResponse {
         return null;
     }
 
-    protected function _isRateLimitReached() {
+    protected function _isRateLimitReached() : bool {
         return $this->_preg_match_headerLine('/^HTTP.* 429 .*$/i') !== null;
     }
 
-    protected function _isValid() {
+    protected function _isValid() : bool {
 
         return $this->_preg_match_headerLine('/^HTTP.* 201 Created$/i') !== null ||
             $this->_preg_match_headerLine('/^HTTP.* 200 OK$/i') !== null ||
             $this->_preg_match_headerLine('/^HTTP.* 204 .*$/i') !== null;
     }
 
-    public function getRaw() {
-
+    public function getRaw() : RawResponse {
         return $this->_raw;
     }
 }

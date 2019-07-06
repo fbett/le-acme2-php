@@ -26,7 +26,7 @@ class RevokeCertificate extends AbstractRequest {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getResponse() {
+    public function getResponse() : Response\AbstractResponse {
 
         $connector = Connector\Connector::getInstance();
         $storage = Connector\Storage::getInstance();
@@ -56,5 +56,4 @@ class RevokeCertificate extends AbstractRequest {
 
         return new Response\Order\RevokeCertificate($result);
     }
-
 }

@@ -16,7 +16,6 @@ abstract class AbstractLocation extends AbstractRequest {
     protected $_directoryNewAccountResponse;
 
     public function __construct(Account $account) {
-
         $this->_account = $account;
     }
 
@@ -25,8 +24,8 @@ abstract class AbstractLocation extends AbstractRequest {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    protected function _getRawResponse()
-    {
+    protected function _getRawResponse() : Connector\Struct\RawResponse {
+
         $connector = Connector\Connector::getInstance();
         $storage = Connector\Storage::getInstance();
 
@@ -49,5 +48,5 @@ abstract class AbstractLocation extends AbstractRequest {
         return $result;
     }
 
-    abstract protected function _getPayload();
+    abstract protected function _getPayload() : array;
 }

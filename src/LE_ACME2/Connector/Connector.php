@@ -29,20 +29,15 @@ class Connector {
 
     protected $_useStagingServer = true;
 
-    /**
-     * @param bool $useStagingServer
-     */
-    public function useStagingServer($useStagingServer) {
-
+    public function useStagingServer(bool $useStagingServer) {
         $this->_useStagingServer = $useStagingServer;
     }
 
-    public function isUsingStagingServer() {
-
+    public function isUsingStagingServer() : bool {
         return $this->_useStagingServer;
     }
 
-    public function getBaseURL() {
+    public function getBaseURL() : string {
         return $this->_useStagingServer ? $this->_stagingBaseURL : $this->_baseURL;
     }
 
@@ -57,7 +52,7 @@ class Connector {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function request($method, $url, $data = null) {
+    public function request(string $method, string $url, string $data = null) : Struct\RawResponse {
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'will request from ' . $url, $data);
 

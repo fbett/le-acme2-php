@@ -15,8 +15,8 @@ class Get extends AbstractDirectoryNewOrder {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function __construct(RawResponse $raw, $orderURL)
-    {
+    public function __construct(RawResponse $raw, string $orderURL) {
+
         parent::__construct($raw);
 
         $this->_raw->header[] = 'Location: ' . $orderURL; // Dirty fix: Header of response "Get" does not contain an order url, instead of response "Create"

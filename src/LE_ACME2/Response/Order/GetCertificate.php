@@ -9,7 +9,7 @@ class GetCertificate extends AbstractResponse {
     protected $_pattern = '~(-----BEGIN\sCERTIFICATE-----[\s\S]+?-----END\sCERTIFICATE-----)~i';
 
 
-    public function getCertificate() {
+    public function getCertificate() : string {
 
         if(preg_match_all($this->_pattern, $this->_raw->body, $matches))  {
 
@@ -19,7 +19,7 @@ class GetCertificate extends AbstractResponse {
         throw new \RuntimeException('Preg_match_all has returned false - invalid pattern?');
     }
 
-    public function getIntermediate() {
+    public function getIntermediate() : string {
 
         if(preg_match_all($this->_pattern, $this->_raw->body, $matches))  {
 

@@ -11,7 +11,7 @@ class KeyGenerator {
      * @param string	$privateKeyFile	The filename for the private key file.
      * @param string	$publicKeyFile  The filename for the public key file.
      */
-    public static function RSA($directory, $privateKeyFile = 'private.pem', $publicKeyFile = 'public.pem') {
+    public static function RSA(string $directory, string $privateKeyFile = 'private.pem', string $publicKeyFile = 'public.pem') {
 
         $res = openssl_pkey_new([
             "private_key_type" => OPENSSL_KEYTYPE_RSA,
@@ -36,7 +36,7 @@ class KeyGenerator {
      * @param string	$privateKeyFile	The filename for the private key file.
      * @param string	$publicKeyFile  The filename for the public key file.
      */
-    public static function EC($directory, $privateKeyFile = 'private.pem', $publicKeyFile = 'public.pem') {
+    public static function EC(string $directory, string $privateKeyFile = 'private.pem', string $publicKeyFile = 'public.pem') {
 
         if (version_compare(PHP_VERSION, '7.1.0') == -1)
             throw new \RuntimeException("PHP 7.1+ required for EC keys");

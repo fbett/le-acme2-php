@@ -14,7 +14,7 @@ class Challenge {
     public $url;
     public $token;
 
-    public function __construct($type, $status, $url, $token) {
+    public function __construct(string $type, string $status, string $url, string $token) {
 
         $this->type = $type;
         $this->status = $status;

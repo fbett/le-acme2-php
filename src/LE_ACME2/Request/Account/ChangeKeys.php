@@ -16,7 +16,6 @@ class ChangeKeys extends AbstractRequest {
     protected $_account;
 
     public function __construct(Account $account) {
-
         $this->_account = $account;
     }
 
@@ -25,8 +24,8 @@ class ChangeKeys extends AbstractRequest {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getResponse()
-    {
+    public function getResponse() : Response\AbstractResponse {
+
         $connector = Connector\Connector::getInstance();
         $storage = Connector\Storage::getInstance();
 
@@ -38,7 +37,6 @@ class ChangeKeys extends AbstractRequest {
         /**
          *  draft-13 Section 7.3.6
          *  "newKey" is deprecated after August 23rd 2018
-         *  TODO: TEST
          */
         $newPrivateKey = openssl_pkey_get_private(
             file_get_contents($this->_account->getKeyDirectoryPath() . 'private-replacement.pem')

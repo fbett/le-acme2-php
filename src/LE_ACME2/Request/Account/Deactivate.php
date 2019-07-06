@@ -8,7 +8,7 @@ use LE_ACME2\Exception;
 
 class Deactivate extends AbstractLocation {
 
-    protected function _getPayload() {
+    protected function _getPayload() : array {
 
         return [
             'status' => 'deactivated',
@@ -20,7 +20,7 @@ class Deactivate extends AbstractLocation {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getResponse() {
+    public function getResponse() : Response\AbstractResponse {
 
         return new Response\Account\Deactivate($this->_getRawResponse());
     }

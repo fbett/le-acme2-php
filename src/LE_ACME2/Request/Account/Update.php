@@ -12,14 +12,14 @@ class Update extends AbstractLocation {
 
     protected $_newEmail;
 
-    public function __construct(Account $account, $newEmail)
-    {
+    public function __construct(Account $account, $newEmail) {
+
         parent::__construct($account);
 
         $this->_newEmail = $newEmail;
     }
 
-    protected function _getPayload() {
+    protected function _getPayload() : array {
 
         return [
             'contact' => $this->_buildContactPayload($this->_newEmail),
@@ -31,8 +31,7 @@ class Update extends AbstractLocation {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getResponse() {
-
+    public function getResponse() : Response\AbstractResponse {
         return new Response\Account\Update($this->_getRawResponse());
     }
 }

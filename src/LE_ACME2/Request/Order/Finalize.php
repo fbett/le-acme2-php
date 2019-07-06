@@ -28,7 +28,7 @@ class Finalize extends AbstractRequest {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getResponse() {
+    public function getResponse() : Response\AbstractResponse {
 
         $connector = Connector\Connector::getInstance();
         $storage = Connector\Storage::getInstance();

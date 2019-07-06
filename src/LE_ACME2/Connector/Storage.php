@@ -33,7 +33,7 @@ class Storage {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getGetDirectoryResponse() {
+    public function getGetDirectoryResponse() : Response\GetDirectory {
 
         if($this->_getDirectoryResponse === NULL) {
             $request = new Request\GetDirectory();
@@ -42,8 +42,7 @@ class Storage {
         return $this->_getDirectoryResponse;
     }
 
-    public function setGetDirectoryResponse($response) {
-
+    public function setGetDirectoryResponse(Response\GetDirectory $response) {
         $this->_getDirectoryResponse = $response;
     }
 
@@ -52,7 +51,7 @@ class Storage {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getNewNonceResponse() {
+    public function getNewNonceResponse() : Response\GetNewNonce {
 
         if($this->_getNewNonceResponse === NULL) {
             $request = new Request\GetNewNonce();
@@ -61,24 +60,15 @@ class Storage {
         return $this->_getNewNonceResponse;
     }
 
-    public function setNewNonceResponse($response) {
-
+    public function setNewNonceResponse(Response\GetNewNonce $response) {
         $this->_getNewNonceResponse = $response;
     }
 
-    /**
-     * @param $object
-     * @return string
-     */
-    protected function _getObjectIdentifier($object) {
+    protected function _getObjectIdentifier($object) : string {
         return get_class($object) . "_" . spl_object_hash($object);
     }
 
-    /**
-     * @param Account $account
-     * @return Response\Account\AbstractDirectoryNewAccount|null
-     */
-    public function getDirectoryNewAccountResponse(Account $account) {
+    public function getDirectoryNewAccountResponse(Account $account) : ?Response\Account\AbstractDirectoryNewAccount {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
 
@@ -109,12 +99,7 @@ class Storage {
         file_put_contents($account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse', $response->getRaw()->toString());
     }
 
-    /**
-     * @param Account $account
-     * @param Order $order
-     * @return Response\Order\AbstractDirectoryNewOrder|null
-     */
-    public function getDirectoryNewOrderResponse(Account $account, Order $order) {
+    public function getDirectoryNewOrderResponse(Account $account, Order $order) : ?Response\Order\AbstractDirectoryNewOrder {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
         $orderIdentifier = $this->_getObjectIdentifier($order);
@@ -142,11 +127,6 @@ class Storage {
         return null;
     }
 
-    /**
-     * @param Account $account
-     * @param Order $order
-     * @param Response\Order\AbstractDirectoryNewOrder $response
-     */
     public function setDirectoryNewOrderResponse(Account $account, Order $order, Response\Order\AbstractDirectoryNewOrder $response) {
 
         $this->_directoryNewOrderResponse[$this->_getObjectIdentifier($account)][$this->_getObjectIdentifier($order)] = $response;

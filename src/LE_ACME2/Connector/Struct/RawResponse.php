@@ -10,10 +10,10 @@ class RawResponse {
     /** @var array */
     public $header;
 
-    /** @var array */
+    /** @var array|string */
     public $body;
 
-    public function init($method, $url, $response, $headerSize) {
+    public function init(string $method, string $url, string $response, int $headerSize) {
 
         $header = substr($response, 0, $headerSize);
         $body = substr($response, $headerSize);
@@ -38,7 +38,7 @@ class RawResponse {
         ]);
     }
 
-    public static function getFromString($string) {
+    public static function getFromString(string $string) {
 
         $array = unserialize($string);
 

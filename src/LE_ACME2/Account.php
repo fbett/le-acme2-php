@@ -13,18 +13,18 @@ class Account extends AbstractKeyValuable {
 
     private $_email = NULL;
 
-    public function __construct($email) {
+    public function __construct(string $email) {
 
         $this->setEmail($email);
     }
 
-    public function setEmail($email) {
+    public function setEmail(string $email) {
 
         $this->_email = $email;
         $this->_identifier = $this->_getAccountIdentifier($this);
     }
 
-    public function getEmail() {
+    public function getEmail() : string {
 
         return $this->_email;
     }
@@ -34,7 +34,7 @@ class Account extends AbstractKeyValuable {
      * @return Account|null
      * @throws Exception\AbstractException
      */
-    public static function create($email) {
+    public static function create(string $email) : Account {
 
         $account = new self($email);
         $account->_initKeyDirectory();
@@ -59,7 +59,7 @@ class Account extends AbstractKeyValuable {
         }
     }
 
-    public static function exists($email) {
+    public static function exists(string $email) {
 
         $account = new self($email);
 
@@ -74,7 +74,7 @@ class Account extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public static function get($email) {
+    public static function get(string $email) : Account {
 
         $account = new self($email);
 
@@ -107,7 +107,7 @@ class Account extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function getData() {
+    public function getData() : Response\Account\GetData {
 
         $request = new Request\Account\GetData($this);
         return $request->getResponse();
@@ -118,7 +118,7 @@ class Account extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\RateLimitReached
      */
-    public function update($email) {
+    public function update(string $email) : bool {
 
         $request = new Request\Account\Update($this, $email);
 
@@ -143,7 +143,7 @@ class Account extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\RateLimitReached
      */
-    public function changeKeys() {
+    public function changeKeys() : bool {
 
         Utilities\KeyGenerator::RSA($this->getKeyDirectoryPath(), 'private-replacement.pem', 'public-replacement.pem');
 
@@ -167,7 +167,7 @@ class Account extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\RateLimitReached
      */
-    public function deactivate() {
+    public function deactivate() : bool {
 
         $request = new Request\Account\Deactivate($this);
 

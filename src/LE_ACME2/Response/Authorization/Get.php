@@ -6,26 +6,19 @@ use LE_ACME2\Response\Authorization\Struct;
 
 class Get extends AbstractAuthorization {
 
-    public function getIdentifier() {
-
+    public function getIdentifier() : Struct\Identifier {
         return new Struct\Identifier($this->_raw->body['identifier']['type'], $this->_raw->body['identifier']['value']);
     }
 
-    public function getStatus() {
-
+    public function getStatus() : string {
         return $this->_raw->body['status'];
     }
 
-    public function getExpires() {
-
+    public function getExpires() : string {
         return $this->_raw->body['expires'];
     }
 
-    /**+
-     * @return array
-     */
-    public function getChallenges() {
-
+    public function getChallenges() : array {
         return $this->_raw->body['challenges'];
     }
 
@@ -33,7 +26,7 @@ class Get extends AbstractAuthorization {
      * @param $type
      * @return Struct\Challenge
      */
-    public function getChallenge($type) {
+    public function getChallenge(string $type) : Struct\Challenge {
 
         foreach($this->getChallenges() as $challenge) {
 

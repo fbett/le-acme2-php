@@ -20,8 +20,7 @@ class Logger {
 
     protected $_desiredLevel = self::LEVEL_DISABLED;
 
-    public function setDesiredLevel($desiredLevel) {
-
+    public function setDesiredLevel(int $desiredLevel) {
         $this->_desiredLevel = $desiredLevel;
     }
 
@@ -30,7 +29,7 @@ class Logger {
      * @param string $message
      * @param string|array|object $data
      */
-    public function add($level = self::LEVEL_DEBUG, $message, $data = array()) {
+    public function add(int $level = self::LEVEL_DEBUG, string $message, $data = array()) {
 
         if($level > $this->_desiredLevel)
             return;

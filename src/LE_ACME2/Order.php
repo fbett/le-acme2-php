@@ -19,7 +19,7 @@ class Order extends AbstractKeyValuable {
      * @deprecated
      * @param $directoryPath
      */
-    public static function setHTTPAuthorizationDirectoryPath($directoryPath) {
+    public static function setHTTPAuthorizationDirectoryPath(string $directoryPath) {
 
         Authorizer\HTTP::setDirectoryPath($directoryPath);
     }
@@ -44,7 +44,7 @@ class Order extends AbstractKeyValuable {
         $this->_identifier = $this->_getAccountIdentifier($account) . DIRECTORY_SEPARATOR . 'order_' . md5(implode('|', $subjects));
     }
 
-    public function getSubjects() {
+    public function getSubjects() : array {
 
         return $this->_subjects;
     }
@@ -56,7 +56,7 @@ class Order extends AbstractKeyValuable {
      * @return Order
      * @throws Exception\AbstractException
      */
-    public static function create(Account $account, array $subjects, $keyType = self::KEY_TYPE_RSA) {
+    public static function create(Account $account, array $subjects, string $keyType = self::KEY_TYPE_RSA) : Order {
 
         $order = new self($account, $subjects);
         return $order->_create($keyType, false);
@@ -68,7 +68,7 @@ class Order extends AbstractKeyValuable {
      * @return Order
      * @throws Exception\AbstractException
      */
-    protected function _create($keyType, $ignoreIfKeysExist = false) {
+    protected function _create(string $keyType, bool $ignoreIfKeysExist = false) : Order {
 
         $this->_initKeyDirectory($keyType, $ignoreIfKeysExist);
 
@@ -90,12 +90,7 @@ class Order extends AbstractKeyValuable {
         }
     }
 
-    /**
-     * @param Account $account
-     * @param array $subjects
-     * @return bool
-     */
-    public static function exists(Account $account, $subjects) {
+    public static function exists(Account $account, array $subjects) : bool {
 
         $order = new self($account, $subjects);
         return file_exists($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse');
@@ -108,7 +103,7 @@ class Order extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public static function get(Account $account, array $subjects) {
+    public static function get(Account $account, array $subjects) : Order {
 
         $order = new self($account, $subjects);
 
@@ -146,7 +141,7 @@ class Order extends AbstractKeyValuable {
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
      */
-    protected function _getAuthorizer($type) {
+    protected function _getAuthorizer(string $type) : Authorizer\AbstractAuthorizer {
 
         if($this->_authorizer === null) {
 
@@ -179,7 +174,7 @@ class Order extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function shouldStartAuthorization($type) {
+    public function shouldStartAuthorization(string $type) : bool {
 
         try {
             return $this->_getAuthorizer($type)->shouldStartAuthorization();
@@ -198,7 +193,7 @@ class Order extends AbstractKeyValuable {
      * @throws Exception\RateLimitReached
      * @throws Exception\HTTPAuthorizationInvalid
      */
-    public function authorize($type) {
+    public function authorize(string $type) : bool {
 
         try {
             /** @var Authorizer\HTTP $authorizer */
@@ -265,22 +260,22 @@ class Order extends AbstractKeyValuable {
 
     const BUNDLE_DIRECTORY_PREFIX = 'bundle_';
 
-    protected function _getLatestCertificateDirectory() {
+    protected function _getLatestCertificateDirectory() : ?string {
 
         $files = scandir($this->getKeyDirectoryPath(), SORT_NUMERIC | SORT_DESC);
         foreach($files as $file) {
             if(substr($file, 0, strlen(self::BUNDLE_DIRECTORY_PREFIX)) == self::BUNDLE_DIRECTORY_PREFIX && is_dir($this->getKeyDirectoryPath() . $file))
                 return $file;
         }
-        return false;
+        return null;
     }
 
-    public function isCertificateBundleAvailable() {
+    public function isCertificateBundleAvailable() : bool {
 
-        return $this->_getLatestCertificateDirectory() !== FALSE;
+        return $this->_getLatestCertificateDirectory() !== NULL;
     }
 
-    public function getCertificateBundle() {
+    public function getCertificateBundle() : Struct\CertificateBundle {
 
         if(!$this->isCertificateBundleAvailable()) {
             throw new \RuntimeException('There is no certificate available');
@@ -302,7 +297,11 @@ class Order extends AbstractKeyValuable {
      * @param int $renewBefore Unix timestamp
      * @throws Exception\AbstractException
      */
-    public function enableAutoRenewal($keyType = self::KEY_TYPE_RSA, $renewBefore = null) {
+    public function enableAutoRenewal($keyType = self::KEY_TYPE_RSA, int $renewBefore = null) {
+
+        if($keyType === null) {
+            $keyType = self::KEY_TYPE_RSA;
+        }
 
         if(!$this->isCertificateBundleAvailable()) {
             throw new \RuntimeException('There is no certificate available');
@@ -335,7 +334,7 @@ class Order extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\RateLimitReached
      */
-    public function revokeCertificate($reason = 0) {
+    public function revokeCertificate(int $reason = 0) : bool {
 
         if(!$this->isCertificateBundleAvailable()) {
             throw new \RuntimeException('There is no certificate available to revoke');
@@ -354,7 +353,7 @@ class Order extends AbstractKeyValuable {
         }
     }
 
-    protected static function _getExpireTimeFromCertificateDirectoryPath($path) {
+    protected static function _getExpireTimeFromCertificateDirectoryPath(string $path) {
 
         $stringPosition = strrpos($path, self::BUNDLE_DIRECTORY_PREFIX);
         if($stringPosition === false) {

@@ -31,7 +31,7 @@ class Start extends AbstractRequest {
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
      */
-    public function getResponse() {
+    public function getResponse() : Response\AbstractResponse {
 
         $connector = Connector\Connector::getInstance();
         $storage = Connector\Storage::getInstance();

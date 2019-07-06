@@ -10,12 +10,11 @@ use LE_ACME2\Account;
 
 class Challenge {
 
-    public static function buildAuthorizationKey($token, $digest) {
-
+    public static function buildAuthorizationKey(string $token, string $digest) : string {
         return $token . '.' . $digest;
     }
 
-    public static function getDigest(Account $account) {
+    public static function getDigest(Account $account) : string {
 
         $privateKey = openssl_pkey_get_private(file_get_contents($account->getKeyDirectoryPath() . 'private.pem'));
         $details = openssl_pkey_get_details($privateKey);
@@ -29,7 +28,7 @@ class Challenge {
         return Base64::UrlSafeEncode(hash('sha256', json_encode($header), true));
     }
 
-    public static function writeHTTPAuthorizationFile($directoryPath, Account $account, Response\Authorization\Struct\Challenge $challenge) {
+    public static function writeHTTPAuthorizationFile(string $directoryPath, Account $account, Response\Authorization\Struct\Challenge $challenge) {
 
         $digest = self::getDigest($account);
         file_put_contents($directoryPath . $challenge->token,  self::buildAuthorizationKey($challenge->token, $digest));
@@ -42,7 +41,7 @@ class Challenge {
      * @return bool
      * @throws Exception\HTTPAuthorizationInvalid
      */
-    public static function validateHTTPAuthorizationFile($domain, Account $account, Response\Authorization\Struct\Challenge $challenge) {
+    public static function validateHTTPAuthorizationFile(string $domain, Account $account, Response\Authorization\Struct\Challenge $challenge) : bool {
 
         $digest = self::getDigest($account);
 

@@ -14,7 +14,7 @@ class HTTP extends AbstractAuthorizer {
 
     protected static $_directoryPath = null;
 
-    public static function setDirectoryPath($directoryPath) {
+    public static function setDirectoryPath(string $directoryPath) {
 
         if(!file_exists($directoryPath)) {
             throw new \RuntimeException('HTTP authorization directory path does not exist');
@@ -23,7 +23,7 @@ class HTTP extends AbstractAuthorizer {
         self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
-    public function shouldStartAuthorization() {
+    public function shouldStartAuthorization() : bool {
 
         foreach($this->_authorizationResponses as $response) {
 

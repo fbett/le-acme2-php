@@ -4,28 +4,23 @@ namespace LE_ACME2\Response;
 
 class GetDirectory extends AbstractResponse {
 
-    public function getKeyChange() {
-
+    public function getKeyChange() : string {
         return $this->_raw->body['keyChange'];
     }
 
-    public function getNewAccount() {
-
+    public function getNewAccount() : string {
         return $this->_raw->body['newAccount'];
     }
 
-    public function getNewNonce() {
-
+    public function getNewNonce() : string {
         return $this->_raw->body['newNonce'];
     }
 
-    public function getNewOrder() {
-
+    public function getNewOrder() : string {
         return $this->_raw->body['newOrder'];
     }
 
-    public function getRevokeCert() {
-
+    public function getRevokeCert() : string {
         return $this->_raw->body['revokeCert'];
     }
 }

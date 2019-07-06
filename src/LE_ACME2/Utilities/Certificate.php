@@ -12,7 +12,7 @@ class Certificate {
         self::$_featureOCSPMustStapleEnabled = true;
     }
 
-    public static function generateCSR(Order $order) {
+    public static function generateCSR(Order $order) : string {
 
         $dn = [
             "commonName" => $order->getSubjects()[0]

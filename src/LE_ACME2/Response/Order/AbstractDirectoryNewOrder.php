@@ -10,45 +10,33 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
     const STATUS_VALID = 'valid';
     const STATUS_READY = 'ready';
 
-    public function getLocation() {
+    public function getLocation() : string {
 
         $matches = $this->_preg_match_headerLine($this->_pattern_header_location);
         return trim($matches[1]);
     }
 
-    public function getStatus() {
-
+    public function getStatus() : string {
         return $this->_raw->body['status'];
     }
 
-    public function getExpires() {
-        
+    public function getExpires() : string {
         return $this->_raw->body['expires'];
     }
 
-    /**
-     * @return array()
-     */
-    public function getIdentifiers() {
-        
+    public function getIdentifiers() : array {
         return $this->_raw->body['identifiers'];
     }
 
-    /**
-     * @return array
-     */
-    public function getAuthorizations() {
-        
+    public function getAuthorizations() : array {
         return $this->_raw->body['authorizations'];
     }
 
-    public function getFinalize() {
-        
+    public function getFinalize() : string {
         return $this->_raw->body['finalize'];
     }
 
-    public function getCertificate() {
-        
+    public function getCertificate() : string {
         return $this->_raw->body['certificate'];
     }
 }

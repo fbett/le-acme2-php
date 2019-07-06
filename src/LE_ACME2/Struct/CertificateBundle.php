@@ -10,7 +10,7 @@ class CertificateBundle {
     public $intermediate;
     public $expireTime;
 
-    public function __construct($path,  $private, $certificate, $intermediate, $expireTime) {
+    public function __construct(string $path, string $private, string $certificate, string $intermediate, int $expireTime) {
 
         $this->path = $path;
         $this->private = $private;

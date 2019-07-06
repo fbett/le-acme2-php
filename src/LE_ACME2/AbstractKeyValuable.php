@@ -13,7 +13,7 @@ abstract class AbstractKeyValuable {
 
     protected static $_directoryPath = null;
 
-    public static function setCommonKeyDirectoryPath($directoryPath) {
+    public static function setCommonKeyDirectoryPath(string $directoryPath) {
 
         if(!file_exists($directoryPath)) {
             throw new \RuntimeException('Common Key Directory Path does not exist');
@@ -22,20 +22,17 @@ abstract class AbstractKeyValuable {
         self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
-    protected function _getKeyDirectoryPath($appendix = '') {
+    protected function _getKeyDirectoryPath(string $appendix = '') : string {
 
         return self::$_directoryPath . $this->_identifier . $appendix . DIRECTORY_SEPARATOR;
     }
 
-    /**
-     * @return string
-     */
-    public function getKeyDirectoryPath() {
+    public function getKeyDirectoryPath() : string {
 
         return $this->_getKeyDirectoryPath('');
     }
 
-    protected function _initKeyDirectory($keyType = self::KEY_TYPE_RSA, $ignoreIfKeysExist = false) {
+    protected function _initKeyDirectory(string $keyType = self::KEY_TYPE_RSA, bool $ignoreIfKeysExist = false) {
 
         if(!file_exists($this->getKeyDirectoryPath())) {
 
@@ -74,7 +71,7 @@ abstract class AbstractKeyValuable {
         unlink($this->getKeyDirectoryPath() . 'public.pem');
     }
 
-    protected function _getAccountIdentifier(Account $account) {
+    protected function _getAccountIdentifier(Account $account) : string {
 
         $staging = Connector::getInstance()->isUsingStagingServer();
 

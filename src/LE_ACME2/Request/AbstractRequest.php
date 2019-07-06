@@ -13,13 +13,9 @@ abstract class AbstractRequest {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    abstract public function getResponse();
+    abstract public function getResponse() : AbstractResponse;
 
-    /**
-     * @param string $email
-     * @return array
-     */
-    protected function _buildContactPayload($email) {
+    protected function _buildContactPayload(string $email) : array {
 
         $result = [
             'mailto:' . $email

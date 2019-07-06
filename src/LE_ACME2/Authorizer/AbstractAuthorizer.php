@@ -56,17 +56,17 @@ abstract class AbstractAuthorizer {
         }
     }
 
-    protected function _hasValidAuthorizationResponses() {
+    protected function _hasValidAuthorizationResponses() : bool {
 
         return count($this->_authorizationResponses) > 0;
     }
 
-    abstract public function shouldStartAuthorization();
+    abstract public function shouldStartAuthorization() : bool;
     abstract public function progress();
 
     protected $_finished = false;
 
-    public function hasFinished() {
+    public function hasFinished() : bool {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_DEBUG,
