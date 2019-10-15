@@ -44,14 +44,14 @@ abstract class AbstractResponse {
     }
 
     protected function _isRateLimitReached() : bool {
-        return $this->_preg_match_headerLine('/^HTTP.* 429 .*$/i') !== null;
+        return $this->_preg_match_headerLine('/^HTTP\/.* 429/i') !== null;
     }
 
     protected function _isValid() : bool {
 
-        return $this->_preg_match_headerLine('/^HTTP.* 201 Created$/i') !== null ||
-            $this->_preg_match_headerLine('/^HTTP.* 200 OK$/i') !== null ||
-            $this->_preg_match_headerLine('/^HTTP.* 204 .*$/i') !== null;
+        return $this->_preg_match_headerLine('/^HTTP\/.* 201/i') !== null || //Created
+            $this->_preg_match_headerLine('/^HTTP\/.* 200/i') !== null ||
+            $this->_preg_match_headerLine('/^HTTP\/.* 204/i') !== null;
     }
 
     public function getRaw() : RawResponse {

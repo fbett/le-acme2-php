@@ -26,7 +26,7 @@ class AbstractAuthorization extends AbstractResponse {
      */
     protected function _isValid() : bool {
 
-        if($this->_preg_match_headerLine('/^HTTP.* 404 .*$/i') !== null) {
+        if($this->_preg_match_headerLine('/^HTTP\/.* 404/i') !== null) {
             if(
                 is_array($this->_raw->body) &&
                 isset($this->_raw->body['status']) && $this->_raw->body['status'] == '404' &&
