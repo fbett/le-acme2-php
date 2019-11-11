@@ -27,13 +27,7 @@ class AbstractAuthorization extends AbstractResponse {
     protected function _isValid() : bool {
 
         if($this->_preg_match_headerLine('/^HTTP\/.* 404/i') !== null) {
-            if(
-                is_array($this->_raw->body) &&
-                isset($this->_raw->body['status']) && $this->_raw->body['status'] == '404' &&
-                isset($this->_raw->body['detail']) && $this->_raw->body['detail'] == 'Expired authorization'
-            ) {
-                throw new Exception\ExpiredAuthorization($this->_raw);
-            }
+            throw new Exception\ExpiredAuthorization($this->_raw);
         }
 
         return parent::_isValid();
