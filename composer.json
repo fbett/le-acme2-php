@@ -2,7 +2,7 @@
   "name": "fbett/le_acme2",
   "description": "Letsencrypt PHP ACME v2 client",
   "homepage": "https://github.com/fbett/le-acme2-php",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "license": "MIT",
   "authors": [
     {
