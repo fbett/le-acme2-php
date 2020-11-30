@@ -34,4 +34,25 @@ class GetCertificate extends AbstractResponse {
 
         throw new \RuntimeException('Preg_match_all has returned false - invalid pattern?');
     }
+
+    /**
+     * @return string[]
+     */
+    public function getAlternativeLinks() : array {
+
+        $result = [];
+
+        foreach($this->_raw->header as $line) {
+            $matches = [];
+            preg_match_all('/^link: <(.*)>;rel="alternate"$/', $line, $matches);
+
+            if(isset($matches[1][0])) {
+                $result[] = $matches[1][0];
+            }
+        }
+
+        var_dump($result);
+
+        return $result;
+    }
 }
