@@ -2,6 +2,7 @@
 
 namespace LE_ACME2\Connector;
 
+use LE_ACME2\AbstractKeyValuable;
 use LE_ACME2\Request;
 use LE_ACME2\Response;
 
@@ -64,8 +65,8 @@ class Storage {
         $this->_getNewNonceResponse = $response;
     }
 
-    protected function _getObjectIdentifier($object) : string {
-        return get_class($object) . "_" . spl_object_hash($object);
+    protected function _getObjectIdentifier(AbstractKeyValuable $object) : string {
+        return $object->getKeyDirectoryPath();
     }
 
     public function getDirectoryNewAccountResponse(Account $account) : ?Response\Account\AbstractDirectoryNewAccount {
