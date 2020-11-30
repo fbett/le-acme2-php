@@ -12,6 +12,7 @@ require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'autolo
 
 // Optional configs
 //\LE_ACME2\Utilities\Certificate::enableFeatureOCSPMustStaple();
+//\LE_ACME2\Order::setPreferredChain(\LE_ACME2\Order::IDENTRUST_ISSUER_CN);
 
 $account_email = 'test@example.org';
 

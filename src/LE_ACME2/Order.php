@@ -24,6 +24,16 @@ class Order extends AbstractKeyValuable {
         Authorizer\HTTP::setDirectoryPath($directoryPath);
     }
 
+    CONST IDENTRUST_ISSUER_CN = 'DST Root CA X3';
+    private CONST IDENTRUST_ISSUER_EXPIRE_DATE = '2021-09-29';
+
+    /** @var string|null $_preferredChain */
+    private static $_preferredChain = null;
+
+    public static function setPreferredChain(string $issuerCN = null) {
+        self::$_preferredChain = $issuerCN;
+    }
+
     protected $_account;
     protected $_subjects;
 
@@ -246,16 +256,77 @@ class Order extends AbstractKeyValuable {
             $intermediate = $response->getIntermediate();
 
             $certificateInfo = openssl_x509_parse($certificate);
+            $certificateValidToTimeTimestamp = $certificateInfo['validTo_time_t'];
+            $intermediateInfo = openssl_x509_parse($intermediate);
 
-            $path = $this->getKeyDirectoryPath() . self::BUNDLE_DIRECTORY_PREFIX . $certificateInfo['validTo_time_t'] . DIRECTORY_SEPARATOR;
+            // Prefer to use IdenTrust's as long as possible
+            $preferredChain = (self::$_preferredChain === null || self::$_preferredChain == self::IDENTRUST_ISSUER_CN) &&
+                strtotime(self::IDENTRUST_ISSUER_EXPIRE_DATE) > $certificateValidToTimeTimestamp ?
+                self::IDENTRUST_ISSUER_CN : null;
 
-            mkdir($path);
-            rename($this->getKeyDirectoryPath() . 'private.pem', $path . 'private.pem');
-            file_put_contents($path . 'certificate.crt', $certificate);
-            file_put_contents($path . 'intermediate.pem', $intermediate);
+            // If another chain is set (not IdenTrust's), force to use it
+            if(self::$_preferredChain !== null && self::$_preferredChain != self::IDENTRUST_ISSUER_CN) {
+                $preferredChain = self::$_preferredChain;
+            }
 
-            Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Certificate received');
+            if($preferredChain !== null) {
+                Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO,'Preferred chain is set: ' . $preferredChain);
+            }
+
+            $found = false;
+            if($preferredChain !== null && $intermediateInfo['issuer']['CN'] != $preferredChain) {
+
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_INFO,
+                    'Default certificate does not satisfy preferred chain, trying to fetch alternative'
+                );
+
+                foreach($response->getAlternativeLinks() as $link) {
+
+                    $request = new Request\Order\GetCertificate($this->_account, $directoryNewOrderResponse, $link);
+                    $response = $request->getResponse();
+
+                    $alternativeCertificate = $response->getCertificate();
+                    $alternativeIntermediate = $response->getIntermediate();
+
+                    $intermediateInfo = openssl_x509_parse($intermediate);
+                    if($intermediateInfo['issuer']['CN'] != $preferredChain) {
+                        continue;
+                    }
+
+                    $found = true;
+
+                    $certificate = $alternativeCertificate;
+                    $intermediate = $alternativeIntermediate;
+
+                    break;
+                }
+
+                if(!$found) {
+                    Utilities\Logger::getInstance()->add(
+                        Utilities\Logger::LEVEL_INFO,
+                        'Preferred chain could not be satisfied, returning default chain'
+                    );
+                }
+            }
+
+            $this->_saveCertificate($certificate, $intermediate);
         }
+    }
+
+    private function _saveCertificate(string $certificate, string $intermediate) : void {
+
+        $certificateInfo = openssl_x509_parse($certificate);
+        $certificateValidToTimeTimestamp = $certificateInfo['validTo_time_t'];
+
+        $path = $this->getKeyDirectoryPath() . self::BUNDLE_DIRECTORY_PREFIX . $certificateValidToTimeTimestamp . DIRECTORY_SEPARATOR;
+
+        mkdir($path);
+        rename($this->getKeyDirectoryPath() . 'private.pem', $path . 'private.pem');
+        file_put_contents($path . 'certificate.crt', $certificate);
+        file_put_contents($path . 'intermediate.pem', $intermediate);
+
+        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Certificate received');
     }
 
     const BUNDLE_DIRECTORY_PREFIX = 'bundle_';
