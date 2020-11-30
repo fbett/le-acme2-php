@@ -16,10 +16,17 @@ class GetCertificate extends AbstractRequest {
     protected $_account;
     protected $_directoryNewOrderResponse;
 
-    public function __construct(Account $account, Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse) {
+    private $_alternativeUrl = null;
 
+    public function __construct(Account $account, Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse,
+                                string $alternativeUrl = null
+    ) {
         $this->_account = $account;
         $this->_directoryNewOrderResponse = $directoryNewOrderResponse;
+
+        if($alternativeUrl !== null) {
+            $this->_alternativeUrl = $alternativeUrl;
+        }
     }
 
     /**
@@ -32,17 +39,21 @@ class GetCertificate extends AbstractRequest {
         $connector = Connector\Connector::getInstance();
         $storage = Connector\Storage::getInstance();
 
+        $url = $this->_alternativeUrl === null ?
+            $this->_directoryNewOrderResponse->getCertificate() :
+            $this->_alternativeUrl;
+
         $kid = Utilities\RequestSigner::KID(
             null,
             $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
-            $this->_directoryNewOrderResponse->getCertificate(),
+            $url,
             $storage->getNewNonceResponse()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
 
         $result = $connector->request(
             Connector\Connector::METHOD_POST,
-            $this->_directoryNewOrderResponse->getCertificate(),
+            $url,
             $kid
         );
 
