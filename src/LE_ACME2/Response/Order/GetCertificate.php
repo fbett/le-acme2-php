@@ -51,8 +51,6 @@ class GetCertificate extends AbstractResponse {
             }
         }
 
-        var_dump($result);
-
         return $result;
     }
 }
