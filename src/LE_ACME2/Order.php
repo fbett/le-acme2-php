@@ -201,12 +201,11 @@ class Order extends AbstractKeyValuable {
      * @return bool
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
-     * @throws Exception\HTTPAuthorizationInvalid
+     * @throws Exception\AuthorizationInvalid
      */
     public function authorize(string $type) : bool {
 
         try {
-            /** @var Authorizer\HTTP $authorizer */
             $authorizer = $this->_getAuthorizer($type);
             $authorizer->progress();
 
