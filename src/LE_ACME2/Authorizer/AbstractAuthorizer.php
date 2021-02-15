@@ -22,6 +22,7 @@ abstract class AbstractAuthorizer {
      *
      * @param Account $account
      * @param Order $order
+     *
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
@@ -61,8 +62,93 @@ abstract class AbstractAuthorizer {
         return count($this->_authorizationResponses) > 0;
     }
 
-    abstract public function shouldStartAuthorization() : bool;
-    abstract public function progress();
+    public function shouldStartAuthorization() : bool {
+
+        foreach($this->_authorizationResponses as $response) {
+
+            $challenge = $response->getChallenge($this->_getChallengeType());
+            if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
+
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_DEBUG,
+                    get_class() . '::' . __FUNCTION__ . ' "Pending challenge found',
+                    $challenge
+                );
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    abstract protected function _getChallengeType() : string;
+
+    /**
+     * @throws Exception\AuthorizationInvalid
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     * @throws Exception\ExpiredAuthorization
+     */
+    public function progress() {
+
+        if(!$this->_hasValidAuthorizationResponses())
+            return;
+
+        $existsNotValidChallenges = false;
+
+        foreach($this->_authorizationResponses as $authorizationResponse) {
+
+            $challenge = $authorizationResponse->getChallenge($this->_getChallengeType());
+
+            if($this->_existsNotValidChallenges($challenge, $authorizationResponse)) {
+                $existsNotValidChallenges = true;
+            }
+        }
+
+        $this->_finished = !$existsNotValidChallenges;
+    }
+
+    /**
+     * @param Response\Authorization\Struct\Challenge $challenge
+     * @param Response\Authorization\Get $authorizationResponse
+     * @return bool
+     *
+     * @throws Exception\AuthorizationInvalid
+     */
+    protected function _existsNotValidChallenges(Response\Authorization\Struct\Challenge $challenge,
+                                                 Response\Authorization\Get $authorizationResponse
+    ) : bool {
+
+        if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
+
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_DEBUG,
+                get_class() . '::' . __FUNCTION__ . ' "Non valid challenge found',
+                $challenge
+            );
+
+            return true;
+        }
+        else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PROGRESSING) {
+
+            // Should come back later
+            return true;
+        }
+        else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_VALID) {
+
+        }
+        else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_INVALID) {
+            throw new Exception\AuthorizationInvalid(
+                'Received status "' . Response\Authorization\Struct\Challenge::STATUS_INVALID . '" while challenge should be verified'
+            );
+        }
+        else {
+
+            throw new \RuntimeException('Challenge status "' . $challenge->status . '" is not implemented');
+        }
+
+        return false;
+    }
 
     protected $_finished = false;
 

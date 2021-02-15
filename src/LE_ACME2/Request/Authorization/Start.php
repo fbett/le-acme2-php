@@ -7,6 +7,7 @@ use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Connector;
 use LE_ACME2\Exception;
 use LE_ACME2\Response;
+use LE_ACME2\Struct\ChallengeAuthorizationKey;
 use LE_ACME2\Utilities;
 
 use LE_ACME2\Account;
@@ -37,7 +38,7 @@ class Start extends AbstractRequest {
         $storage = Connector\Storage::getInstance();
 
         $payload = [
-            'keyAuthorization' => Utilities\Challenge::buildAuthorizationKey($this->_challenge->token, Utilities\Challenge::getDigest($this->_account))
+            'keyAuthorization' => (new ChallengeAuthorizationKey($this->_account))->get($this->_challenge->token)
         ];
 
         $kid = Utilities\RequestSigner::KID(

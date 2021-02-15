@@ -157,6 +157,8 @@ class Order extends AbstractKeyValuable {
 
             if($type == self::CHALLENGE_TYPE_HTTP) {
                 $this->_authorizer = new Authorizer\HTTP($this->_account, $this);
+            } else if($type == self::CHALLENGE_TYPE_DNS) {
+                $this->_authorizer = new Authorizer\DNS($this->_account, $this);
             } else {
                 throw new \RuntimeException('Challenge type not implemented');
             }

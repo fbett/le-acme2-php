@@ -5,6 +5,7 @@ namespace LE_ACME2\Authorizer;
 use LE_ACME2\Request;
 use LE_ACME2\Response;
 
+use LE_ACME2\Struct\ChallengeAuthorizationKey;
 use LE_ACME2\Utilities;
 use LE_ACME2\Exception;
 
@@ -23,81 +24,82 @@ class HTTP extends AbstractAuthorizer {
         self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
-    public function shouldStartAuthorization() : bool {
-
-        foreach($this->_authorizationResponses as $response) {
-
-            $challenge = $response->getChallenge(Order::CHALLENGE_TYPE_HTTP);
-            if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
-
-                Utilities\Logger::getInstance()->add(
-                    Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ . ' "Pending challenge found',
-                    $challenge
-                );
-
-                return true;
-            }
-        }
-        return false;
+    protected function _getChallengeType(): string {
+        return Order::CHALLENGE_TYPE_HTTP;
     }
 
     /**
-     * @throws Exception\HTTPAuthorizationInvalid
+     * @param Response\Authorization\Struct\Challenge $challenge
+     * @param Response\Authorization\Get $authorizationResponse
+     * @return bool
+     *
+     * @throws Exception\AuthorizationInvalid
+     * @throws Exception\ExpiredAuthorization
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
-     * @throws Exception\ExpiredAuthorization
      */
-    public function progress() {
+    protected function _existsNotValidChallenges(Response\Authorization\Struct\Challenge $challenge,
+                                                 Response\Authorization\Get $authorizationResponse
+    ) : bool {
 
-        if(!$this->_hasValidAuthorizationResponses())
-            return;
+        if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
 
-        $existsNotValidChallenges = false;
+            $this->_writeToFile($challenge);
+            if($this->_validateFile($authorizationResponse->getIdentifier()->value, $challenge)) {
 
-        foreach($this->_authorizationResponses as $authorizationResponse) {
+                $request = new Request\Authorization\Start($this->_account, $this->_order, $challenge);
+                /* $response = */ $request->getResponse();
+            } else {
 
-            $challenge = $authorizationResponse->getChallenge(Order::CHALLENGE_TYPE_HTTP);
-
-            if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
-
-                Utilities\Logger::getInstance()->add(
-                    Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ . ' "Non valid challenge found',
-                    $challenge
-                );
-
-                $existsNotValidChallenges = true;
-
-                Utilities\Challenge::writeHTTPAuthorizationFile(self::$_directoryPath, $this->_account, $challenge);
-                if(Utilities\Challenge::validateHTTPAuthorizationFile($authorizationResponse->getIdentifier()->value, $this->_account, $challenge)) {
-
-                    $request = new Request\Authorization\Start($this->_account, $this->_order, $challenge);
-                    /* $response = */ $request->getResponse();
-                } else {
-
-                    Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Could not validate HTTP Authorization file');
-                }
-            }
-            else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PROGRESSING) {
-
-                // Should come back later
-                $existsNotValidChallenges = true;
-            }
-            else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_VALID) {
-
-            }
-            else if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_INVALID) {
-                throw new Exception\HTTPAuthorizationInvalid(
-                    'Received status "' . Response\Authorization\Struct\Challenge::STATUS_INVALID . '" while challenge should be verified'
-                );
-            }
-            else {
-
-                throw new \RuntimeException('Challenge status "' . $challenge->status . '" is not implemented');
+                Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'Could not validate HTTP Authorization file');
             }
         }
 
-        $this->_finished = !$existsNotValidChallenges;
+        if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_INVALID) {
+            throw new Exception\HTTPAuthorizationInvalid(
+                'Received status "' . Response\Authorization\Struct\Challenge::STATUS_INVALID . '" while challenge should be verified'
+            );
+        }
+
+        return parent::_existsNotValidChallenges($challenge, $authorizationResponse);
+    }
+
+    private function _writeToFile(Response\Authorization\Struct\Challenge $challenge) : void {
+
+        file_put_contents(
+            self::$_directoryPath . $challenge->token,
+            (new ChallengeAuthorizationKey($this->_account))->get($challenge->token)
+        );
+    }
+
+    /**
+     * @param string $domain
+     * @param Response\Authorization\Struct\Challenge $challenge
+     * @return bool
+     *
+     * @throws Exception\HTTPAuthorizationInvalid
+     */
+    private function _validateFile(string $domain, Response\Authorization\Struct\Challenge $challenge) : bool {
+
+        $challengeAuthorizationKey = new ChallengeAuthorizationKey($this->_account);
+
+        $requestURL = 'http://' . $domain . '/.well-known/acme-challenge/' . $challenge->token;
+        $handle = curl_init();
+        curl_setopt($handle, CURLOPT_URL, $requestURL);
+        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($handle);
+
+        $result = !empty($response) && $response == $challengeAuthorizationKey->get($challenge->token);
+
+        if(!$result) {
+
+            throw new Exception\HTTPAuthorizationInvalid(
+                'HTTP challenge for "' . $domain . '"": ' .
+                $domain . '/.well-known/acme-challenge/' . $challenge->token .
+                ' tested, found invalid. CURL response: ' . var_export($response, true)
+            );
+        }
+        return true;
     }
 }
