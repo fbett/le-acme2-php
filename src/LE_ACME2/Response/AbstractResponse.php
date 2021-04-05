@@ -24,7 +24,13 @@ abstract class AbstractResponse {
         $this->_raw = $raw;
 
         if($this->_isRateLimitReached()) {
-            throw new Exception\RateLimitReached();
+
+            $detail = "";
+            if(isset($raw->body['type']) && $raw->body['type'] == 'urn:ietf:params:acme:error:rateLimited') {
+                $detail = $raw->body['detail'];
+            }
+
+            throw new Exception\RateLimitReached($raw->request, $detail);
         }
 
         $result = $this->_isValid();
