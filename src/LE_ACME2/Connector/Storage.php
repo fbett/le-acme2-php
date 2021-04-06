@@ -37,9 +37,26 @@ class Storage {
     public function getGetDirectoryResponse() : Response\GetDirectory {
 
         if($this->_getDirectoryResponse === NULL) {
+
+            $cacheFile = Account::getCommonKeyDirectoryPath() . 'DirectoryResponse';
+
+            if(file_exists($cacheFile) && filemtime($cacheFile) > strtotime('-2 days')) {
+
+                $rawResponse = Struct\RawResponse::getFromString(file_get_contents($cacheFile));
+
+                try {
+                    return $this->_getDirectoryResponse = new Response\GetDirectory($rawResponse);
+
+                } catch(Exception\AbstractException $e) {
+                    unlink($cacheFile);
+                }
+            }
+
             $request = new Request\GetDirectory();
             $this->_getDirectoryResponse = $request->getResponse();
+            file_put_contents($cacheFile, $this->_getDirectoryResponse->getRaw()->toString());
         }
+
         return $this->_getDirectoryResponse;
     }
 
