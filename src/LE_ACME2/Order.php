@@ -51,7 +51,8 @@ class Order extends AbstractKeyValuable {
         $this->_account = $account;
         $this->_subjects = $subjects;
 
-        $this->_identifier = $this->_getAccountIdentifier($account) . DIRECTORY_SEPARATOR . 'order_' . md5(implode('|', $subjects));
+        $this->_identifier = $this->_getAccountIdentifier($account) . DIRECTORY_SEPARATOR .
+            'order_' . md5(implode('|', $subjects));
     }
 
     public function getSubjects() : array {
@@ -121,7 +122,10 @@ class Order extends AbstractKeyValuable {
             throw new \RuntimeException('Order does not exist');
 
         $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($account, $order);
-        if($directoryNewOrderResponse !== NULL && $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
+        if(
+            $directoryNewOrderResponse !== NULL &&
+            $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
+        ) {
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
                 get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '" (from cache)'
@@ -271,7 +275,10 @@ class Order extends AbstractKeyValuable {
             }
 
             if($preferredChain !== null) {
-                Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO,'Preferred chain is set: ' . $preferredChain);
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_INFO,
+                    'Preferred chain is set: ' . $preferredChain
+                );
             }
 
             $found = false;
@@ -336,8 +343,12 @@ class Order extends AbstractKeyValuable {
 
         $files = scandir($this->getKeyDirectoryPath(), SORT_NUMERIC | SORT_DESC);
         foreach($files as $file) {
-            if(substr($file, 0, strlen(self::BUNDLE_DIRECTORY_PREFIX)) == self::BUNDLE_DIRECTORY_PREFIX && is_dir($this->getKeyDirectoryPath() . $file))
+            if(
+                substr($file, 0, strlen(self::BUNDLE_DIRECTORY_PREFIX)) == self::BUNDLE_DIRECTORY_PREFIX &&
+                is_dir($this->getKeyDirectoryPath() . $file)
+            ) {
                 return $file;
+            }
         }
         return null;
     }
@@ -380,8 +391,12 @@ class Order extends AbstractKeyValuable {
         }
 
         $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
-        if($directoryNewOrderResponse === null || $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID)
+        if(
+            $directoryNewOrderResponse === null ||
+            $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
+        ) {
             return;
+        }
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_DEBUG,'Auto renewal triggered');
 
@@ -402,7 +417,8 @@ class Order extends AbstractKeyValuable {
     }
 
     /**
-     * @param int $reason The reason to revoke the LetsEncrypt Order instance certificate. Possible reasons can be found in section 5.3.1 of RFC5280.
+     * @param int $reason The reason to revoke the LetsEncrypt Order instance certificate.
+     *                    Possible reasons can be found in section 5.3.1 of RFC5280.
      * @return bool
      * @throws Exception\RateLimitReached
      */
@@ -418,7 +434,10 @@ class Order extends AbstractKeyValuable {
 
         try {
             /* $response = */ $request->getResponse();
-            rename($this->getKeyDirectoryPath(), $this->_getKeyDirectoryPath('-revoked-' . microtime(true)));
+            rename(
+                $this->getKeyDirectoryPath(),
+                $this->_getKeyDirectoryPath('-revoked-' . microtime(true))
+            );
             return true;
         } catch(Exception\InvalidResponse $e) {
             return false;
@@ -433,7 +452,11 @@ class Order extends AbstractKeyValuable {
         }
 
         $expireTime = substr($path, $stringPosition + strlen(self::BUNDLE_DIRECTORY_PREFIX));
-        if(!is_numeric($expireTime) || $expireTime < strtotime('-10 years') || $expireTime > strtotime('+10 years')) {
+        if(
+            !is_numeric($expireTime) ||
+            $expireTime < strtotime('-10 years') ||
+            $expireTime > strtotime('+10 years')
+        ) {
             throw new \RuntimeException('Unexpected expireTime: ' . $expireTime);
         }
         return $expireTime;
