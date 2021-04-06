@@ -86,7 +86,8 @@ class Storage {
         return $object->getKeyDirectoryPath();
     }
 
-    public function getDirectoryNewAccountResponse(Account $account) : ?Response\Account\AbstractDirectoryNewAccount {
+    public function getDirectoryNewAccountResponse(Account $account)
+    : ?Response\Account\AbstractDirectoryNewAccount {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
 
@@ -111,13 +112,18 @@ class Storage {
         return null;
     }
 
-    public function setDirectoryNewAccountResponse(Account $account, Response\Account\AbstractDirectoryNewAccount $response) {
-
+    public function setDirectoryNewAccountResponse(Account $account,
+                                                   Response\Account\AbstractDirectoryNewAccount $response
+    ) {
         $this->_directoryNewAccountResponses[$this->_getObjectIdentifier($account)] = $response;
-        file_put_contents($account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse', $response->getRaw()->toString());
+        file_put_contents(
+            $account->getKeyDirectoryPath() . 'DirectoryNewAccountResponse',
+            $response->getRaw()->toString()
+        );
     }
 
-    public function getDirectoryNewOrderResponse(Account $account, Order $order) : ?Response\Order\AbstractDirectoryNewOrder {
+    public function getDirectoryNewOrderResponse(Account $account, Order $order)
+    : ?Response\Order\AbstractDirectoryNewOrder {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
         $orderIdentifier = $this->_getObjectIdentifier($order);
@@ -145,14 +151,20 @@ class Storage {
         return null;
     }
 
-    public function setDirectoryNewOrderResponse(Account $account, Order $order, Response\Order\AbstractDirectoryNewOrder $response) {
-
+    public function setDirectoryNewOrderResponse(Account $account, Order $order,
+                                                 Response\Order\AbstractDirectoryNewOrder $response
+    ) {
         $this->_directoryNewOrderResponses[$this->_getObjectIdentifier($account)][$this->_getObjectIdentifier($order)] = $response;
-        file_put_contents($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse', $response->getRaw()->toString());
+        file_put_contents(
+            $order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse',
+            $response->getRaw()->toString()
+        );
     }
 
     public function purgeDirectoryNewOrderResponse(Account $account, Order $order) {
+
         unset($this->_directoryNewOrderResponses[$this->_getObjectIdentifier($account)][$this->_getObjectIdentifier($order)]);
+
         if(file_exists($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse')) {
             unlink($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse');
         }
