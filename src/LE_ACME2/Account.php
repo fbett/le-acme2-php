@@ -59,7 +59,7 @@ class Account extends AbstractKeyValuable {
         }
     }
 
-    public static function exists(string $email) {
+    public static function exists(string $email) : bool {
 
         $account = new self($email);
 

@@ -10,7 +10,7 @@ class Logger {
 
     private static $_instance = NULL;
 
-    public static function getInstance() {
+    public static function getInstance() : self {
 
         if(self::$_instance === NULL) {
             self::$_instance = new self();

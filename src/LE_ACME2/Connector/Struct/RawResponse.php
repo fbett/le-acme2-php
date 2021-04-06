@@ -29,7 +29,7 @@ class RawResponse {
         $this->body = $body_json === null ? $body : $body_json;
     }
 
-    public function toString() {
+    public function toString() : string {
 
         return serialize([
             'request' => $this->request,
@@ -38,7 +38,7 @@ class RawResponse {
         ]);
     }
 
-    public static function getFromString(string $string) {
+    public static function getFromString(string $string) : self {
 
         $array = unserialize($string);
 
