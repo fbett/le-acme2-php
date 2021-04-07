@@ -55,6 +55,11 @@ class Order extends AbstractKeyValuable {
             'order_' . md5(implode('|', $subjects));
 
         Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '"'
+        );
+
+        Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_DEBUG,
             get_class() . '::' . __FUNCTION__ .  ' path: ' . $this->getKeyDirectoryPath()
         );
@@ -94,10 +99,6 @@ class Order extends AbstractKeyValuable {
             $response = $request->getResponse();
 
             Connector\Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $response);
-            Utilities\Logger::getInstance()->add(
-                Utilities\Logger::LEVEL_INFO,
-                get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '"'
-            );
             return $this;
 
         } catch(Exception\AbstractException $e) {
@@ -153,7 +154,7 @@ class Order extends AbstractKeyValuable {
             } else {
                 Utilities\Logger::getInstance()->add(
                     Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '" (from cache, status "' . $directoryNewOrderResponse->getStatus() . '")'
+                    get_class() . '::' . __FUNCTION__ .  ' (from cache, status "' . $directoryNewOrderResponse->getStatus() . '")'
                 );
                 return $order;
             }
@@ -165,8 +166,7 @@ class Order extends AbstractKeyValuable {
         Connector\Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) .
-            '" (status: "' . $response->getStatus() . '")'
+            get_class() . '::' . __FUNCTION__ .  ' (status: "' . $response->getStatus() . '")'
         );
 
         return $order;
