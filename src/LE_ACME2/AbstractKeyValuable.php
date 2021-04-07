@@ -43,8 +43,11 @@ abstract class AbstractKeyValuable {
             mkdir($this->getKeyDirectoryPath());
         }
 
-        if(!$ignoreIfKeysExist && (file_exists($this->getKeyDirectoryPath() . 'private.pem') ||
-            file_exists($this->getKeyDirectoryPath() . 'public.pem')) ) {
+        if(!$ignoreIfKeysExist && (
+                file_exists($this->getKeyDirectoryPath() . 'private.pem') ||
+                file_exists($this->getKeyDirectoryPath() . 'public.pem')
+            )
+        ) {
 
             throw new \RuntimeException('Keys exist already. Exists the ' . get_class($this) . ' already?');
         }
@@ -71,8 +74,13 @@ abstract class AbstractKeyValuable {
 
     protected function _clearKeyDirectory() {
 
-        unlink($this->getKeyDirectoryPath() . 'private.pem');
-        unlink($this->getKeyDirectoryPath() . 'public.pem');
+        if(file_exists($this->getKeyDirectoryPath() . 'private.pem')) {
+            unlink($this->getKeyDirectoryPath() . 'private.pem');
+        }
+
+        if(file_exists($this->getKeyDirectoryPath() . 'public.pem')) {
+            unlink($this->getKeyDirectoryPath() . 'public.pem');
+        }
     }
 
     protected function _getAccountIdentifier(Account $account) : string {
