@@ -50,6 +50,10 @@ $order = !\LE_ACME2\Order::exists($account, $subjects) ?
     \LE_ACME2\Order::create($account, $subjects) :
     \LE_ACME2\Order::get($account, $subjects);
 
+// Clear current order (in case to restart on status "invalid")
+// Already received certificate bundles will not be affected
+// $order->clear();
+
 if($order->shouldStartAuthorization(\LE_ACME2\Order::CHALLENGE_TYPE_DNS)) {
     // Do some pre-checks, f.e. external dns checks - not required
 }

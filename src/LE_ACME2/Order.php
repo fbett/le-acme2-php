@@ -186,6 +186,10 @@ class Order extends AbstractKeyValuable {
             get_class() . '::' . __FUNCTION__ . ' "Will clear after expired authorization'
         );
 
+        $this->clear();
+    }
+
+    public function clear() {
         Connector\Storage::getInstance()->purgeDirectoryNewOrderResponse($this->_account, $this);
         $this->_clearKeyDirectory();
     }
