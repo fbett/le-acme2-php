@@ -296,8 +296,9 @@ class Order extends AbstractKeyValuable {
             $intermediateInfo = openssl_x509_parse($intermediate);
 
             // Prefer to use IdenTrust's as long as possible
+            // Expiration of IdenTrust's chain removed at April 2021: LE introduced a cross signed
             $preferredChain = (self::$_preferredChain === null || self::$_preferredChain == self::IDENTRUST_ISSUER_CN) &&
-                strtotime(self::IDENTRUST_ISSUER_EXPIRE_DATE) > $certificateValidToTimeTimestamp ?
+                (true || strtotime(self::IDENTRUST_ISSUER_EXPIRE_DATE) > $certificateValidToTimeTimestamp) ?
                 self::IDENTRUST_ISSUER_CN : null;
 
             // If another chain is set (not IdenTrust's), force to use it
