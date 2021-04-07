@@ -44,6 +44,11 @@ class Logger {
 
             $step = 0;
             foreach ($trace as $traceItem) {
+
+                if(!isset($traceItem['class']) || !isset($traceItem['function'])) {
+                    continue;
+                }
+
                 $output .= 'Trace #' . $step . ': ' . $traceItem['class'] . '::' . $traceItem['function'] . '<br/>' . "\n";
                 $step++;
             }
