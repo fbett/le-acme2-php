@@ -118,6 +118,7 @@ class Order extends AbstractKeyValuable {
      * @return Order
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\StatusInvalid
      */
     public static function get(Account $account, array $subjects) : Order {
 
@@ -128,14 +129,34 @@ class Order extends AbstractKeyValuable {
 
         $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($account, $order);
         if(
-            $directoryNewOrderResponse !== NULL &&
-            $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
+            $directoryNewOrderResponse !== NULL
         ) {
-            Utilities\Logger::getInstance()->add(
-                Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '" (from cache)'
-            );
-            return $order;
+            if(
+                $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_INVALID
+            ) {
+               throw new Exception\StatusInvalid('Order has status "' . Response\Order\AbstractDirectoryNewOrder::STATUS_INVALID . '"'.
+                   '. Probably all authorizations have failed. ' . PHP_EOL .
+                   'Please see: ' . $directoryNewOrderResponse->getLocation() . PHP_EOL .
+                   'Continue by using $order->clear() after getting rid of the problem'
+               );
+            }
+
+            if(
+                $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
+            ) {
+
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_DEBUG,
+                    get_class() . '::' . __FUNCTION__ .  ' (cache did not satisfy, status "' . $directoryNewOrderResponse->getStatus() . '")'
+                );
+
+            } else {
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_DEBUG,
+                    get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '" (from cache, status "' . $directoryNewOrderResponse->getStatus() . '")'
+                );
+                return $order;
+            }
         }
 
         $request = new Request\Order\Get($account, $order);
