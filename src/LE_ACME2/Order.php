@@ -132,7 +132,7 @@ class Order extends AbstractKeyValuable {
             $directoryNewOrderResponse !== NULL
         ) {
             if(
-                $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_INVALID
+                $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_INVALID
             ) {
                throw new Exception\StatusInvalid('Order has status "' . Response\Order\AbstractDirectoryNewOrder::STATUS_INVALID . '"'.
                    '. Probably all authorizations have failed. ' . PHP_EOL .
