@@ -26,7 +26,10 @@ class KeyGenerator {
         file_put_contents($directory . $privateKeyFile, $privateKey);
         file_put_contents($directory . $publicKeyFile, $details['key']);
 
-        openssl_pkey_free($res);
+        if(PHP_MAJOR_VERSION < 8) {
+            // deprecated after PHP 8.0.0 and not needed anymore
+            openssl_pkey_free($res);
+        }
     }
 
     /**
@@ -54,6 +57,9 @@ class KeyGenerator {
         file_put_contents($directory . $privateKeyFile, $privateKey);
         file_put_contents($directory . $publicKeyFile, $details['key']);
 
-        openssl_pkey_free($res);
+        if(PHP_MAJOR_VERSION < 8) {
+            // deprecated after PHP 8.0.0 and not needed anymore
+            openssl_pkey_free($res);
+        }
     }
 }

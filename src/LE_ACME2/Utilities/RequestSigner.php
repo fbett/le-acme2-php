@@ -68,7 +68,7 @@ class RequestSigner {
     /**
      * Generates a Key ID signature to attach to the request.
      *
-     * @param array 	$payload		The payload to add to the signature.
+     * @param array|null 	$payload		The payload to add to the signature.
      * @param string	$kid			The Key ID to use in the signature.
      * @param string	$url 			The URL to use in the signature.
      * @param string    $nonce
@@ -77,7 +77,7 @@ class RequestSigner {
      *
      * @return string	Returns a JSON encoded string containing the signature.
      */
-    public static function KID(array $payload = null, string $kid, string $url, string $nonce, string $privateKeyDir, string $privateKeyFile = 'private.pem') : string {
+    public static function KID(?array $payload, string $kid, string $url, string $nonce, string $privateKeyDir, string $privateKeyFile = 'private.pem') : string {
 
         Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID sign request for ' . $url, $payload);
 

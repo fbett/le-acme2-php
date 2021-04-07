@@ -29,7 +29,7 @@ class Logger {
      * @param string $message
      * @param string|array|object $data
      */
-    public function add(int $level = self::LEVEL_DEBUG, string $message, $data = array()) {
+    public function add(int $level, string $message, $data = array()) {
 
         if($level > $this->_desiredLevel)
             return;
