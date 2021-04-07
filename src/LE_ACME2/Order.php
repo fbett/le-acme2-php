@@ -53,6 +53,11 @@ class Order extends AbstractKeyValuable {
 
         $this->_identifier = $this->_getAccountIdentifier($account) . DIRECTORY_SEPARATOR .
             'order_' . md5(implode('|', $subjects));
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_DEBUG,
+            get_class() . '::' . __FUNCTION__ .  ' path: ' . $this->getKeyDirectoryPath()
+        );
     }
 
     public function getSubjects() : array {
@@ -139,7 +144,8 @@ class Order extends AbstractKeyValuable {
         Connector\Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
+            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) .
+            '" (status: "' . $response->getStatus() . '")'
         );
 
         return $order;

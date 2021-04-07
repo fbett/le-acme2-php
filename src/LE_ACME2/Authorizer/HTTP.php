@@ -42,6 +42,11 @@ class HTTP extends AbstractAuthorizer {
                                                  Response\Authorization\Get $authorizationResponse
     ) : bool {
 
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_DEBUG,
+            'Challenge "' . $challenge->token . '" has status:' . $challenge->status
+        );
+
         if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
 
             $this->_writeToFile($challenge);

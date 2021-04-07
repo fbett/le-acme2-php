@@ -45,8 +45,15 @@ abstract class AbstractAuthorizer {
      */
     protected function _fetchAuthorizationResponses() {
 
-        if(!file_exists($this->_order->getKeyDirectoryPath() . 'private.pem')) // Order has finished already
+        if(!file_exists($this->_order->getKeyDirectoryPath() . 'private.pem')) {
+
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_DEBUG,
+                get_class() . '::' . __FUNCTION__ . ' result suppressed (Order has finished already)',
+            );
+
             return;
+        }
 
         $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this->_order);
 

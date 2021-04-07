@@ -16,6 +16,15 @@ class Account extends AbstractKeyValuable {
     public function __construct(string $email) {
 
         $this->setEmail($email);
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
+        );
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_DEBUG,
+            get_class() . '::' . __FUNCTION__ .  ' path: ' . $this->getKeyDirectoryPath()
+        );
     }
 
     public function setEmail(string $email) {
@@ -45,10 +54,6 @@ class Account extends AbstractKeyValuable {
             $response = $request->getResponse();
 
             Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
-            Utilities\Logger::getInstance()->add(
-                Utilities\Logger::LEVEL_INFO,
-                get_class() . '::' . __FUNCTION__ .  ' "' . $email . '"'
-            );
 
             return $account;
 
@@ -83,10 +88,12 @@ class Account extends AbstractKeyValuable {
 
         $directoryNewAccountResponse = Storage::getInstance()->getDirectoryNewAccountResponse($account);
         if($directoryNewAccountResponse !== NULL) {
+
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ .  ' "' . $email . '" (from cache)'
+                get_class() . '::' . __FUNCTION__ .  ' response from cache'
             );
+
             return $account;
         }
 
@@ -95,10 +102,6 @@ class Account extends AbstractKeyValuable {
 
         Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
 
-        Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . $email . '"'
-        );
         return $account;
     }
 
