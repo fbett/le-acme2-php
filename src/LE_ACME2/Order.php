@@ -115,61 +115,12 @@ class Order extends AbstractKeyValuable {
         return file_exists($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse');
     }
 
-    /**
-     * @param Account $account
-     * @param array $subjects
-     * @return Order
-     * @throws Exception\InvalidResponse
-     * @throws Exception\RateLimitReached
-     * @throws Exception\StatusInvalid
-     */
     public static function get(Account $account, array $subjects) : Order {
 
         $order = new self($account, $subjects);
 
         if(!self::exists($account, $subjects))
             throw new \RuntimeException('Order does not exist');
-
-        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($order);
-        if(
-            $directoryNewOrderResponse !== NULL
-        ) {
-            if(
-                $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_INVALID
-            ) {
-               throw new Exception\StatusInvalid('Order has status "' . Response\Order\AbstractDirectoryNewOrder::STATUS_INVALID . '"'.
-                   '. Probably all authorizations have failed. ' . PHP_EOL .
-                   'Please see: ' . $directoryNewOrderResponse->getLocation() . PHP_EOL .
-                   'Continue by using $order->clear() after getting rid of the problem'
-               );
-            }
-
-            if(
-                $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
-            ) {
-
-                Utilities\Logger::getInstance()->add(
-                    Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ .  ' (cache did not satisfy, status "' . $directoryNewOrderResponse->getStatus() . '")'
-                );
-
-            } else {
-                Utilities\Logger::getInstance()->add(
-                    Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ .  ' (from cache, status "' . $directoryNewOrderResponse->getStatus() . '")'
-                );
-                return $order;
-            }
-        }
-
-        $request = new Request\Order\Get($account, $order);
-        $response = $request->getResponse();
-
-        Cache\DirectoryNewOrderResponse::getInstance()->set($order, $response);
-        Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' (status: "' . $response->getStatus() . '")'
-        );
 
         return $order;
     }
@@ -411,7 +362,7 @@ class Order extends AbstractKeyValuable {
 
     /**
      * @param string $keyType
-     * @param int $renewBefore Unix timestamp
+     * @param int|null $renewBefore Unix timestamp
      * @throws Exception\AbstractException
      */
     public function enableAutoRenewal($keyType = self::KEY_TYPE_RSA, int $renewBefore = null) {

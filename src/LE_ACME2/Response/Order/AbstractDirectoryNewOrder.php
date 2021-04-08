@@ -3,6 +3,7 @@
 namespace LE_ACME2\Response\Order;
 
 use LE_ACME2\Response\AbstractResponse;
+use LE_ACME2\Exception;
 
 abstract class AbstractDirectoryNewOrder extends AbstractResponse {
 
@@ -39,5 +40,28 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
 
     public function getCertificate() : string {
         return $this->_raw->body['certificate'];
+    }
+
+    /**
+     * @return bool
+     * @throws Exception\StatusInvalid
+     */
+    protected function _isValid(): bool {
+
+        if(!parent::_isValid()) {
+            return false;
+        }
+
+        if(
+            $this->getStatus() == AbstractDirectoryNewOrder::STATUS_INVALID
+        ) {
+            throw new Exception\StatusInvalid('Order has status "' . AbstractDirectoryNewOrder::STATUS_INVALID . '"'.
+                '. Probably all authorizations have failed. ' . PHP_EOL .
+                'Please see: ' . $this->getLocation() . PHP_EOL .
+                'Continue by using $order->clear() after getting rid of the problem'
+            );
+        }
+
+        return true;
     }
 }
