@@ -2,21 +2,17 @@
 
 namespace LE_ACME2\Utilities;
 
+use LE_ACME2\SingletonTrait;
+
 class Logger {
+
+    use SingletonTrait;
 
     const LEVEL_DISABLED = 0;
     const LEVEL_INFO = 1;
     const LEVEL_DEBUG = 2;
 
-    private static $_instance = NULL;
-
-    public static function getInstance() : self {
-
-        if(self::$_instance === NULL) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
+    private function __construct() {}
 
     protected $_desiredLevel = self::LEVEL_DISABLED;
 

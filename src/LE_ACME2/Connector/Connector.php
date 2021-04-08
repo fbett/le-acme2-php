@@ -5,24 +5,19 @@ namespace LE_ACME2\Connector;
 use LE_ACME2\Request;
 use LE_ACME2\Response;
 
+use LE_ACME2\SingletonTrait;
 use LE_ACME2\Utilities;
 use LE_ACME2\Exception;
 
 class Connector {
+
+    use SingletonTrait;
     
     const METHOD_GET = 'GET';
     const METHOD_HEAD = 'HEAD';
     const METHOD_POST = 'POST';
 
-    private static $_instance = NULL;
-    
-    public static function getInstance() : self {
-        
-        if(self::$_instance === NULL) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
+    private function __construct() {}
 
     protected $_baseURL = 		 'https://acme-v02.api.letsencrypt.org';
     protected $_stagingBaseURL = 'https://acme-staging-v02.api.letsencrypt.org';

@@ -10,18 +10,13 @@ use LE_ACME2\Exception;
 
 use LE_ACME2\Account;
 use LE_ACME2\Order;
+use LE_ACME2\SingletonTrait;
 
 class Storage {
 
-    private static $_instance = NULL;
+    use SingletonTrait;
 
-    public static function getInstance() : self {
-
-        if(self::$_instance === NULL) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
+    protected function __construct() {}
 
     protected $_getDirectoryResponse = NULL;
     protected $_getNewNonceResponse = NULL;
