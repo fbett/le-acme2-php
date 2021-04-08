@@ -5,7 +5,7 @@ namespace LE_ACME2;
 use LE_ACME2\Request;
 use LE_ACME2\Response;
 
-use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Authorizer;
 use LE_ACME2\Exception;
 use LE_ACME2\Utilities;
@@ -37,8 +37,6 @@ class Order extends AbstractKeyValuable {
     protected $_account;
     protected $_subjects;
 
-    protected $_existsNotValidChallenges = true;
-
     public function __construct(Account $account, array $subjects) {
 
         array_map(function($subject) {
@@ -63,6 +61,10 @@ class Order extends AbstractKeyValuable {
             Utilities\Logger::LEVEL_DEBUG,
             get_class() . '::' . __FUNCTION__ .  ' path: ' . $this->getKeyDirectoryPath()
         );
+    }
+
+    public function getAccount() : Account {
+        return $this->_account;
     }
 
     public function getSubjects() : array {
@@ -98,7 +100,7 @@ class Order extends AbstractKeyValuable {
         try {
             $response = $request->getResponse();
 
-            Connector\Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $response);
+            Cache\DirectoryNewOrderResponse::getInstance()->set($this, $response);
             return $this;
 
         } catch(Exception\AbstractException $e) {
@@ -128,7 +130,7 @@ class Order extends AbstractKeyValuable {
         if(!self::exists($account, $subjects))
             throw new \RuntimeException('Order does not exist');
 
-        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($account, $order);
+        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($order);
         if(
             $directoryNewOrderResponse !== NULL
         ) {
@@ -163,7 +165,7 @@ class Order extends AbstractKeyValuable {
         $request = new Request\Order\Get($account, $order);
         $response = $request->getResponse();
 
-        Connector\Storage::getInstance()->setDirectoryNewOrderResponse($account, $order, $response);
+        Cache\DirectoryNewOrderResponse::getInstance()->set($order, $response);
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
             get_class() . '::' . __FUNCTION__ .  ' (status: "' . $response->getStatus() . '")'
@@ -211,7 +213,7 @@ class Order extends AbstractKeyValuable {
     }
 
     public function clear() {
-        Connector\Storage::getInstance()->purgeDirectoryNewOrderResponse($this->_account, $this);
+        Cache\DirectoryNewOrderResponse::getInstance()->set($this, null);
         $this->_clearKeyDirectory();
     }
 
@@ -271,7 +273,7 @@ class Order extends AbstractKeyValuable {
             get_class() . '::' . __FUNCTION__ . ' "Will finalize'
         );
 
-        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
+        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($this);
 
         if(
             $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_PENDING /* DEPRECATED AFTER JULI 5TH 2018 */ ||
@@ -280,7 +282,7 @@ class Order extends AbstractKeyValuable {
 
             $request = new Request\Order\Finalize($this->_account, $this);
             $directoryNewOrderResponse = $request->getResponse();
-            Connector\Storage::getInstance()->setDirectoryNewOrderResponse($this->_account, $this, $directoryNewOrderResponse);
+            Cache\DirectoryNewOrderResponse::getInstance()->set($this, $directoryNewOrderResponse);
         }
 
         if($directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
@@ -422,7 +424,7 @@ class Order extends AbstractKeyValuable {
             throw new \RuntimeException('There is no certificate available');
         }
 
-        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this);
+        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($this);
         if(
             $directoryNewOrderResponse === null ||
             $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID

@@ -5,6 +5,7 @@ namespace LE_ACME2\Request\Authorization;
 use LE_ACME2\Request\AbstractRequest;
 
 use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Exception;
 use LE_ACME2\Response;
 use LE_ACME2\Utilities;
@@ -30,18 +31,15 @@ class Get extends AbstractRequest {
      */
     public function getResponse() : Response\AbstractResponse {
 
-        $connector = Connector\Connector::getInstance();
-        $storage = Connector\Storage::getInstance();
-
         $kid = Utilities\RequestSigner::KID(
             null,
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
             $this->_authorizationURL,
-            $storage->getNewNonceResponse()->getNonce(),
+            Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
 
-        $result = $connector->request(
+        $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
             $this->_authorizationURL,
             $kid

@@ -6,6 +6,7 @@ use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Response;
 
 use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Exception;
 use LE_ACME2\Utilities;
 
@@ -30,9 +31,6 @@ class Create extends AbstractRequest {
      */
     public function getResponse() : Response\AbstractResponse {
 
-        $connector = Connector\Connector::getInstance();
-        $storage = Connector\Storage::getInstance();
-
         $identifiers = [];
         foreach($this->_order->getSubjects() as $subject) {
 
@@ -50,14 +48,14 @@ class Create extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
-            $storage->getGetDirectoryResponse()->getNewOrder(),
-            $storage->getNewNonceResponse()->getNonce(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\DirectoryResponse::getInstance()->get()->getNewOrder(),
+            Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
-        $result = $connector->request(
+        $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            $storage->getGetDirectoryResponse()->getNewOrder(),
+            Cache\DirectoryResponse::getInstance()->get()->getNewOrder(),
             $kid
         );
 

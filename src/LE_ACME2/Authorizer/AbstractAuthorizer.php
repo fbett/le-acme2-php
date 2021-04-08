@@ -5,7 +5,7 @@ namespace LE_ACME2\Authorizer;
 use LE_ACME2\Request;
 use LE_ACME2\Response;
 
-use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Utilities;
 use LE_ACME2\Exception;
 
@@ -55,7 +55,7 @@ abstract class AbstractAuthorizer {
             return;
         }
 
-        $directoryNewOrderResponse = Connector\Storage::getInstance()->getDirectoryNewOrderResponse($this->_account, $this->_order);
+        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($this->_order);
 
         foreach($directoryNewOrderResponse->getAuthorizations() as $authorization) {
 

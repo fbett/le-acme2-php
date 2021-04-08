@@ -6,6 +6,7 @@ use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Response;
 
 use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Exception;
 use LE_ACME2\Utilities;
 
@@ -30,9 +31,6 @@ class Finalize extends AbstractRequest {
      */
     public function getResponse() : Response\AbstractResponse {
 
-        $connector = Connector\Connector::getInstance();
-        $storage = Connector\Storage::getInstance();
-
         $csr = Utilities\Certificate::generateCSR($this->_order);
 
         if(preg_match('~-----BEGIN\sCERTIFICATE\sREQUEST-----(.*)-----END\sCERTIFICATE\sREQUEST-----~s', $csr, $matches))
@@ -46,15 +44,15 @@ class Finalize extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
-            $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getFinalize(),
-            $storage->getNewNonceResponse()->getNonce(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\DirectoryNewOrderResponse::getInstance()->get($this->_order)->getFinalize(),
+            Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
 
-        $result = $connector->request(
+        $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getFinalize(),
+            Cache\DirectoryNewOrderResponse::getInstance()->get($this->_order)->getFinalize(),
             $kid
         );
 

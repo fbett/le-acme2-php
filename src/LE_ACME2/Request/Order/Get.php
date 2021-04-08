@@ -6,6 +6,7 @@ use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Response;
 
 use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Exception;
 use LE_ACME2\Utilities;
 
@@ -30,23 +31,20 @@ class Get extends AbstractRequest {
      */
     public function getResponse() : Response\AbstractResponse {
 
-        $connector = Connector\Connector::getInstance();
-        $storage = Connector\Storage::getInstance();
-
         $kid = Utilities\RequestSigner::KID(
             null,
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
-            $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation(),
-            $storage->getNewNonceResponse()->getNonce(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\DirectoryNewOrderResponse::getInstance()->get($this->_order)->getLocation(),
+            Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
 
-        $result = $connector->request(
+        $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation(),
+            Cache\DirectoryNewOrderResponse::getInstance()->get($this->_order)->getLocation(),
             $kid
         );
 
-        return new Response\Order\Get($result, $storage->getDirectoryNewOrderResponse($this->_account, $this->_order)->getLocation());
+        return new Response\Order\Get($result, Cache\DirectoryNewOrderResponse::getInstance()->get($this->_order)->getLocation());
     }
 }

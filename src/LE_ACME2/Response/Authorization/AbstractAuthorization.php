@@ -4,7 +4,7 @@ namespace LE_ACME2\Response\Authorization;
 
 use LE_ACME2\Response\AbstractResponse;
 
-use LE_ACME2\Connector\Struct\RawResponse;
+use LE_ACME2\Connector\RawResponse;
 use LE_ACME2\Exception;
 
 class AbstractAuthorization extends AbstractResponse {

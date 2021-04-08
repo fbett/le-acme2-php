@@ -6,6 +6,7 @@ use LE_ACME2\Request;
 use LE_ACME2\Response;
 
 use LE_ACME2\SingletonTrait;
+use LE_ACME2\Cache;
 use LE_ACME2\Utilities;
 use LE_ACME2\Exception;
 
@@ -43,11 +44,11 @@ class Connector {
      * @param string 	$url 	The URL to make the request to.
      * @param string 	$data  	The body to attach to a POST request. Expected as a JSON encoded string.
      *
-     * @return Struct\RawResponse
+     * @return RawResponse
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    public function request(string $method, string $url, string $data = null) : Struct\RawResponse {
+    public function request(string $method, string $url, string $data = null) : RawResponse {
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'will request from ' . $url, $data);
 
@@ -86,7 +87,7 @@ class Connector {
 
         $header_size = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
 
-        $rawResponse = new Struct\RawResponse();
+        $rawResponse = new RawResponse();
         $rawResponse->init($method, $url, $response, $header_size);
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', $rawResponse);
@@ -94,13 +95,13 @@ class Connector {
 
         try {
             $getNewNonceResponse = new Response\GetNewNonce($rawResponse);
-            Storage::getInstance()->setNewNonceResponse($getNewNonceResponse);
+            Cache\NewNonceResponse::getInstance()->set($getNewNonceResponse);
 
         } catch(Exception\InvalidResponse $e) {
 
             if($method == self::METHOD_POST) {
                 $request = new Request\GetNewNonce();
-                Storage::getInstance()->setNewNonceResponse($request->getResponse());
+                Cache\NewNonceResponse::getInstance()->set($request->getResponse());
             }
         }
 

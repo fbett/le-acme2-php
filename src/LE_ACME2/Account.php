@@ -1,11 +1,9 @@
 <?php
-
 namespace LE_ACME2;
 
 use LE_ACME2\Request;
 use LE_ACME2\Response;
 
-use LE_ACME2\Connector\Storage;
 use LE_ACME2\Utilities;
 use LE_ACME2\Exception;
 
@@ -53,7 +51,7 @@ class Account extends AbstractKeyValuable {
         try {
             $response = $request->getResponse();
 
-            Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
+            Cache\DirectoryNewAccountResponse::getInstance()->set($account, $response);
 
             return $account;
 
@@ -86,7 +84,7 @@ class Account extends AbstractKeyValuable {
         if(!self::exists($email))
             throw new \RuntimeException('Keys not found - does this account exist?');
 
-        $directoryNewAccountResponse = Storage::getInstance()->getDirectoryNewAccountResponse($account);
+        $directoryNewAccountResponse = Cache\DirectoryNewAccountResponse::getInstance()->get($account);
         if($directoryNewAccountResponse !== NULL) {
 
             Utilities\Logger::getInstance()->add(
@@ -100,7 +98,7 @@ class Account extends AbstractKeyValuable {
         $request = new Request\Account\Get($account);
         $response = $request->getResponse();
 
-        Storage::getInstance()->setDirectoryNewAccountResponse($account, $response);
+        Cache\DirectoryNewAccountResponse::getInstance()->set($account, $response);
 
         return $account;
     }

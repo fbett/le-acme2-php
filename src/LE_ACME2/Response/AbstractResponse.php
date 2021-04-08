@@ -4,7 +4,7 @@ namespace LE_ACME2\Response;
 
 use LE_ACME2\Exception;
 
-use LE_ACME2\Connector\Struct\RawResponse;
+use LE_ACME2\Connector\RawResponse;
 
 abstract class AbstractResponse {
 

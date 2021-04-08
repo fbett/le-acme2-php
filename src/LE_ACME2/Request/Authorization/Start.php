@@ -5,6 +5,7 @@ namespace LE_ACME2\Request\Authorization;
 use LE_ACME2\Request\AbstractRequest;
 
 use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Exception;
 use LE_ACME2\Response;
 use LE_ACME2\Struct\ChallengeAuthorizationKey;
@@ -34,22 +35,19 @@ class Start extends AbstractRequest {
      */
     public function getResponse() : Response\AbstractResponse {
 
-        $connector = Connector\Connector::getInstance();
-        $storage = Connector\Storage::getInstance();
-
         $payload = [
             'keyAuthorization' => (new ChallengeAuthorizationKey($this->_account))->get($this->_challenge->token)
         ];
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
             $this->_challenge->url,
-            $storage->getNewNonceResponse()->getNonce(),
+            Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
 
-        $result = $connector->request(
+        $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
             $this->_challenge->url,
             $kid

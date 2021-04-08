@@ -1,6 +1,6 @@
 <?php
 
-namespace LE_ACME2\Connector\Struct;
+namespace LE_ACME2\Connector;
 
 class RawResponse {
 

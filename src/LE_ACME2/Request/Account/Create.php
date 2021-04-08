@@ -6,6 +6,7 @@ use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Response;
 
 use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Utilities;
 use LE_ACME2\Exception;
 
@@ -26,9 +27,6 @@ class Create extends AbstractRequest {
      */
     public function getResponse() : Response\AbstractResponse {
 
-        $connector = Connector\Connector::getInstance();
-        $storage = Connector\Storage::getInstance();
-        
         $payload = [
             'contact' => $this->_buildContactPayload($this->_account->getEmail()),
             'termsOfServiceAgreed' => true,
@@ -36,14 +34,14 @@ class Create extends AbstractRequest {
         
         $jwk = Utilities\RequestSigner::JWKString(
             $payload,
-            $storage->getGetDirectoryResponse()->getNewAccount(),
-            $storage->getNewNonceResponse()->getNonce(),
+            Cache\DirectoryResponse::getInstance()->get()->getNewAccount(),
+            Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
         
-        $result = $connector->request(
+        $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            $storage->getGetDirectoryResponse()->getNewAccount(),
+            Cache\DirectoryResponse::getInstance()->get()->getNewAccount(),
             $jwk
         );
         

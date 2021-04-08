@@ -5,6 +5,7 @@ namespace LE_ACME2\Request\Account;
 use LE_ACME2\Request\AbstractRequest;
 
 use LE_ACME2\Connector;
+use LE_ACME2\Cache;
 use LE_ACME2\Utilities;
 use LE_ACME2\Exception;
 
@@ -20,28 +21,25 @@ abstract class AbstractLocation extends AbstractRequest {
     }
 
     /**
-     * @return Connector\Struct\RawResponse
+     * @return Connector\RawResponse
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
-    protected function _getRawResponse() : Connector\Struct\RawResponse {
-
-        $connector = Connector\Connector::getInstance();
-        $storage = Connector\Storage::getInstance();
+    protected function _getRawResponse() : Connector\RawResponse {
 
         $payload = $this->_getPayload();
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
-            $storage->getNewNonceResponse()->getNonce(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
 
-        $result = $connector->request(
+        $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            $storage->getDirectoryNewAccountResponse($this->_account)->getLocation(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
             $kid
         );
 

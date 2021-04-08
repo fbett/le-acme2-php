@@ -2,7 +2,7 @@
 
 namespace LE_ACME2\Exception;
 
-use LE_ACME2\Connector\Struct\RawResponse;
+use LE_ACME2\Connector\RawResponse;
 
 class InvalidResponse extends AbstractException {
 
