@@ -3,8 +3,10 @@ namespace LE_ACME2\Cache;
 
 use LE_ACME2\Account;
 use LE_ACME2\Connector;
+use LE_ACME2\Request;
 use LE_ACME2\Response;
 use LE_ACME2\Exception;
+use LE_ACME2\Utilities;
 use LE_ACME2\SingletonTrait;
 
 class DirectoryNewAccountResponse extends AbstractKeyValuableCache {
@@ -15,12 +17,19 @@ class DirectoryNewAccountResponse extends AbstractKeyValuableCache {
 
     private $_responses = [];
 
-    public function get(Account $account): ?Response\Account\AbstractDirectoryNewAccount {
+    /**
+     * @param Account $account
+     * @return Response\Account\AbstractDirectoryNewAccount
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     */
+    public function get(Account $account): Response\Account\AbstractDirectoryNewAccount {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
 
-        if(isset($this->_responses[$accountIdentifier]))
-            return $this->_responses[$accountIdentifier];
+        if(isset($this->_responses[$accountIdentifier])) {
+            return $this->_responses[ $accountIdentifier ];
+        }
 
         $cacheFile = $account->getKeyDirectoryPath() . self::_FILE;
 
@@ -28,18 +37,33 @@ class DirectoryNewAccountResponse extends AbstractKeyValuableCache {
 
             $rawResponse = Connector\RawResponse::getFromString(file_get_contents($cacheFile));
 
+            $directoryNewAccountResponse = null;
+
             try {
                 $directoryNewAccountResponse = new Response\Account\Create($rawResponse);
-                $this->set($account, $directoryNewAccountResponse);
-
-                return $directoryNewAccountResponse;
-
             } catch(Exception\AbstractException $e) {
-
                 $this->set($account, null);
             }
+
+            if($directoryNewAccountResponse !== null) {
+
+                $this->_responses[ $accountIdentifier ] = $directoryNewAccountResponse;
+
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_DEBUG,
+                    get_class() . '::' . __FUNCTION__ . ' response from cache'
+                );
+
+                return $directoryNewAccountResponse;
+            }
         }
-        return null;
+
+        $request = new Request\Account\Get($account);
+        $response = $request->getResponse();
+
+        $this->set($account, $response);
+
+        return $response;
     }
 
     public function set(Account $account, Response\Account\AbstractDirectoryNewAccount $response = null) : void {

@@ -71,34 +71,12 @@ class Account extends AbstractKeyValuable {
                 file_exists($account->getKeyDirectoryPath() . 'public.pem');
     }
 
-    /**
-     * @param string $email
-     * @return Account
-     * @throws Exception\InvalidResponse
-     * @throws Exception\RateLimitReached
-     */
     public static function get(string $email) : Account {
 
         $account = new self($email);
 
         if(!self::exists($email))
             throw new \RuntimeException('Keys not found - does this account exist?');
-
-        $directoryNewAccountResponse = Cache\DirectoryNewAccountResponse::getInstance()->get($account);
-        if($directoryNewAccountResponse !== NULL) {
-
-            Utilities\Logger::getInstance()->add(
-                Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ .  ' response from cache'
-            );
-
-            return $account;
-        }
-
-        $request = new Request\Account\Get($account);
-        $response = $request->getResponse();
-
-        Cache\DirectoryNewAccountResponse::getInstance()->set($account, $response);
 
         return $account;
     }
