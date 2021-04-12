@@ -5,7 +5,7 @@ namespace LE_ACME2\Response\Order;
 use LE_ACME2\Response\AbstractResponse;
 use LE_ACME2\Exception;
 
-abstract class AbstractDirectoryNewOrder extends AbstractResponse {
+abstract class AbstractOrder extends AbstractResponse {
 
     const STATUS_PENDING = 'pending';
     const STATUS_VALID = 'valid';
@@ -53,9 +53,9 @@ abstract class AbstractDirectoryNewOrder extends AbstractResponse {
         }
 
         if(
-            $this->getStatus() == AbstractDirectoryNewOrder::STATUS_INVALID
+            $this->getStatus() == AbstractOrder::STATUS_INVALID
         ) {
-            throw new Exception\StatusInvalid('Order has status "' . AbstractDirectoryNewOrder::STATUS_INVALID . '"'.
+            throw new Exception\StatusInvalid('Order has status "' . AbstractOrder::STATUS_INVALID . '"'.
                 '. Probably all authorizations have failed. ' . PHP_EOL .
                 'Please see: ' . $this->getLocation() . PHP_EOL .
                 'Continue by using $order->clear() after getting rid of the problem'

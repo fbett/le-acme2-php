@@ -14,7 +14,6 @@ use LE_ACME2\Account;
 abstract class AbstractLocation extends AbstractRequest {
 
     protected $_account;
-    protected $_directoryNewAccountResponse;
 
     public function __construct(Account $account) {
         $this->_account = $account;
@@ -31,15 +30,15 @@ abstract class AbstractLocation extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_account)->getLocation(),
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()
         );
 
         $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_account)->getLocation(),
             $kid
         );
 

@@ -55,9 +55,9 @@ abstract class AbstractAuthorizer {
             return;
         }
 
-        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($this->_order);
+        $orderResponse = Cache\OrderResponse::getInstance()->get($this->_order);
 
-        foreach($directoryNewOrderResponse->getAuthorizations() as $authorization) {
+        foreach($orderResponse->getAuthorizations() as $authorization) {
 
             $request = new Request\Authorization\Get($this->_account, $authorization);
             $this->_authorizationResponses[] = $request->getResponse();

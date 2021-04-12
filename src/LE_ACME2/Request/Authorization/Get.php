@@ -33,7 +33,7 @@ class Get extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             null,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_account)->getLocation(),
             $this->_authorizationURL,
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()

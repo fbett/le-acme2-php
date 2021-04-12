@@ -41,7 +41,7 @@ class Start extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_account)->getLocation(),
             $this->_challenge->url,
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath()

@@ -4,7 +4,7 @@ namespace LE_ACME2\Response\Account;
 
 use LE_ACME2\Response\AbstractResponse;
 
-abstract class AbstractDirectoryNewAccount extends AbstractResponse {
+abstract class AbstractAccount extends AbstractResponse {
 
     public function getLocation() : string {
 

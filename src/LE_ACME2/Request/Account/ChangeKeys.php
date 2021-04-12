@@ -42,7 +42,7 @@ class ChangeKeys extends AbstractRequest {
         $newPrivateKeyDetails = openssl_pkey_get_details($newPrivateKey);
 
         $innerPayload = [
-            'account' => Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            'account' => Cache\AccountResponse::getInstance()->get($this->_account)->getLocation(),
             'oldKey' => [
                 "kty" => "RSA",
                 "n" => Utilities\Base64::UrlSafeEncode($currentPrivateKeyDetails["rsa"]["n"]),
@@ -65,7 +65,7 @@ class ChangeKeys extends AbstractRequest {
 
         $data = Utilities\RequestSigner::KID(
             $outerPayload,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_account)->getLocation(),
             Cache\DirectoryResponse::getInstance()->get()->getKeyChange(),
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath(),

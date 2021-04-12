@@ -51,7 +51,7 @@ class Account extends AbstractKeyValuable {
         try {
             $response = $request->getResponse();
 
-            Cache\DirectoryNewAccountResponse::getInstance()->set($account, $response);
+            Cache\AccountResponse::getInstance()->set($account, $response);
 
             return $account;
 

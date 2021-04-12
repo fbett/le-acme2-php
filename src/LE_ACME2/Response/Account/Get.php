@@ -2,4 +2,4 @@
 
 namespace LE_ACME2\Response\Account;
 
-class Get extends AbstractDirectoryNewAccount {}
+class Get extends AbstractAccount {}

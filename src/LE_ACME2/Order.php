@@ -95,12 +95,12 @@ class Order extends AbstractKeyValuable {
 
         $this->_initKeyDirectory($keyType, $ignoreIfKeysExist);
 
-        $request = new Request\Order\Create($this->_account, $this);
+        $request = new Request\Order\Create($this);
 
         try {
             $response = $request->getResponse();
 
-            Cache\DirectoryNewOrderResponse::getInstance()->set($this, $response);
+            Cache\OrderResponse::getInstance()->set($this, $response);
             return $this;
 
         } catch(Exception\AbstractException $e) {
@@ -112,7 +112,7 @@ class Order extends AbstractKeyValuable {
     public static function exists(Account $account, array $subjects) : bool {
 
         $order = new self($account, $subjects);
-        return file_exists($order->getKeyDirectoryPath() . 'DirectoryNewOrderResponse');
+        return Cache\OrderResponse::getInstance()->exists($order);
     }
 
     public static function get(Account $account, array $subjects) : Order {
@@ -164,7 +164,7 @@ class Order extends AbstractKeyValuable {
     }
 
     public function clear() {
-        Cache\DirectoryNewOrderResponse::getInstance()->set($this, null);
+        Cache\OrderResponse::getInstance()->set($this, null);
         $this->_clearKeyDirectory();
     }
 
@@ -224,21 +224,21 @@ class Order extends AbstractKeyValuable {
             get_class() . '::' . __FUNCTION__ . ' "Will finalize'
         );
 
-        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($this);
+        $orderResponse = Cache\OrderResponse::getInstance()->get($this);
 
         if(
-            $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_PENDING /* DEPRECATED AFTER JULI 5TH 2018 */ ||
-            $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_READY   // ACME draft-12 Section 7.1.6
+            $orderResponse->getStatus() == Response\Order\AbstractOrder::STATUS_PENDING /* DEPRECATED AFTER JULI 5TH 2018 */ ||
+            $orderResponse->getStatus() == Response\Order\AbstractOrder::STATUS_READY   // ACME draft-12 Section 7.1.6
         ) {
 
-            $request = new Request\Order\Finalize($this, $directoryNewOrderResponse);
-            $directoryNewOrderResponse = $request->getResponse();
-            Cache\DirectoryNewOrderResponse::getInstance()->set($this, $directoryNewOrderResponse);
+            $request = new Request\Order\Finalize($this, $orderResponse);
+            $orderResponse = $request->getResponse();
+            Cache\OrderResponse::getInstance()->set($this, $orderResponse);
         }
 
-        if($directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
+        if($orderResponse->getStatus() == Response\Order\AbstractOrder::STATUS_VALID) {
 
-            $request = new Request\Order\GetCertificate($this, $directoryNewOrderResponse);
+            $request = new Request\Order\GetCertificate($this, $orderResponse);
             $response = $request->getResponse();
 
             $certificate = $response->getCertificate();
@@ -276,7 +276,7 @@ class Order extends AbstractKeyValuable {
 
                 foreach($response->getAlternativeLinks() as $link) {
 
-                    $request = new Request\Order\GetCertificate($this, $directoryNewOrderResponse, $link);
+                    $request = new Request\Order\GetCertificate($this, $orderResponse, $link);
                     $response = $request->getResponse();
 
                     $alternativeCertificate = $response->getCertificate();
@@ -375,10 +375,10 @@ class Order extends AbstractKeyValuable {
             throw new \RuntimeException('There is no certificate available');
         }
 
-        $directoryNewOrderResponse = Cache\DirectoryNewOrderResponse::getInstance()->get($this);
+        $orderResponse = Cache\OrderResponse::getInstance()->get($this);
         if(
-            $directoryNewOrderResponse === null ||
-            $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
+            $orderResponse === null ||
+            $orderResponse->getStatus() != Response\Order\AbstractOrder::STATUS_VALID
         ) {
             return;
         }

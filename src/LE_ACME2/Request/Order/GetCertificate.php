@@ -14,15 +14,15 @@ use LE_ACME2\Utilities;
 class GetCertificate extends AbstractRequest {
 
     protected $_order;
-    protected $_directoryNewOrderResponse;
+    protected $_orderResponse;
 
     private $_alternativeUrl = null;
 
-    public function __construct(Order $order, Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse,
+    public function __construct(Order $order, Response\Order\AbstractOrder $orderResponse,
                                 string $alternativeUrl = null
     ) {
         $this->_order = $order;
-        $this->_directoryNewOrderResponse = $directoryNewOrderResponse;
+        $this->_orderResponse = $orderResponse;
 
         if($alternativeUrl !== null) {
             $this->_alternativeUrl = $alternativeUrl;
@@ -37,12 +37,12 @@ class GetCertificate extends AbstractRequest {
     public function getResponse() : Response\AbstractResponse {
 
         $url = $this->_alternativeUrl === null ?
-            $this->_directoryNewOrderResponse->getCertificate() :
+            $this->_orderResponse->getCertificate() :
             $this->_alternativeUrl;
 
         $kid = Utilities\RequestSigner::KID(
             null,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
             $url,
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_order->getAccount()->getKeyDirectoryPath()

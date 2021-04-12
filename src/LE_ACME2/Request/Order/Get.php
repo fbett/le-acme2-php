@@ -15,12 +15,12 @@ use LE_ACME2\Order;
 class Get extends AbstractRequest {
 
     protected $_order;
-    protected $_directoryNewOrderResponse;
+    protected $_orderResponse;
 
-    public function __construct(Order $order, Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse) {
+    public function __construct(Order $order, Response\Order\AbstractOrder $orderResponse) {
 
         $this->_order = $order;
-        $this->_directoryNewOrderResponse = $directoryNewOrderResponse;
+        $this->_orderResponse = $orderResponse;
     }
 
     /**
@@ -32,18 +32,18 @@ class Get extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             null,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
-            $this->_directoryNewOrderResponse->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
+            $this->_orderResponse->getLocation(),
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_order->getAccount()->getKeyDirectoryPath()
         );
 
         $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            $this->_directoryNewOrderResponse->getLocation(),
+            $this->_orderResponse->getLocation(),
             $kid
         );
 
-        return new Response\Order\Get($result, $this->_directoryNewOrderResponse->getLocation());
+        return new Response\Order\Get($result, $this->_orderResponse->getLocation());
     }
 }

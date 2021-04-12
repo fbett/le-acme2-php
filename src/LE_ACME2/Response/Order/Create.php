@@ -2,4 +2,4 @@
 
 namespace LE_ACME2\Response\Order;
 
-class Create extends AbstractDirectoryNewOrder {}
+class Create extends AbstractOrder {}

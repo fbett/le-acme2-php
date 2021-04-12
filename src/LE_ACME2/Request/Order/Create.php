@@ -10,17 +10,14 @@ use LE_ACME2\Cache;
 use LE_ACME2\Exception;
 use LE_ACME2\Utilities;
 
-use LE_ACME2\Account;
 use LE_ACME2\Order;
 
 class Create extends AbstractRequest {
 
-    protected $_account;
     protected $_order;
 
-    public function __construct(Account $account, Order $order) {
+    public function __construct(Order $order) {
 
-        $this->_account = $account;
         $this->_order = $order;
     }
 
@@ -48,10 +45,10 @@ class Create extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\AccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
             Cache\DirectoryResponse::getInstance()->get()->getNewOrder(),
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
-            $this->_account->getKeyDirectoryPath()
+            $this->_order->getAccount()->getKeyDirectoryPath()
         );
         $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,

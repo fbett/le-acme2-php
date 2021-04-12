@@ -15,12 +15,12 @@ use LE_ACME2\Order;
 class Finalize extends AbstractRequest {
 
     protected $_order;
-    protected $_directoryNewOrderResponse;
+    protected $_orderResponse;
 
-    public function __construct(Order $order, Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse) {
+    public function __construct(Order $order, Response\Order\AbstractOrder $orderResponse) {
 
         $this->_order = $order;
-        $this->_directoryNewOrderResponse = $directoryNewOrderResponse;
+        $this->_orderResponse = $orderResponse;
     }
 
     /**
@@ -43,15 +43,15 @@ class Finalize extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
-            $this->_directoryNewOrderResponse->getFinalize(),
+            Cache\AccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
+            $this->_orderResponse->getFinalize(),
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_order->getAccount()->getKeyDirectoryPath()
         );
 
         $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_POST,
-            $this->_directoryNewOrderResponse->getFinalize(),
+            $this->_orderResponse->getFinalize(),
             $kid
         );
 

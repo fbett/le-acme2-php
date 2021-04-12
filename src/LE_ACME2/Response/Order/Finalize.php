@@ -2,4 +2,4 @@
 
 namespace LE_ACME2\Response\Order;
 
-class Finalize extends AbstractDirectoryNewOrder {}
+class Finalize extends AbstractOrder {}
