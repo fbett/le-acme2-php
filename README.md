@@ -109,7 +109,7 @@ If a certificate is renewed, the path will also change.
 My integrated workflow is the following:
 - User enables SSL to a specific domain in my control panel
 - The cronjob of this control panel will detect these changes and tries to create or get an order like in the sample.
-- The cronjob will fetch the information within the certificate bundle, if the certificate bundle is ready (mostly on the second run)
+- The cronjob will fetch the information within the certificate bundle, if the certificate bundle is ready (mostly on the second run for challenge type HTTP and on the third run for challenge type DNS)
 - The cronjob will also build the Apache virtual host files and will restart the Apache2 service, if the new config file is different.
 
 Please take a look on the Samples for a full sample workflow.
