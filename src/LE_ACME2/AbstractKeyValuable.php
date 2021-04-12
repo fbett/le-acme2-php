@@ -49,7 +49,10 @@ abstract class AbstractKeyValuable {
             )
         ) {
 
-            throw new \RuntimeException('Keys exist already. Exists the ' . get_class($this) . ' already?');
+            throw new \RuntimeException(
+                'Keys exist already. Exists the ' . get_class($this) . ' already?' . PHP_EOL .
+                'Path: ' . $this->getKeyDirectoryPath()
+            );
         }
 
         if($keyType == self::KEY_TYPE_RSA) {
