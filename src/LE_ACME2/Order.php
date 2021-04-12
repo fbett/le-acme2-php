@@ -220,7 +220,7 @@ class Order extends AbstractKeyValuable {
         }
 
         Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_DEBUG,
+            Utilities\Logger::LEVEL_INFO,
             get_class() . '::' . __FUNCTION__ . ' "Will finalize'
         );
 
