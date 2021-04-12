@@ -27,9 +27,10 @@ class DirectoryNewAccountResponse extends AbstractKeyValuableCache {
 
         $accountIdentifier = $this->_getObjectIdentifier($account);
 
-        if(isset($this->_responses[$accountIdentifier])) {
+        if(array_key_exists($accountIdentifier, $this->_responses)) {
             return $this->_responses[ $accountIdentifier ];
         }
+        $this->_responses[ $accountIdentifier ] = null;
 
         $cacheFile = $account->getKeyDirectoryPath() . self::_FILE;
 

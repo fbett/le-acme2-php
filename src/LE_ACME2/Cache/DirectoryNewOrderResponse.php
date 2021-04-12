@@ -28,9 +28,14 @@ class DirectoryNewOrderResponse extends AbstractKeyValuableCache {
         $accountIdentifier = $this->_getObjectIdentifier($order->getAccount());
         $orderIdentifier = $this->_getObjectIdentifier($order);
 
-        if(isset($this->_responses[$accountIdentifier][$orderIdentifier])) {
+        if(!isset($this->_responses[$accountIdentifier])) {
+            $this->_responses[$accountIdentifier] = [];
+        }
+
+        if(array_key_exists($orderIdentifier, $this->_responses[$accountIdentifier])) {
             return $this->_responses[ $accountIdentifier ][ $orderIdentifier ];
         }
+        $this->_responses[ $accountIdentifier ][ $orderIdentifier ] = null;
 
         $cacheFile = $order->getKeyDirectoryPath() . self::_FILE;
 
@@ -38,51 +43,38 @@ class DirectoryNewOrderResponse extends AbstractKeyValuableCache {
 
             $rawResponse = Connector\RawResponse::getFromString(file_get_contents($cacheFile));
 
-            $directoryNewOrderResponse = null;
+            $directoryNewOrderResponse = new Response\Order\Create($rawResponse);
 
-            try {
-                $directoryNewOrderResponse = new Response\Order\Create($rawResponse);
-            } catch(Exception\AbstractException $e) {
-                $this->set($order, null);
+            if(
+                $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
+            ) {
+
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_DEBUG,
+                    get_class() . '::' . __FUNCTION__ . ' (cache did not satisfy, status "' . $directoryNewOrderResponse->getStatus() . '")'
+                );
+
+                $request = new Request\Order\Get($order, $directoryNewOrderResponse);
+                $directoryNewOrderResponse = $request->getResponse();
+                $this->set($order, $directoryNewOrderResponse);
+                return $directoryNewOrderResponse;
             }
 
-            if($directoryNewOrderResponse !== null) {
+            Utilities\Logger::getInstance()->add(
+                Utilities\Logger::LEVEL_DEBUG,
+                get_class() . '::' . __FUNCTION__ .  ' (from cache, status "' . $directoryNewOrderResponse->getStatus() . '")'
+            );
 
-                if(
-                    $directoryNewOrderResponse->getStatus() != Response\Order\AbstractDirectoryNewOrder::STATUS_VALID
-                ) {
+            $this->_responses[$accountIdentifier][$orderIdentifier] = $directoryNewOrderResponse;
 
-                    Utilities\Logger::getInstance()->add(
-                        Utilities\Logger::LEVEL_DEBUG,
-                        get_class() . '::' . __FUNCTION__ . ' (cache did not satisfy, status "' . $directoryNewOrderResponse->getStatus() . '")'
-                    );
-                    $this->set($order, null);
-
-                } else {
-
-                    Utilities\Logger::getInstance()->add(
-                        Utilities\Logger::LEVEL_DEBUG,
-                        get_class() . '::' . __FUNCTION__ .  ' (from cache, status "' . $directoryNewOrderResponse->getStatus() . '")'
-                    );
-
-                    $this->_responses[$accountIdentifier][$orderIdentifier] = $directoryNewOrderResponse;
-
-                    return $directoryNewOrderResponse;
-                }
-            }
+            return $directoryNewOrderResponse;
         }
 
-        $request = new Request\Order\Get($order->getAccount(), $order);
-        $response = $request->getResponse();
-
-        $this->set($order, $response);
-
-        Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' (status: "' . $response->getStatus() . '")'
+        throw new \RuntimeException(
+            'DirectoryNewOrderResponse could not be found for order: ' .
+            '- Path: ' . $order->getKeyDirectoryPath() . PHP_EOL .
+            '- Subjects: ' . var_export($order->getSubjects(), true) . PHP_EOL
         );
-
-        return $response;
     }
 
     public function set(Order $order, Response\Order\AbstractDirectoryNewOrder $response = null) : void {

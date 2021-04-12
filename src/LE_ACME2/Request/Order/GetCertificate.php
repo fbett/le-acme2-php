@@ -2,6 +2,7 @@
 
 namespace LE_ACME2\Request\Order;
 
+use LE_ACME2\Order;
 use LE_ACME2\Request\AbstractRequest;
 use LE_ACME2\Response;
 
@@ -10,19 +11,17 @@ use LE_ACME2\Cache;
 use LE_ACME2\Exception;
 use LE_ACME2\Utilities;
 
-use LE_ACME2\Account;
-
 class GetCertificate extends AbstractRequest {
 
-    protected $_account;
+    protected $_order;
     protected $_directoryNewOrderResponse;
 
     private $_alternativeUrl = null;
 
-    public function __construct(Account $account, Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse,
+    public function __construct(Order $order, Response\Order\AbstractDirectoryNewOrder $directoryNewOrderResponse,
                                 string $alternativeUrl = null
     ) {
-        $this->_account = $account;
+        $this->_order = $order;
         $this->_directoryNewOrderResponse = $directoryNewOrderResponse;
 
         if($alternativeUrl !== null) {
@@ -43,10 +42,10 @@ class GetCertificate extends AbstractRequest {
 
         $kid = Utilities\RequestSigner::KID(
             null,
-            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_account)->getLocation(),
+            Cache\DirectoryNewAccountResponse::getInstance()->get($this->_order->getAccount())->getLocation(),
             $url,
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
-            $this->_account->getKeyDirectoryPath()
+            $this->_order->getAccount()->getKeyDirectoryPath()
         );
 
         $result = Connector\Connector::getInstance()->request(

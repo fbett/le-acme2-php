@@ -13,7 +13,8 @@ class NewNonceResponse {
 
     private function __construct() {}
 
-    private $_response = null;
+    private $_responses = [];
+    private $_index = 0;
 
     /**
      * @return Response\GetNewNonce
@@ -22,15 +23,19 @@ class NewNonceResponse {
      */
     public function get() : Response\GetNewNonce {
 
-        if($this->_response === NULL) {
-            $request = new Request\GetNewNonce();
-            $this->set($request->getResponse());
+        if(array_key_exists($this->_index, $this->_responses)) {
+            return $this->_responses[$this->_index];
         }
+        $this->_responses[$this->_index] = null;
 
-        return $this->_response;
+        $request = new Request\GetNewNonce();
+        $response = $request->getResponse();
+        $this->set($response);
+
+        return $response;
     }
 
     public function set(Response\GetNewNonce $response) : void {
-        $this->_response = $response;
+        $this->_responses[$this->_index] = $response;
     }
 }

@@ -231,14 +231,14 @@ class Order extends AbstractKeyValuable {
             $directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_READY   // ACME draft-12 Section 7.1.6
         ) {
 
-            $request = new Request\Order\Finalize($this->_account, $this);
+            $request = new Request\Order\Finalize($this, $directoryNewOrderResponse);
             $directoryNewOrderResponse = $request->getResponse();
             Cache\DirectoryNewOrderResponse::getInstance()->set($this, $directoryNewOrderResponse);
         }
 
         if($directoryNewOrderResponse->getStatus() == Response\Order\AbstractDirectoryNewOrder::STATUS_VALID) {
 
-            $request = new Request\Order\GetCertificate($this->_account, $directoryNewOrderResponse);
+            $request = new Request\Order\GetCertificate($this, $directoryNewOrderResponse);
             $response = $request->getResponse();
 
             $certificate = $response->getCertificate();
@@ -276,7 +276,7 @@ class Order extends AbstractKeyValuable {
 
                 foreach($response->getAlternativeLinks() as $link) {
 
-                    $request = new Request\Order\GetCertificate($this->_account, $directoryNewOrderResponse, $link);
+                    $request = new Request\Order\GetCertificate($this, $directoryNewOrderResponse, $link);
                     $response = $request->getResponse();
 
                     $alternativeCertificate = $response->getCertificate();
