@@ -44,6 +44,6 @@ class Get extends AbstractRequest {
             $kid
         );
 
-        return new Response\Order\Get($result, $this->_orderResponse->getLocation());
+        return new Response\Order\Get($result);
     }
 }
