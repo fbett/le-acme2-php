@@ -17,10 +17,10 @@ class Get extends AbstractOrder {
      */
     public function __construct(RawResponse $raw, string $orderURL) {
 
-        parent::__construct($raw);
-
         // Dirty fix: Header of response "Get" does not contain an order url, instead of response "Create"
         // Is needed on production server, not on staging server - tested: 12.04.2021
-        $this->_raw->header[] = 'Location: ' . $orderURL;
+        $raw->header[] = 'Location: ' . $orderURL;
+
+        parent::__construct($raw);
     }
 }
