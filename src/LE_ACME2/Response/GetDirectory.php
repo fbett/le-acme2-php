@@ -23,4 +23,16 @@ class GetDirectory extends AbstractResponse {
     public function getRevokeCert() : string {
         return $this->_raw->body['revokeCert'];
     }
+    
+    public function getTermsOfService() : string {
+        return $this->_raw->body['meta']['termsOfService'];
+    }
+
+    public function getWebsite() : string {
+        return $this->_raw->body['meta']['website'];
+    }
+
+    public function getCaaIdentities() : string {
+        return $this->_raw->body['meta']['caaIdentities'];
+    }
 }
