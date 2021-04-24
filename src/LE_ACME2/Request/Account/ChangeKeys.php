@@ -69,7 +69,7 @@ class ChangeKeys extends AbstractRequest {
             Cache\DirectoryResponse::getInstance()->get()->getKeyChange(),
             Cache\NewNonceResponse::getInstance()->get()->getNonce(),
             $this->_account->getKeyDirectoryPath(),
-            'private-replacement.pem'
+            'private.pem'
         );
 
         $result = Connector\Connector::getInstance()->request(
