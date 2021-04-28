@@ -133,7 +133,7 @@ class Account extends AbstractKeyValuable {
             unlink($this->getKeyDirectoryPath() . 'private.pem');
             unlink($this->getKeyDirectoryPath() . 'public.pem');
             rename($this->getKeyDirectoryPath() . 'private-replacement.pem', $this->getKeyDirectoryPath() . 'private.pem');
-            rename($this->getKeyDirectoryPath() . 'private-replacement.pem', $this->getKeyDirectoryPath() . 'public.pem');
+            rename($this->getKeyDirectoryPath() . 'public-replacement.pem', $this->getKeyDirectoryPath() . 'public.pem');
             return true;
 
         } catch(Exception\InvalidResponse $e) {
