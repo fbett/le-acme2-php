@@ -24,6 +24,10 @@ class HTTP extends AbstractAuthorizer {
         self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
+    public static function getDirectoryPath() : ?string {
+        return self::$_directoryPath;
+    }
+
     protected function _getChallengeType(): string {
         return Order::CHALLENGE_TYPE_HTTP;
     }

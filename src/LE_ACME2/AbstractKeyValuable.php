@@ -22,7 +22,7 @@ abstract class AbstractKeyValuable {
         self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
     }
 
-    public static function getCommonKeyDirectoryPath() : string {
+    public static function getCommonKeyDirectoryPath() : ?string {
         return self::$_directoryPath;
     }
 
