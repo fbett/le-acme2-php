@@ -27,6 +27,9 @@ abstract class AbstractLocation extends AbstractRequest {
     protected function _getRawResponse() : Connector\RawResponse {
 
         $payload = $this->_getPayload();
+        if(count($payload) == 0) {
+            $payload['rand-' . rand(100000, 1000000)] = 1;
+        }
 
         $kid = Utilities\RequestSigner::KID(
             $payload,
