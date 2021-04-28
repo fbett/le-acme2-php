@@ -13,7 +13,7 @@ class Account extends AbstractKeyValuable {
 
     public function __construct(string $email) {
 
-        $this->setEmail($email);
+        $this->_setEmail($email);
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
@@ -25,7 +25,7 @@ class Account extends AbstractKeyValuable {
         );
     }
 
-    public function setEmail(string $email) {
+    private function _setEmail(string $email) {
 
         $this->_email = $email;
         $this->_identifier = $this->_getAccountIdentifier($this);
@@ -106,7 +106,7 @@ class Account extends AbstractKeyValuable {
 
             $previousKeyDirectoryPath = $this->getKeyDirectoryPath();
 
-            $this->setEmail($email);
+            $this->_setEmail($email);
 
             if($previousKeyDirectoryPath != $this->getKeyDirectoryPath())
                 rename($previousKeyDirectoryPath, $this->getKeyDirectoryPath());
