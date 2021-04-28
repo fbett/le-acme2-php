@@ -102,6 +102,7 @@ class AccountTest extends AbstractTest {
         $keyDirectoryPath = $account->getKeyDirectoryPath();
         $newEmail = 'new-' . $this->_email;
 
+        // An email from example.org is not allowed
         $result = $account->update('test@example.org');
         $this->assertTrue($result === false);
 
@@ -131,12 +132,15 @@ class AccountTest extends AbstractTest {
         $result = $account->deactivate();
         $this->assertTrue($result === true);
 
+        // The account is already deactivated
         $result = $account->deactivate();
         $this->assertTrue($result === false);
 
+        // The account is already deactivated
         $result = $account->changeKeys();
         $this->assertTrue($result === false);
 
+        // The account is already deactivated
         $this->expectException(\LE_ACME2\Exception\InvalidResponse::class);
         $account->getData();
     }
