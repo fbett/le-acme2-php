@@ -28,11 +28,17 @@ class Get extends AbstractAuthorization {
      */
     public function getChallenge(string $type) : Struct\Challenge {
 
+        $foundTypes = [];
+
         foreach($this->getChallenges() as $challenge) {
 
             if($type == $challenge['type'])
                 return new Struct\Challenge($challenge['type'], $challenge['status'], $challenge['url'], $challenge['token']);
+
+            $foundTypes[] = $challenge['type'];
         }
-        throw new \RuntimeException('No challenge found with given type');
+        throw new \RuntimeException(
+            'No challenge found with given type. Found types: ' . var_export($foundTypes, true)
+        );
     }
 }
