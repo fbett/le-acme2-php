@@ -86,6 +86,12 @@ class AccountTest extends AbstractTest {
         }
 
         $this->expectException(InvalidResponse::class);
+        $this->expectExceptionMessage(
+            'Invalid response received: ' .
+            'urn:ietf:params:acme:error:invalidEmail' .
+            ' - ' .
+            'Error creating new account :: invalid contact domain. Contact emails @example.org are forbidden'
+        );
         \LE_ACME2\Account::create('test@example.org');
     }
 

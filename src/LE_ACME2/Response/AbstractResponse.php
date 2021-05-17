@@ -35,7 +35,12 @@ abstract class AbstractResponse {
 
         $result = $this->_isValid();
         if(!$result) {
-            throw new Exception\InvalidResponse($raw);
+
+            $responseStatus = $this->_preg_match_headerLine('/^HTTP\/.* [0-9]{3,} /i');
+            throw new Exception\InvalidResponse(
+                $raw,
+                $responseStatus ? $responseStatus[1] : null,
+            );
         }
     }
 
