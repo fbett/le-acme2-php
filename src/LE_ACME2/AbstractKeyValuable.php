@@ -27,6 +27,10 @@ abstract class AbstractKeyValuable {
     }
 
     protected function _getKeyDirectoryPath(string $appendix = '') : string {
+        
+        if(self::$_directoryPath === null) {
+            throw new \RuntimeException('Common Key Directory Path is not set');
+        }
 
         return self::$_directoryPath . $this->_identifier . $appendix . DIRECTORY_SEPARATOR;
     }
