@@ -90,6 +90,8 @@ abstract class AbstractAuthorizer {
 
     abstract protected function _getChallengeType() : string;
 
+    private $_progressed = false;
+
     /**
      * @throws Exception\AuthorizationInvalid
      * @throws Exception\InvalidResponse
@@ -97,6 +99,12 @@ abstract class AbstractAuthorizer {
      * @throws Exception\ExpiredAuthorization
      */
     public function progress() {
+
+        if($this->_progressed) {
+            return;
+        }
+
+        $this->_progressed = true;
 
         if(!$this->_hasValidAuthorizationResponses())
             return;
