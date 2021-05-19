@@ -17,7 +17,7 @@ class RequestSigner {
      */
     public static function JWK(array $payload, string $url, string $nonce, string $privateKeyDir, string $privateKeyFile = 'private.pem') : array {
 
-        Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'JWK sign request for ' . $url, $payload);
+        Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'JWK sign request for ' . $url, ['payload' => $payload]);
 
         $privateKey = openssl_pkey_get_private(file_get_contents($privateKeyDir . $privateKeyFile));
         $details = openssl_pkey_get_details($privateKey);
@@ -79,7 +79,7 @@ class RequestSigner {
      */
     public static function KID(?array $payload, string $kid, string $url, string $nonce, string $privateKeyDir, string $privateKeyFile = 'private.pem') : string {
 
-        Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID sign request for ' . $url, $payload);
+        Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID sign request for ' . $url, ['payload' => $payload]);
 
         $privateKey = openssl_pkey_get_private(file_get_contents($privateKeyDir . $privateKeyFile));
         // TODO: unused - $details = openssl_pkey_get_details($privateKey);
@@ -91,7 +91,7 @@ class RequestSigner {
             "url" => $url
         ];
 
-        Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID: ready to sign request for: ' . $url, $protected);
+        Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID: ready to sign request for: ' . $url, ['protected' => $protected]);
 
         $payload = $payload === null ? "" : str_replace('\\/', '/', json_encode($payload));
 

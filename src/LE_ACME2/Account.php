@@ -16,12 +16,10 @@ class Account extends AbstractKeyValuable {
         $this->_setEmail($email);
 
         Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
-        );
-        Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_DEBUG,
-            get_class() . '::' . __FUNCTION__ .  ' path: ' . $this->getKeyDirectoryPath()
+            get_class() . '::' . __FUNCTION__ .
+            ' email: "' . $email . '" ' .
+            ' path: ' . $this->getKeyDirectoryPath()
         );
     }
 
@@ -42,6 +40,11 @@ class Account extends AbstractKeyValuable {
      * @throws Exception\AbstractException
      */
     public static function create(string $email) : Account {
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
+        );
 
         $account = new self($email);
         $account->_initKeyDirectory();
@@ -72,6 +75,11 @@ class Account extends AbstractKeyValuable {
     }
 
     public static function get(string $email) : Account {
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
+        );
 
         $account = new self($email);
 

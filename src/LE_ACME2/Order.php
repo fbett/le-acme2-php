@@ -52,13 +52,10 @@ class Order extends AbstractKeyValuable {
             'order_' . md5(implode('|', $subjects));
 
         Utilities\Logger::getInstance()->add(
-            Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $this->getSubjects()) . '"'
-        );
-
-        Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_DEBUG,
-            get_class() . '::' . __FUNCTION__ .  ' path: ' . $this->getKeyDirectoryPath()
+            get_class() . '::' . __FUNCTION__ .
+            ' subject: "' . implode(':', $this->getSubjects()) . '" ' .
+            ' path: ' . $this->getKeyDirectoryPath()
         );
     }
 
@@ -79,6 +76,11 @@ class Order extends AbstractKeyValuable {
      * @throws Exception\AbstractException
      */
     public static function create(Account $account, array $subjects, string $keyType = self::KEY_TYPE_RSA) : Order {
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
+        );
 
         $order = new self($account, $subjects);
         return $order->_create($keyType, false);
@@ -115,6 +117,11 @@ class Order extends AbstractKeyValuable {
     }
 
     public static function get(Account $account, array $subjects) : Order {
+
+        Utilities\Logger::getInstance()->add(
+            Utilities\Logger::LEVEL_INFO,
+            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
+        );
 
         $order = new self($account, $subjects);
 

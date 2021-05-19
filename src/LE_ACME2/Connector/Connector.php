@@ -50,7 +50,7 @@ class Connector {
      */
     public function request(string $method, string $url, string $data = null) : RawResponse {
 
-        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'will request from ' . $url, $data);
+        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'will request from ' . $url, ['data' => $data]);
 
         $handle = curl_init();
 
@@ -90,7 +90,7 @@ class Connector {
         $rawResponse = new RawResponse();
         $rawResponse->init($method, $url, $response, $header_size);
 
-        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', $rawResponse);
+        Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', [get_class($rawResponse) => $rawResponse]);
 
 
         try {

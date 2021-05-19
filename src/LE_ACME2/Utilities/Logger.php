@@ -20,15 +20,38 @@ class Logger {
         $this->_desiredLevel = $desiredLevel;
     }
 
+    /** @var \Psr\Log\LoggerInterface|null $_psrLogger */
+    private $_psrLogger = null;
+
+    /**
+     * @param \Psr\Log\LoggerInterface|null $psrLogger
+     */
+    public function setPSRLogger($psrLogger) {
+        $this->_psrLogger = $psrLogger;
+    }
+
     /**
      * @param int $level
      * @param string $message
-     * @param string|array|object $data
+     * @param array $data
      */
-    public function add(int $level, string $message, $data = array()) {
+    public function add(int $level, string $message, array $data = array()) {
 
         if($level > $this->_desiredLevel)
             return;
+
+        if($this->_psrLogger) {
+
+            if($level == self::LEVEL_INFO) {
+                $this->_psrLogger->info($message, $data);
+                return;
+            }
+            if($level == self::LEVEL_DEBUG) {
+                $this->_psrLogger->debug($message, $data);
+                return;
+            }
+            throw new \RuntimeException('Missing PSR Logger support for level: ' . $level);
+        }
 
         $e = new \Exception();
         $trace = $e->getTrace();

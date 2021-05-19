@@ -21,5 +21,8 @@
     "ext-curl": "*",
     "ext-openssl": "*",
     "ext-json": "*"
+  },
+  "suggest": {
+    "psr/log": "1.*"
   }
 }
