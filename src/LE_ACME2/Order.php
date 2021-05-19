@@ -199,6 +199,7 @@ class Order extends AbstractKeyValuable {
             $authorizer->progress();
 
             return $authorizer->hasFinished();
+
         } catch(Exception\ExpiredAuthorization $e) {
 
             $this->_clearAfterExpiredAuthorization();
@@ -229,9 +230,10 @@ class Order extends AbstractKeyValuable {
             $orderResponse->getStatus() == Response\Order\AbstractOrder::STATUS_PENDING /* DEPRECATED AFTER JULI 5TH 2018 */ ||
             $orderResponse->getStatus() == Response\Order\AbstractOrder::STATUS_READY   // ACME draft-12 Section 7.1.6
         ) {
-
             $request = new Request\Order\Finalize($this, $orderResponse);
             $orderResponse = $request->getResponse();
+
+            $this->_authorizer = null; // Reset Authorizer to prevent that the certificate is written multiple times, when this is called multiple times
             Cache\OrderResponse::getInstance()->set($this, $orderResponse);
         }
 
