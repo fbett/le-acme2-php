@@ -9,6 +9,15 @@ use LE_ACME2\Exception;
 
 class AbstractAuthorization extends AbstractResponse {
 
+    // Status from RFC 8555 (7.1.4), version: March 2019
+
+    const STATUS_PENDING = 'pending';
+    const STATUS_VALID = 'valid';
+    const STATUS_INVALID = 'invalid';
+    const STATUS_DEACTIVATED = 'deactivated';
+    const STATUS_EXPIRED = 'expired';
+    const STATUS_REVOKED = 'revoked';
+
     /**
      * AbstractAuthorization constructor.
      * @param RawResponse $raw
