@@ -2,7 +2,6 @@
 
 namespace LE_ACME2\Authorizer;
 
-use LE_ACME2\Request;
 use LE_ACME2\Response;
 
 use LE_ACME2\Cache;
@@ -59,8 +58,8 @@ abstract class AbstractAuthorizer {
 
         foreach($orderResponse->getAuthorizations() as $authorization) {
 
-            $request = new Request\Authorization\Get($this->_account, $authorization);
-            $this->_authorizationResponses[] = $request->getResponse();
+            $this->_authorizationResponses[] = Cache\OrderAuthorizationResponse::getInstance()
+                ->get($this->_order, $authorization, $this->_getChallengeType());
         }
     }
 

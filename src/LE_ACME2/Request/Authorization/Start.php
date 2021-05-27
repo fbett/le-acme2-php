@@ -35,6 +35,8 @@ class Start extends AbstractRequest {
      */
     public function getResponse() : Response\AbstractResponse {
 
+        Cache\OrderAuthorizationResponse::getInstance()->clear($this->_order);
+
         $payload = [
             'keyAuthorization' => (new ChallengeAuthorizationKey($this->_account))->get($this->_challenge->token)
         ];

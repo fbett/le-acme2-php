@@ -299,7 +299,7 @@ class Order extends AbstractKeyValuable {
                     );
                 }
             }
-
+            Cache\OrderAuthorizationResponse::getInstance()->clear($this);
             $this->_saveCertificate($certificate, $intermediate);
         }
     }
