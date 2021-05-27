@@ -92,21 +92,17 @@ class HTTP extends AbstractAuthorizer {
 
         $challengeAuthorizationKey = new ChallengeAuthorizationKey($this->_account);
 
-        $requestURL = 'http://' . $domain . '/.well-known/acme-challenge/' . $challenge->token;
-        $handle = curl_init();
-        curl_setopt($handle, CURLOPT_URL, $requestURL);
-        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($handle);
+        $expectedResponse = $challengeAuthorizationKey->get($challenge->token);
+        $response = Utilities\ChallengeHTTP::fetch($domain, $challenge->token);
 
-        $result = !empty($response) && $response == $challengeAuthorizationKey->get($challenge->token);
-
-        if(!$result) {
+        if($response != $expectedResponse) {
 
             throw new Exception\HTTPAuthorizationInvalid(
                 'HTTP challenge for "' . $domain . '"": ' .
                 $domain . '/.well-known/acme-challenge/' . $challenge->token .
-                ' tested, found invalid. CURL response: ' . var_export($response, true)
+                ' tested, found invalid.' . PHP_EOL .
+                '- Expected: ' . var_export($expectedResponse, true) . PHP_EOL .
+                '- Response: ' . var_export($response, true)
             );
         }
         return true;
