@@ -47,6 +47,22 @@ if(!\LE_ACME2\Order::exists($account, $subjects)) {
 
 if($order->shouldStartAuthorization(\LE_ACME2\Order::CHALLENGE_TYPE_HTTP)) {
     // Do some pre-checks, f.e. external dns checks - not required
+
+    // Example test:
+    foreach($subjects as $subject) {
+        try {
+            $response = \LE_ACME2\Utilities\ChallengeHTTP::fetch($subject, \LE_ACME2\Authorizer\HTTP::TEST_TOKEN);
+            if($response != \LE_ACME2\Authorizer\HTTP::TEST_CHALLENGE) {
+                die('Invalid response: ' . var_export([
+                    'Expected:' => \LE_ACME2\Authorizer\HTTP::TEST_CHALLENGE,
+                    'Response:' => $response,
+                ]));
+            }
+        } catch(\LE_ACME2\Exception\HTTPAuthorizationInvalid $e) {
+            die('Exception thrown while validating HTTP authorization: ' . $e->getMessage());
+        }
+    }
+
 }
 
 if($order->authorize(\LE_ACME2\Order::CHALLENGE_TYPE_HTTP)) {

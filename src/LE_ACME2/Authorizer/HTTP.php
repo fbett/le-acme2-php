@@ -13,6 +13,9 @@ use LE_ACME2\Order;
 
 class HTTP extends AbstractAuthorizer {
 
+    const TEST_TOKEN = 'test-token';
+    const TEST_CHALLENGE = 'test-challenge';
+
     protected static $_directoryPath = null;
 
     public static function setDirectoryPath(string $directoryPath) {
@@ -22,6 +25,10 @@ class HTTP extends AbstractAuthorizer {
         }
 
         self::$_directoryPath = realpath($directoryPath) . DIRECTORY_SEPARATOR;
+
+        if(!file_exists(self::$_directoryPath . 'test-token')) {
+            file_put_contents(self::$_directoryPath . self::TEST_TOKEN, self::TEST_CHALLENGE);
+        }
     }
 
     public static function getDirectoryPath() : ?string {
