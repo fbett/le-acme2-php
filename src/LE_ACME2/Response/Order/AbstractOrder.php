@@ -30,6 +30,9 @@ abstract class AbstractOrder extends AbstractResponse {
         return $this->_raw->body['identifiers'];
     }
 
+    /**
+     * @return string[] Authorization urls
+     */
     public function getAuthorizations() : array {
         return $this->_raw->body['authorizations'];
     }
