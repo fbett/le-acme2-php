@@ -12,6 +12,10 @@ class Certificate {
         self::$_featureOCSPMustStapleEnabled = true;
     }
 
+    public static function disableFeatureOCSPMustStaple() {
+        self::$_featureOCSPMustStapleEnabled = false;
+    }
+
     public static function generateCSR(Order $order) : string {
 
         $dn = [
@@ -24,9 +28,9 @@ class Certificate {
             }, $order->getSubjects())
         );
 
-        $config_file = $order->getKeyDirectoryPath() . 'csr_config';
+        $configFilePath = $order->getKeyDirectoryPath() . 'csr_config';
 
-        $content = 'HOME = .
+        $config = 'HOME = .
 			RANDFILE = ' . $order->getKeyDirectoryPath() . '.rnd
 			[ req ]
 			default_bits = 4096
@@ -41,25 +45,33 @@ class Certificate {
 			keyUsage = nonRepudiation, digitalSignature, keyEncipherment';
 
         if(self::$_featureOCSPMustStapleEnabled) {
-            $content .= PHP_EOL . 'tlsfeature=status_request';
+            $config .= PHP_EOL . 'tlsfeature=status_request';
         }
 
-        file_put_contents(
-            $config_file,
-            $content
+        file_put_contents($configFilePath, $config);
+
+        $privateKey = openssl_pkey_get_private(
+            file_get_contents($order->getKeyDirectoryPath() . 'private.pem')
         );
 
-        $privateKey = openssl_pkey_get_private(file_get_contents(
-            $order->getKeyDirectoryPath() . 'private.pem')
-        );
         $csr = openssl_csr_new(
             $dn,
             $privateKey,
-            array('config' => $config_file, 'digest_alg' => 'sha256')
+            [
+                'config' => $configFilePath,
+                'digest_alg' => 'sha256'
+            ]
         );
-        openssl_csr_export ($csr, $csr);
 
-        unlink($config_file);
+        if($csr === false) {
+            throw new \RuntimeException('openssl_csr_new returned false - is openssl configured?');
+        }
+
+        if(!openssl_csr_export($csr, $csr)) {
+            throw new \RuntimeException('openssl_csr_export returned false');
+        }
+
+        unlink($configFilePath);
 
         return $csr;
     }
