@@ -27,6 +27,7 @@ class Finalize extends AbstractRequest {
      * @return Response\AbstractResponse|Response\Order\Finalize
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\OpenSSLException
      */
     public function getResponse() : Response\AbstractResponse {
 

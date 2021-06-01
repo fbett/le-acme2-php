@@ -218,6 +218,7 @@ class Order extends AbstractKeyValuable {
     /**
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\OpenSSLException
      */
     public function finalize() {
 

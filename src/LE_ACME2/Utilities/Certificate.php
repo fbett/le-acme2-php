@@ -3,6 +3,7 @@
 namespace LE_ACME2\Utilities;
 
 use LE_ACME2\Order;
+use LE_ACME2\Exception\OpenSSLException;
 
 class Certificate {
 
@@ -16,6 +17,11 @@ class Certificate {
         self::$_featureOCSPMustStapleEnabled = false;
     }
 
+    /**
+     * @param Order $order
+     * @return string
+     * @throws OpenSSLException
+     */
     public static function generateCSR(Order $order) : string {
 
         $dn = [
@@ -54,6 +60,10 @@ class Certificate {
             file_get_contents($order->getKeyDirectoryPath() . 'private.pem')
         );
 
+        if($privateKey === false) {
+            throw new OpenSSLException('openssl_pkey_get_private');
+        }
+
         $csr = openssl_csr_new(
             $dn,
             $privateKey,
@@ -64,11 +74,11 @@ class Certificate {
         );
 
         if($csr === false) {
-            throw new \RuntimeException('openssl_csr_new returned false - is openssl configured?');
+            throw new OpenSSLException('openssl_csr_new');
         }
 
         if(!openssl_csr_export($csr, $csr)) {
-            throw new \RuntimeException('openssl_csr_export returned false');
+            throw new OpenSSLException('openssl_csr_export');
         }
 
         unlink($configFilePath);
