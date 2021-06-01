@@ -10,14 +10,10 @@ class AccountTest extends AbstractTest {
     
     private $_commonKeyDirectoryPath;
 
-    private $_email;
-
     public function __construct() {
         parent::__construct();
 
         $this->_commonKeyDirectoryPath = TestHelper::getInstance()->getTempPath() . 'le-storage/';
-
-        $this->_email = 'le_acme2_php_client@test.com';
     }
 
     public function testNonExistingCommonKeyDirectoryPath() {
@@ -46,32 +42,32 @@ class AccountTest extends AbstractTest {
 
     public function testNonExisting() {
 
-        if(\LE_ACME2\Account::exists($this->_email)) {
+        if(\LE_ACME2\Account::exists($this->_accountEmail)) {
             $this->markTestSkipped('Skipped: Account does already exist');
         }
 
-        $this->assertTrue(!\LE_ACME2\Account::exists($this->_email));
+        $this->assertTrue(!\LE_ACME2\Account::exists($this->_accountEmail));
 
         $this->expectException(\RuntimeException::class);
-        \LE_ACME2\Account::get($this->_email);
+        \LE_ACME2\Account::get($this->_accountEmail);
     }
 
     public function testCreate() {
 
-        if(\LE_ACME2\Account::exists($this->_email)) {
+        if(\LE_ACME2\Account::exists($this->_accountEmail)) {
             // Skipping account modification tests, when the account already exists
             // to reduce the LE api usage while developing
             TestHelper::getInstance()->setSkipAccountModificationTests(true);
             $this->markTestSkipped('Account modifications skipped: Account does already exist');
         }
 
-        $this->assertTrue(!\LE_ACME2\Account::exists($this->_email));
+        $this->assertTrue(!\LE_ACME2\Account::exists($this->_accountEmail));
 
-        $account = \LE_ACME2\Account::create($this->_email);
+        $account = \LE_ACME2\Account::create($this->_accountEmail);
         $this->assertTrue(is_object($account));
-        $this->assertTrue($account->getEmail() === $this->_email);
+        $this->assertTrue($account->getEmail() === $this->_accountEmail);
 
-        $account = \LE_ACME2\Account::get($this->_email);
+        $account = \LE_ACME2\Account::get($this->_accountEmail);
         $this->assertTrue(is_object($account));
 
         $result = $account->getData();
@@ -102,11 +98,11 @@ class AccountTest extends AbstractTest {
             return;
         }
 
-        $account = \LE_ACME2\Account::get($this->_email);
+        $account = \LE_ACME2\Account::get($this->_accountEmail);
         $this->assertTrue(is_object($account));
 
         $keyDirectoryPath = $account->getKeyDirectoryPath();
-        $newEmail = 'new-' . $this->_email;
+        $newEmail = 'new-' . $this->_accountEmail;
 
         // An email from example.org is not allowed
         $result = $account->update('test@example.org');
@@ -118,7 +114,7 @@ class AccountTest extends AbstractTest {
         $this->assertTrue($account->getKeyDirectoryPath() !== $keyDirectoryPath);
         $this->assertTrue(file_exists($account->getKeyDirectoryPath()));
 
-        $result = $account->update($this->_email);
+        $result = $account->update($this->_accountEmail);
         $this->assertTrue($result === true);
 
         $result = $account->changeKeys();
@@ -132,7 +128,7 @@ class AccountTest extends AbstractTest {
             return;
         }
 
-        $account = \LE_ACME2\Account::get($this->_email);
+        $account = \LE_ACME2\Account::get($this->_accountEmail);
         $this->assertTrue(is_object($account));
 
         $result = $account->deactivate();
@@ -158,19 +154,19 @@ class AccountTest extends AbstractTest {
             return;
         }
 
-        $account = \LE_ACME2\Account::get($this->_email);
+        $account = \LE_ACME2\Account::get($this->_accountEmail);
         $this->assertTrue(is_object($account));
 
         system('rm -R ' . $account->getKeyDirectoryPath());
-        $this->assertTrue(!\LE_ACME2\Account::exists($this->_email));
+        $this->assertTrue(!\LE_ACME2\Account::exists($this->_accountEmail));
 
-        $account = \LE_ACME2\Account::create($this->_email);
+        $account = \LE_ACME2\Account::create($this->_accountEmail);
         $this->assertTrue(is_object($account));
     }
 
     public function test() {
 
-        $account = \LE_ACME2\Account::get($this->_email);
+        $account = \LE_ACME2\Account::get($this->_accountEmail);
         $this->assertTrue(is_object($account));
     }
 }

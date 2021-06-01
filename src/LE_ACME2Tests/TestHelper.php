@@ -38,4 +38,14 @@ class TestHelper {
     public function shouldSkipAccountModificationTests() : bool {
         return $this->_skipAccountModificationTests;
     }
+
+    private $_skipOrderModificationTests = false;
+
+    public function setSkipOrderModificationTests(bool $value) : void {
+        $this->_skipOrderModificationTests = $value;
+    }
+
+    public function shouldSkipOrderModificationTests() : bool {
+        return $this->_skipOrderModificationTests;
+    }
 }
