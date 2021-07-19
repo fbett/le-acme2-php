@@ -1,0 +1,42 @@
+{
+  "identifier": {
+    "type": "dns",
+    "value": "subdomain.domain1.tld"
+  },
+  "status": "invalid",
+  "expires": "2021-07-24T08:01:41Z",
+  "challenges": [
+    {
+      "type": "http-01",
+      "status": "invalid",
+      "error": {
+        "type": "urn:ietf:params:acme:error:dns",
+        "detail": "DNS problem: SERVFAIL looking up CAA for domain1.tld - the domain's nameservers may be malfunctioning",
+        "status": 400
+      },
+      "url": "https://acme-v02.api.letsencrypt.org/acme/chall-v3/1234567/beH7Ng",
+      "token": "RPET-XXXBUHuxDLjO_XXXnG6c34I0U",
+      "validationRecord": [
+        {
+          "url": "http://subdomain.domain1.tld/.well-known/acme-challenge/RPET-XXXBUHuxDLjO_XXXnG6c34I0U",
+          "hostname": "subdomain.domain1.tld",
+          "port": "80",
+          "addressesResolved": [
+            "111.222.333.444"
+          ],
+          "addressUsed": "111.222.333.444"
+        },
+        {
+          "url": "https://subdomain.domain1.tld/.well-known/acme-challenge/RPET-XXXBUHuxDLjO_XXXnG6c34I0U",
+          "hostname": "subdomain.domain1.tld",
+          "port": "443",
+          "addressesResolved": [
+            "111.222.333.444"
+          ],
+          "addressUsed": "111.222.333.444"
+        }
+      ],
+      "validated": "2021-07-17T08:02:10Z"
+    }
+  ]
+}

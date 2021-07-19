@@ -15,12 +15,14 @@ class Challenge {
     public $status;
     public $url;
     public $token;
+    public $error;
 
-    public function __construct(string $type, string $status, string $url, string $token) {
+    public function __construct(string $type, string $status, string $url, string $token, ChallengeError $error = null) {
 
         $this->type = $type;
         $this->status = $status;
         $this->url = $url;
         $this->token = $token;
+        $this->error = $error;
     }
 }
