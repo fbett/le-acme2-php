@@ -87,8 +87,7 @@ class Connector {
 
         $header_size = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
 
-        $rawResponse = new RawResponse();
-        $rawResponse->init($method, $url, $response, $header_size);
+        $rawResponse = RawResponse::createFrom($method, $url, $response, $header_size);
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', [get_class($rawResponse) => $rawResponse]);
 

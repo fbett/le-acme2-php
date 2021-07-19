@@ -13,20 +13,24 @@ class RawResponse {
     /** @var array|string */
     public $body;
 
-    public function init(string $method, string $url, string $response, int $headerSize) {
+    public static function createFrom(string $method, string $url, string $response, int $headerSize) : self {
+
+        $result = new static();
 
         $header = substr($response, 0, $headerSize);
         $body = substr($response, $headerSize);
 
         $body_json = json_decode($body, true);
 
-        $this->request = $method . ' ' . $url;
+        $result->request = $method . ' ' . $url;
 
-        $this->header = array_map(function($line) {
+        $result->header = array_map(function($line) {
             return trim($line);
         }, explode("\n", $header));
 
-        $this->body = $body_json === null ? $body : $body_json;
+        $result->body = $body_json === null ? $body : $body_json;
+
+        return $result;
     }
 
     public function toString() : string {
