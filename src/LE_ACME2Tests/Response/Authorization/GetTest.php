@@ -13,7 +13,7 @@ class GetTest extends TestCase {
 
         $rawResponse = Connector\RawResponse::createDummyFrom(
             Connector\RawResponse::HEADER_200,
-            file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'JSONSamples' . DIRECTORY_SEPARATOR . 'ChallengeError.json')
+            file_get_contents(dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . '_JSONSamples' . DIRECTORY_SEPARATOR . 'ChallengeError.json')
         );
 
         $response = new \LE_ACME2\Response\Authorization\Get($rawResponse);
