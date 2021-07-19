@@ -39,7 +39,7 @@ abstract class AbstractResponse {
             $responseStatus = $this->_preg_match_headerLine('/^HTTP\/.* [0-9]{3,} /i');
             throw new Exception\InvalidResponse(
                 $raw,
-                $responseStatus ? $responseStatus[1] : null,
+                isset($responseStatus[1]) ? $responseStatus[1] : null,
             );
         }
     }

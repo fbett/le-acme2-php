@@ -7,7 +7,11 @@ use LE_ACME2\Response\Authorization\Struct;
 class Get extends AbstractAuthorization {
 
     public function getIdentifier() : Struct\Identifier {
-        return new Struct\Identifier($this->_raw->body['identifier']['type'], $this->_raw->body['identifier']['value']);
+
+        return new Struct\Identifier(
+            $this->_raw->body['identifier']['type'],
+            $this->_raw->body['identifier']['value']
+        );
     }
 
     public function getStatus() : string {
@@ -23,7 +27,7 @@ class Get extends AbstractAuthorization {
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return Struct\Challenge
      */
     public function getChallenge(string $type) : Struct\Challenge {
