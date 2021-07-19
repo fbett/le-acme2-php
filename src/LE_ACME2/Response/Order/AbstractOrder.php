@@ -58,10 +58,11 @@ abstract class AbstractOrder extends AbstractResponse {
         if(
             $this->getStatus() == AbstractOrder::STATUS_INVALID
         ) {
-            throw new Exception\StatusInvalid('Order has status "' . AbstractOrder::STATUS_INVALID . '"'.
+            throw new Exception\OrderStatusInvalid(
                 '. Probably all authorizations have failed. ' . PHP_EOL .
                 'Please see: ' . $this->getLocation() . PHP_EOL .
-                'Continue by using $order->clear() after getting rid of the problem'
+                'Continue by using $order->clear() after getting rid of the problem',
+                $this,
             );
         }
 

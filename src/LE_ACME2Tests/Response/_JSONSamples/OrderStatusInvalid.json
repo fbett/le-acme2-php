@@ -1,0 +1,14 @@
+{
+  "status": "invalid",
+  "expires": "2021-07-24T08:01:41Z",
+  "identifiers": [
+    {
+      "type": "dns",
+      "value": "subdomain.domain1.tld"
+    }
+  ],
+  "authorizations": [
+    "https://acme-v02.api.letsencrypt.org/acme/authz-v3/1234567"
+  ],
+  "finalize": "https://acme-v02.api.letsencrypt.org/acme/finalize/1234567/1234567"
+}
