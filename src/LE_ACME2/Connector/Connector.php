@@ -50,6 +50,11 @@ class Connector {
      */
     public function request(string $method, string $url, string $data = null) : RawResponse {
 
+        Utilities\Event::getInstance()->trigger(Utilities\Event::EVENT_CONNECTOR_WILL_REQUEST, [
+            'method' => $method,
+            'url' => $url,
+            'data' => $data,
+        ]);
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, 'will request from ' . $url, ['data' => $data]);
 
         $handle = curl_init();
@@ -91,6 +96,18 @@ class Connector {
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO, self::class . ': response received', [get_class($rawResponse) => $rawResponse]);
 
+        $this->_saveNewNonceFrom($rawResponse, $method);
+
+        return $rawResponse;
+    }
+
+    /**
+     * @param RawResponse $rawResponse
+     * @param string $method
+     * @throws Exception\InvalidResponse
+     * @throws Exception\RateLimitReached
+     */
+    private function _saveNewNonceFrom(RawResponse $rawResponse, string $method) : void {
 
         try {
             $getNewNonceResponse = new Response\GetNewNonce($rawResponse);
@@ -100,10 +117,9 @@ class Connector {
 
             if($method == self::METHOD_POST) {
                 $request = new Request\GetNewNonce();
-                Cache\NewNonceResponse::getInstance()->set($request->getResponse());
+                $getNewNonceResponse = $request->getResponse();
+                Cache\NewNonceResponse::getInstance()->set($getNewNonceResponse);
             }
         }
-
-        return $rawResponse;
     }
 }

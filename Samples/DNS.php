@@ -27,6 +27,12 @@ $dnsWriter = new class extends \LE_ACME2\Authorizer\AbstractDNSWriter {
 // Optional configs
 //\LE_ACME2\Utilities\Certificate::enableFeatureOCSPMustStaple();
 //\LE_ACME2\Order::setPreferredChain(\LE_ACME2\Order::IDENTRUST_ISSUER_CN);
+//\LE_ACME2\Utilities\Event::getInstance()->subscribe(
+//    \LE_ACME2\Utilities\Event::EVENT_CONNECTOR_WILL_REQUEST,
+//    function(string $event, array $payload = null) {
+//       // Do something, f.e. force to save the logs
+//    }
+//);
 
 $account_email = 'test@example.org';
 
