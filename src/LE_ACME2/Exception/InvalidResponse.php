@@ -6,8 +6,11 @@ use LE_ACME2\Connector\RawResponse;
 
 class InvalidResponse extends AbstractException {
 
+    const RESPONSE_STATUS_TYPE_ERROR_SERVER_INTERNAL = 'urn:ietf:params:acme:error:serverInternal';
+
     private $_rawResponse;
     private $_responseStatus;
+    private $_responseStatusType;
 
     public function __construct(RawResponse $rawResponse, string $responseStatus = null) {
 
@@ -19,7 +22,7 @@ class InvalidResponse extends AbstractException {
         }
 
         if(isset($this->_rawResponse->body['type'])) {
-            $responseStatus = $this->_rawResponse->body['type'];
+            $responseStatus = $this->_responseStatusType = $this->_rawResponse->body['type'];
         }
 
         if(isset($this->_rawResponse->body['detail'])) {
@@ -35,5 +38,9 @@ class InvalidResponse extends AbstractException {
 
     public function getResponseStatus() : ?string {
         return $this->_responseStatus;
+    }
+    
+    public function getResponseStatusType() : ?string {
+        return $this->_responseStatusType;
     }
 }
