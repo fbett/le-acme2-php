@@ -73,7 +73,7 @@ abstract class AbstractAuthorizer {
         foreach($this->_authorizationResponses as $response) {
 
             $challenge = $response->getChallenge($this->_getChallengeType());
-            if($challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
+            if($challenge && $challenge->status == Response\Authorization\Struct\Challenge::STATUS_PENDING) {
 
                 Utilities\Logger::getInstance()->add(
                     Utilities\Logger::LEVEL_DEBUG,
@@ -114,7 +114,7 @@ abstract class AbstractAuthorizer {
 
             $challenge = $authorizationResponse->getChallenge($this->_getChallengeType());
 
-            if($this->_existsNotValidChallenges($challenge, $authorizationResponse)) {
+            if($challenge && $this->_existsNotValidChallenges($challenge, $authorizationResponse)) {
                 $existsNotValidChallenges = true;
             }
         }

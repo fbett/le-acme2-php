@@ -28,11 +28,9 @@ class Get extends AbstractAuthorization {
 
     /**
      * @param string $type
-     * @return Struct\Challenge
+     * @return Struct\Challenge|null
      */
-    public function getChallenge(string $type) : Struct\Challenge {
-
-        $foundTypes = [];
+    public function getChallenge(string $type) : ?Struct\Challenge {
 
         foreach($this->getChallenges() as $challenge) {
 
@@ -55,11 +53,11 @@ class Get extends AbstractAuthorization {
                     $error,
                 );
             }
-            $foundTypes[] = $challenge['type'];
         }
 
-        throw new \RuntimeException(
-            'No challenge found with given type. Found types: ' . var_export($foundTypes, true)
-        );
+        // There is not a challenge for a specific type, when the subject is already authorized by another
+        // authorize type, f.e. when switching from http-01 to dns-01
+
+        return null;
     }
 }

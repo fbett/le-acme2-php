@@ -51,7 +51,8 @@ class OrderAuthorizationResponse extends AbstractKeyValuableCache {
 
             $response = new Response\Authorization\Get($rawResponse);
             if(
-                $response->getChallenge($challengeType)->status == Response\Authorization\Struct\Challenge::STATUS_PROGRESSING
+                ($challenge = $response->getChallenge($challengeType)) &&
+                $challenge->status == Response\Authorization\Struct\Challenge::STATUS_PROGRESSING
             ) {
 
                 Utilities\Logger::getInstance()->add(
