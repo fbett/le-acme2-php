@@ -7,6 +7,7 @@ use LE_ACME2\Connector\RawResponse;
 class InvalidResponse extends AbstractException {
 
     const RESPONSE_STATUS_TYPE_ERROR_SERVER_INTERNAL = 'urn:ietf:params:acme:error:serverInternal';
+    const RESPONSE_STATUS_TYPE_ERROR_MALFORMED = 'urn:ietf:params:acme:error:malformed';
 
     private $_rawResponse;
     private $_responseStatus;
@@ -42,5 +43,13 @@ class InvalidResponse extends AbstractException {
     
     public function getResponseStatusType() : ?string {
         return $this->_responseStatusType;
+    }
+
+    public function getResponseStatusDetail() : ?string {
+
+        if(isset($this->_rawResponse->body['detail'])) {
+            return $this->_rawResponse->body['detail'];
+        }
+        return null;
     }
 }
