@@ -4,6 +4,8 @@ namespace LE_ACME2\Response\Authorization\Struct;
 
 class ChallengeError {
 
+    const TYPE_ERROR_DNS = 'urn:ietf:params:acme:error:dns';
+
     /** @var string $type */
     public $type;
 
