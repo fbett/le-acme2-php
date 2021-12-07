@@ -1,4 +1,10 @@
-# le-acme2-php
+# le-acme2-php [![CircleCI](https://circleci.com/gh/fbett/le-acme2-php/tree/master.svg?style=svg)](https://app.circleci.com/pipelines/github/fbett/le-acme2-php?branch=master)
+[![Scrutinizer Build Status](https://scrutinizer-ci.com/g/fbett/le-acme2-php/badges/build.png?b=master)](https://scrutinizer-ci.com/g/fbett/le-acme2-php/build-status/master)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/fbett/le-acme2-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/fbett/le-acme2-php/)
+[![Latest Stable Version](http://poser.pugx.org/fbett/le_acme2/v)](https://packagist.org/packages/fbett/le_acme2)
+[![License](http://poser.pugx.org/fbett/le_acme2/license)](https://packagist.org/packages/fbett/le_acme2)
+[![PHP Version Require](http://poser.pugx.org/fbett/le_acme2/require/php)](https://packagist.org/packages/fbett/le_acme2)
+
 LetsEncrypt client library for ACME v2 written in PHP.
 
 This library is inspired by [yourivw/LEClient](https://github.com/yourivw/LEClient), completely rewritten and enhanced with some new features:
