@@ -9,7 +9,6 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="true"
-         bootstrap="../../autoload.php"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
   <coverage processUncoveredFiles="true">
