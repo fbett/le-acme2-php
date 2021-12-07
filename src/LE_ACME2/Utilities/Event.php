@@ -29,7 +29,7 @@ class Event {
 
         Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'Event triggered: ' . $event);
 
-        if(!$this->_subscriber[$event]) {
+        if(!isset($this->_subscriber[$event])) {
             return;
         }
 
