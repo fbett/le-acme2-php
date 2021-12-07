@@ -359,11 +359,11 @@ class Order extends AbstractKeyValuable {
     }
 
     /**
-     * @param string $keyType
+     * @param string|null $keyType default KEY_TYPE_RSA
      * @param int|null $renewBefore Unix timestamp
      * @throws Exception\AbstractException
      */
-    public function enableAutoRenewal($keyType = self::KEY_TYPE_RSA, int $renewBefore = null) {
+    public function enableAutoRenewal(string $keyType = null, int $renewBefore = null) {
 
         if($keyType === null) {
             $keyType = self::KEY_TYPE_RSA;
@@ -427,7 +427,7 @@ class Order extends AbstractKeyValuable {
         }
     }
 
-    protected static function _getExpireTimeFromCertificateDirectoryPath(string $path) {
+    protected static function _getExpireTimeFromCertificateDirectoryPath(string $path) : int {
 
         $stringPosition = strrpos($path, self::BUNDLE_DIRECTORY_PREFIX);
         if($stringPosition === false) {
@@ -442,6 +442,6 @@ class Order extends AbstractKeyValuable {
         ) {
             throw new \RuntimeException('Unexpected expireTime: ' . $expireTime);
         }
-        return $expireTime;
+        return (int)$expireTime;
     }
 }
