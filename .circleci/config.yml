@@ -7,7 +7,7 @@ shared-code: &shared-code
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-
+      - run: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - # https://discuss.circleci.com/t/apt-get-update-on-circleci-classic-gpg-error-signature-verification-error/32039
       - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
       - run: sudo docker-php-ext-install zip
 
