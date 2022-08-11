@@ -7,7 +7,6 @@ shared-code: &shared-code
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-      - run: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - # https://discuss.circleci.com/t/apt-get-update-on-circleci-classic-gpg-error-signature-verification-error/32039
       - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
       - run: sudo docker-php-ext-install zip
 
@@ -46,7 +45,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.3-node-browsers
+      - image: cimg/php:7.3-node
 
     <<: *shared-code
   "php-74-build":
@@ -54,7 +53,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.4-node-browsers
+      - image: cimg/php:7.4-node
 
     <<: *shared-code
   "php-80-build":
@@ -62,7 +61,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: circleci/php:8.0-node-browsers
+      - image: cimg/php:8.0-node
 
     <<: *shared-code
   "php-81-build":
@@ -70,7 +69,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: circleci/php:8.1-node-browsers
+      - image: cimg/php:8.1-node
 
     <<: *shared-code
       
