@@ -76,9 +76,15 @@ jobs:
       
 workflows:
   version: 2
-  build_supported_php_versions:
+  php_73_jobs:
     jobs:
       - "php-73-build"
+  php_74_jobs:
+    jobs:
       - "php-74-build"
+  php_80_jobs:
+    jobs:
       - "php-80-build"
+  php_81_jobs:
+    jobs:
       - "php-81-build"
