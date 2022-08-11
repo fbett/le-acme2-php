@@ -134,6 +134,10 @@ class AccountTest extends AbstractTest {
         $result = $account->deactivate();
         $this->assertTrue($result === true);
 
+        // 11. August 2022
+        // Quickfix: The LE server will not recognize fast enough, that the account is already deactivated
+        sleep(5);
+
         // The account is already deactivated
         $result = $account->deactivate();
         $this->assertTrue($result === false);
