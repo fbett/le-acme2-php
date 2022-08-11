@@ -119,6 +119,10 @@ class AccountTest extends AbstractTest {
 
         $result = $account->changeKeys();
         $this->assertTrue($result === true);
+
+        // 11. August 2022
+        // Quickfix: The LE server will not recognize fast enough, that the account key has already changed
+        sleep(5);
     }
 
     public function testDeactivation() {
