@@ -65,6 +65,14 @@ jobs:
       - image: circleci/php:8.0-node-browsers
 
     <<: *shared-code
+  "php-81-build":
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      # Specify the version you desire here
+      - image: circleci/php:8.1-node-browsers
+
+    <<: *shared-code
       
 workflows:
   version: 2
@@ -73,3 +81,4 @@ workflows:
       - "php-73-build"
       - "php-74-build"
       - "php-80-build"
+      - "php-81-build"
