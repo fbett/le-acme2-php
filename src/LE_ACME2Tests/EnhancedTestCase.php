@@ -17,13 +17,13 @@ class EnhancedTestCase extends PHPUnit\Framework\TestCase {
         parent::expectException($exception);
     }
 
-    protected function catchExpectedException(string $exception, \Closure $callback) {
+    protected function catchExpectedException(string $exception, \Closure $callback) : \Exception {
 
         try {
             $callback();
         } catch (\Exception $e) {
             $this->assertEquals($exception, get_class($e));
-            return;
+            return $e;
         }
 
         throw new \RuntimeException('Expected exception not thrown: ' . $exception);

@@ -89,14 +89,19 @@ class AccountTest extends AbstractTest {
             return;
         }
 
-        $this->expectException(InvalidResponse::class);
-        $this->expectExceptionMessage(
+        $e = $this->catchExpectedException(
+            InvalidResponse::class,
+            function() {
+                \LE_ACME2\Account::create('test@example.org');
+            }
+        );
+        $this->assertEquals(
             'Invalid response received: ' .
             'urn:ietf:params:acme:error:invalidEmail' .
             ' - ' .
-            'Error creating new account :: invalid contact domain. Contact emails @example.org are forbidden'
+            'Error creating new account :: invalid contact domain. Contact emails @example.org are forbidden',
+            $e->getMessage(),
         );
-        \LE_ACME2\Account::create('test@example.org');
     }
 
     public function testModification() {
