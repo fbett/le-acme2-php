@@ -22,9 +22,12 @@ class AccountTest extends AbstractTest {
 
         $notExistingPath = TestHelper::getInstance()->getTempPath() . 'should-not-exist/';
 
-        $this->expectException(\RuntimeException::class);
-
-        \LE_ACME2\Account::setCommonKeyDirectoryPath($notExistingPath);
+        $this->catchExpectedException(
+            \RuntimeException::class,
+            function() use($notExistingPath) {
+                \LE_ACME2\Account::setCommonKeyDirectoryPath($notExistingPath);
+            }
+        );
     }
 
     public function testCommonKeyDirectoryPath() {
@@ -48,8 +51,13 @@ class AccountTest extends AbstractTest {
 
         $this->assertTrue(!\LE_ACME2\Account::exists($this->_accountEmail));
 
-        $this->expectException(\RuntimeException::class);
-        \LE_ACME2\Account::get($this->_accountEmail);
+        $this->catchExpectedException(
+            \RuntimeException::class,
+            function() {
+                \LE_ACME2\Account::get($this->_accountEmail);
+            }
+        );
+
     }
 
     public function testCreate() {
@@ -151,8 +159,12 @@ class AccountTest extends AbstractTest {
         $this->assertTrue($result === false);
 
         // The account is already deactivated
-        $this->expectException(\LE_ACME2\Exception\InvalidResponse::class);
-        $account->getData();
+        $this->catchExpectedException(
+            \LE_ACME2\Exception\InvalidResponse::class,
+            function() use($account) {
+                $account->getData();
+            }
+        );
     }
 
     public function testCreationAfterDeactivation() {

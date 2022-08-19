@@ -2,9 +2,10 @@
 namespace LE_ACME2Tests\Response\Authorization;
 
 use LE_ACME2Tests\Connector;
+use LE_ACME2Tests\EnhancedTestCase;
 use PHPUnit\Framework\TestCase;
 
-class GetTest extends TestCase {
+class GetTest extends EnhancedTestCase {
 
     /**
      * @covers \LE_ACME2\Response\Authorization\Get::getChallenges

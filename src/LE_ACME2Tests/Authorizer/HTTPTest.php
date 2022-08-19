@@ -21,8 +21,12 @@ class HTTPTest extends AbstractTest {
 
         $this->assertTrue(\LE_ACME2\Authorizer\HTTP::getDirectoryPath() === null);
 
-        $this->expectException(\RuntimeException::class);
-        \LE_ACME2\Authorizer\HTTP::setDirectoryPath(TestHelper::getInstance()->getNonExistingPath());
+        $this->catchExpectedException(
+            \RuntimeException::class,
+            function() {
+                \LE_ACME2\Authorizer\HTTP::setDirectoryPath(TestHelper::getInstance()->getNonExistingPath());
+            }
+        );
     }
 
     public function testDirectoryPath() {

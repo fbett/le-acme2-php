@@ -4,7 +4,7 @@ namespace LE_ACME2Tests;
 use PHPUnit\Framework\TestCase;
 use LE_ACME2;
 
-abstract class AbstractTest extends TestCase {
+abstract class AbstractTest extends EnhancedTestCase {
 
     protected $_accountEmail = 'le_acme2_php_client@test.com';
     protected $_orderSubjects = [];

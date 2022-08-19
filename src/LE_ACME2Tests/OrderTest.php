@@ -16,8 +16,12 @@ class OrderTest extends AbstractTest {
 
         $this->assertTrue(!\LE_ACME2\Order::exists($account, $this->_orderSubjects));
 
-        $this->expectException(\RuntimeException::class);
-        \LE_ACME2\Order::get($account, $this->_orderSubjects);
+        $this->catchExpectedException(
+            \RuntimeException::class,
+            function() use($account) {
+                \LE_ACME2\Order::get($account, $this->_orderSubjects);
+            }
+        );
     }
 
     public function testCreate() {
