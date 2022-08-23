@@ -25,6 +25,8 @@ class Connector {
 
     protected $_useStagingServer = true;
 
+    protected $_delayedResponseTime = 0;
+
     public function useStagingServer(bool $useStagingServer) {
         $this->_useStagingServer = $useStagingServer;
     }
@@ -35,6 +37,16 @@ class Connector {
 
     public function getBaseURL() : string {
         return $this->_useStagingServer ? $this->_stagingBaseURL : $this->_baseURL;
+    }
+
+    /**
+     * Delay the response to prevent bleaching rate limits
+     *
+     * @param int $milliSeconds
+     * @return void
+     */
+    public function delayResponse(int $milliSeconds) : void {
+        $this->_delayedResponseTime = $milliSeconds;
     }
 
     /**
@@ -85,6 +97,10 @@ class Connector {
                 break;
         }
         $response = curl_exec($handle);
+
+        if($this->_delayedResponseTime > 0) {
+            usleep($this->_delayedResponseTime * 1000);
+        }
 
         if(curl_errno($handle)) {
             throw new \RuntimeException('Curl: ' . curl_error($handle));

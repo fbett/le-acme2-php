@@ -32,6 +32,11 @@ $dnsWriter = new class extends \LE_ACME2\Authorizer\AbstractDNSWriter {
 \LE_ACME2\Connector\Connector::getInstance()->useStagingServer(true);
 \LE_ACME2\Utilities\Logger::getInstance()->setDesiredLevel(\LE_ACME2\Utilities\Logger::LEVEL_INFO);
 
+/**
+ * OPTIONAL CONFIG: Delay connection response to prevent bleaching rate limits
+ *
+ * \LE_ACME2\Connector\Connector::getInstance()->delayResponse(400);
+ */
 
 /**
  * OPTIONAL CONFIG: Enable feature: OCSP Must Staple
