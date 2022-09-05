@@ -29,4 +29,8 @@ class Base64 {
         }
         return base64_decode(strtr($input, '-_', '+/'));
     }
+
+    public static function JSONUrlSafeEncode(array $input) : string {
+        return self::UrlSafeEncode(json_encode($input, JSON_UNESCAPED_SLASHES));
+    }
 }

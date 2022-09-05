@@ -33,8 +33,8 @@ class RequestSigner {
             "url" => $url
         ];
 
-        $payload64 = Base64::UrlSafeEncode(str_replace('\\/', '/', json_encode($payload)));
-        $protected64 = Base64::UrlSafeEncode(json_encode($protected));
+        $payload64 = Base64::JSONUrlSafeEncode($payload);
+        $protected64 = Base64::JSONUrlSafeEncode($protected);
 
         openssl_sign($protected64.'.'.$payload64, $signed, $privateKey, "SHA256");
         $signed64 = Base64::UrlSafeEncode($signed);
@@ -93,10 +93,8 @@ class RequestSigner {
 
         Logger::getInstance()->add(Logger::LEVEL_DEBUG, 'KID: ready to sign request for: ' . $url, ['protected' => $protected]);
 
-        $payload = $payload === null ? "" : str_replace('\\/', '/', json_encode($payload));
-
-        $payload64 = Base64::UrlSafeEncode($payload);
-        $protected64 = Base64::UrlSafeEncode(json_encode($protected));
+        $payload64 = $payload === null ? Base64::UrlSafeEncode('') : Base64::JSONUrlSafeEncode($payload);
+        $protected64 = Base64::JSONUrlSafeEncode($protected);
 
         openssl_sign($protected64.'.'.$payload64, $signed, $privateKey, "SHA256");
         $signed64 = Base64::UrlSafeEncode($signed);
