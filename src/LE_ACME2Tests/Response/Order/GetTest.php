@@ -1,13 +1,17 @@
 <?php
 namespace LE_ACME2Tests\Response\Order;
 
-use LE_ACME2\Exception\OrderStatusInvalid;
+use LE_ACME2;
 use LE_ACME2Tests\Connector;
 use LE_ACME2Tests\EnhancedTestCase;
-use PHPUnit\Framework\TestCase;
 
 class GetTest extends EnhancedTestCase {
 
+    /**
+     * @covers \LE_ACME2\Exception\OrderStatusInvalid
+     * @covers \LE_ACME2\Response\AbstractResponse::_isValid
+     * @return void
+     */
     public function testGetChallengeError() {
 
         $rawResponse = Connector\RawResponse::createDummyFrom(
@@ -16,9 +20,9 @@ class GetTest extends EnhancedTestCase {
         );
 
         $this->catchExpectedException(
-            OrderStatusInvalid::class,
+            LE_ACME2\Exception\OrderStatusInvalid::class,
             function() use($rawResponse) {
-                new \LE_ACME2\Response\Order\Get($rawResponse, 'http://dummy.org');
+                new LE_ACME2\Response\Order\Get($rawResponse, 'http://dummy.org');
             }
         );
     }
