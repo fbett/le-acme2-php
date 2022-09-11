@@ -30,7 +30,13 @@ abstract class AbstractResponse {
                 $detail = $raw->body['detail'];
             }
 
-            throw new Exception\RateLimitReached($raw->request, $detail);
+            $retryAfterMatches = $this->_preg_match_headerLine('/^Retry-After: (.+)$/i');
+
+            throw new Exception\RateLimitReached(
+                $raw->request,
+                $detail,
+                $retryAfterMatches !== null ? $retryAfterMatches[1] : null
+            );
         }
 
         $result = $this->_isValid();

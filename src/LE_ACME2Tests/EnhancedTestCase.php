@@ -22,7 +22,11 @@ class EnhancedTestCase extends PHPUnit\Framework\TestCase {
         try {
             $callback();
         } catch (\Exception $e) {
-            $this->assertEquals($exception, get_class($e));
+            $this->assertEquals(
+                $exception,
+                get_class($e),
+                'Exception message: ' . $e->getMessage(),
+            );
             return $e;
         }
 
