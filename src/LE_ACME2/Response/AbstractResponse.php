@@ -8,7 +8,8 @@ use LE_ACME2\Connector\RawResponse;
 
 abstract class AbstractResponse {
 
-    protected $_raw = NULL;
+    /** @var RawResponse $_raw */
+    protected $_raw;
 
     protected $_pattern_header_location = '/^Location: (\S+)$/i';
 
@@ -54,8 +55,10 @@ abstract class AbstractResponse {
 
         foreach($this->_raw->header as $line) {
 
-            if(preg_match($pattern, $line, $matches) === 1)
+            $matches = [];
+            if(preg_match($pattern, $line, $matches) === 1) {
                 return $matches;
+            }
         }
         return null;
     }
