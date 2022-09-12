@@ -89,7 +89,7 @@ class Order extends AbstractKeyValuable {
      *
      * @throws Exception\AbstractException
      */
-    public function requestCreate(string $keyType, bool $ignoreIfKeysExist = false) : void {
+    public function requestCreate(string $keyType = self::KEY_TYPE_RSA, bool $ignoreIfKeysExist = false) : void {
 
         $this->_initKeyDirectory($keyType, $ignoreIfKeysExist);
 
