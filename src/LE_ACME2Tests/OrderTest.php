@@ -14,7 +14,8 @@ class OrderTest extends AbstractTest {
             $this->markTestSkipped('Skipped: Order does already exist');
         }
 
-        $this->assertTrue(!\LE_ACME2\Order::exists($account, $this->_orderSubjects));
+        $this->assertFalse(\LE_ACME2\Order::exists($account, $this->_orderSubjects));
+        $this->assertFalse(\LE_ACME2\Order::existsCertificateBundle($account, $this->_orderSubjects));
 
         $this->catchExpectedException(
             \RuntimeException::class,

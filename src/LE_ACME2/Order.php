@@ -110,10 +110,23 @@ class Order extends AbstractKeyValuable {
         }
     }
 
+    /**
+     * Returns true, when a let's encrypt order exists
+     * Returns false, when no order exists, because it was never created or cleared
+     */
     public static function exists(Account $account, array $subjects) : bool {
 
         $order = new self($account, $subjects);
         return Cache\OrderResponse::getInstance()->exists($order);
+    }
+
+    /**
+     * Returns true, when a certificate bundle exists, irrespective from the existence of a let's encrypt order
+     */
+    public static function existsCertificateBundle(Account $account, array $subjects) : bool {
+
+        $order = new self($account, $subjects);
+        return $order->isCertificateBundleAvailable();
     }
 
     public static function get(Account $account, array $subjects) : Order {
