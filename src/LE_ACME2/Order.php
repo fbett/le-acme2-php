@@ -69,10 +69,6 @@ class Order extends AbstractKeyValuable {
     }
 
     /**
-     * @param Account $account
-     * @param array $subjects
-     * @param string $keyType
-     * @return Order
      * @throws Exception\AbstractException
      */
     public static function create(Account $account, array $subjects, string $keyType = self::KEY_TYPE_RSA) : Order {
@@ -83,16 +79,17 @@ class Order extends AbstractKeyValuable {
         );
 
         $order = new self($account, $subjects);
-        return $order->_create($keyType, false);
+        $order->requestCreate($keyType, false);
+
+        return $order;
     }
 
     /**
-     * @param $keyType
-     * @param bool $ignoreIfKeysExist
-     * @return Order
+     * Request to create a new order
+     *
      * @throws Exception\AbstractException
      */
-    protected function _create(string $keyType, bool $ignoreIfKeysExist = false) : Order {
+    public function requestCreate(string $keyType, bool $ignoreIfKeysExist = false) : void {
 
         $this->_initKeyDirectory($keyType, $ignoreIfKeysExist);
 
@@ -102,7 +99,6 @@ class Order extends AbstractKeyValuable {
             $response = $request->getResponse();
 
             Cache\OrderResponse::getInstance()->set($this, $response);
-            return $this;
 
         } catch(Exception\AbstractException $e) {
             $this->_clearKeyDirectory();
@@ -117,7 +113,11 @@ class Order extends AbstractKeyValuable {
     public static function exists(Account $account, array $subjects) : bool {
 
         $order = new self($account, $subjects);
-        return Cache\OrderResponse::getInstance()->exists($order);
+        return $order->hasResponse();
+    }
+    
+    public function hasResponse() : bool {
+        return Cache\OrderResponse::getInstance()->exists($this);
     }
 
     /**
@@ -412,7 +412,7 @@ class Order extends AbstractKeyValuable {
 
             Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_INFO,'Auto renewal: Will recreate order');
 
-            $this->_create($keyType, true);
+            $this->requestCreate($keyType, true);
         }
     }
 
