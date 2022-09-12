@@ -337,6 +337,10 @@ class Order extends AbstractKeyValuable {
 
     protected function _getLatestCertificateDirectory() : ?string {
 
+        if(!file_exists($this->getKeyDirectoryPath())) {
+            return null;
+        }
+
         $files = scandir($this->getKeyDirectoryPath(), SORT_NUMERIC | SORT_DESC);
         foreach($files as $file) {
             if(
