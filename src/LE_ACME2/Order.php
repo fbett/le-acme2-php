@@ -390,12 +390,17 @@ class Order extends AbstractKeyValuable {
             throw new \RuntimeException('There is no certificate available');
         }
 
-        $orderResponse = Cache\OrderResponse::getInstance()->get($this);
-        if(
-            $orderResponse === null ||
-            $orderResponse->getStatus() != Response\Order\AbstractOrder::STATUS_VALID
-        ) {
-            return;
+        if($this->hasResponse()) {
+
+            $orderResponse = Cache\OrderResponse::getInstance()->get($this);
+
+            if( $orderResponse->getStatus() != Response\Order\AbstractOrder::STATUS_VALID ) {
+                Utilities\Logger::getInstance()->add(
+                    Utilities\Logger::LEVEL_INFO,
+                    'Auto renewal: failed - status is not valid: ' . $orderResponse->getStatus(),
+                );
+                return;
+            }
         }
 
         Utilities\Logger::getInstance()->add(Utilities\Logger::LEVEL_DEBUG,'Auto renewal triggered');
