@@ -19,10 +19,27 @@ abstract class AbstractResponse {
      * @param RawResponse $raw
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function __construct(RawResponse $raw) {
 
         $this->_raw = $raw;
+
+        if($this->_isServiceUnavailable()) {
+
+            $detail = "";
+            if(isset($raw->body['detail'])) {
+                $detail = $raw->body['detail'];
+            }
+
+            $retryAfterMatches = $this->_preg_match_headerLine('/^Retry-After: (.+)$/i');
+
+            throw new Exception\ServiceUnavailable(
+                $raw->request,
+                $detail,
+                $retryAfterMatches !== null ? $retryAfterMatches[1] : null
+            );
+        }
 
         if($this->_isRateLimitReached()) {
 
@@ -31,12 +48,9 @@ abstract class AbstractResponse {
                 $detail = $raw->body['detail'];
             }
 
-            $retryAfterMatches = $this->_preg_match_headerLine('/^Retry-After: (.+)$/i');
-
             throw new Exception\RateLimitReached(
                 $raw->request,
                 $detail,
-                $retryAfterMatches !== null ? $retryAfterMatches[1] : null
             );
         }
 
@@ -65,6 +79,10 @@ abstract class AbstractResponse {
 
     protected function _isRateLimitReached() : bool {
         return $this->_preg_match_headerLine('/^HTTP\/.* 429/i') !== null;
+    }
+
+    protected function _isServiceUnavailable() : bool {
+        return $this->_preg_match_headerLine('/^HTTP\/.* 503/i') !== null;
     }
 
     protected function _isValid() : bool {

@@ -31,29 +31,4 @@ class RateLimitReachedTest extends EnhancedTestCase {
         $this->assertIsObject($exception);
         $this->assertTrue(get_class($exception) == LE_ACME2\Exception\RateLimitReached::class);
     }
-
-    /**
-     * @covers LE_ACME2\Exception\RateLimitReached
-     * @covers LE_ACME2\Response\AbstractResponse::_isRateLimitReached
-     * @covers LE_ACME2\Response\AbstractResponse::__construct
-     *
-     * @return void
-     */
-    public function testRetryAfterHeader() {
-
-        $raw = RawResponse::createDummyFrom(
-            'HTTP/2 429 Too many requests' . "\r\n" .
-            'Retry-After: 120',
-            '{
-    "type": "urn:ietf:params:acme:error:rateLimited",
-    "detail": "Service busy; retry later."
-}',
-        );
-
-        /** @var LE_ACME2\Exception\RateLimitReached $exception */
-        $exception = $this->catchExpectedException(LE_ACME2\Exception\RateLimitReached::class, function() use($raw) {
-            new LE_ACME2\Response\GetDirectory($raw);
-        });
-        $this->assertEquals('120', $exception->getRetryAfter());
-    }
 }
