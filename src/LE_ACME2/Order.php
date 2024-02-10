@@ -314,6 +314,7 @@ class Order extends AbstractKeyValuable {
                 }
             }
             Cache\OrderAuthorizationResponse::getInstance()->clear($this);
+            $this->_authorizer = null; // Reset Authorizer to prevent that the certificate is written multiple times, when this is called multiple times
             $this->_saveCertificate($certificate, $intermediate);
         }
     }
