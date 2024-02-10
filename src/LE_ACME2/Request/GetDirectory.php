@@ -10,11 +10,11 @@ use LE_ACME2\Exception;
 class GetDirectory extends AbstractRequest {
 
     /**
-     * @return Response\AbstractResponse|Response\GetDirectory
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\GetDirectory {
 
         $connector = Connector::getInstance();
 

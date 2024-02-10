@@ -30,11 +30,11 @@ class GetCertificate extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Order\GetCertificate
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Order\GetCertificate {
 
         $url = $this->_alternativeUrl === null ?
             $this->_orderResponse->getCertificate() :

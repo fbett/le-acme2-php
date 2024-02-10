@@ -1,18 +1,18 @@
 <?php
 namespace LE_ACME2Tests\Authorizer;
 
-use LE_ACME2Tests\AbstractTest;
+use LE_ACME2Tests\AbstractLeAcme2TestCase;
 use LE_ACME2Tests\TestHelper;
 
 /**
  * @covers \LE_ACME2\Authorizer\HTTP
  */
-class HTTPTest extends AbstractTest {
+class HTTPTest extends AbstractLeAcme2TestCase {
 
     private $_directoryPath;
 
-    public function __construct() {
-        parent::__construct();
+    public function __construct(string $name) {
+        parent::__construct($name);
 
         $this->_directoryPath = TestHelper::getInstance()->getTempPath() . 'acme-challenges/';
     }

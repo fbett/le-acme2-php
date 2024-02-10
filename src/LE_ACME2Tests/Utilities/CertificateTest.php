@@ -1,10 +1,10 @@
 <?php
 namespace LE_ACME2Tests\Utilities;
 
-use LE_ACME2Tests\AbstractTest;
+use LE_ACME2Tests\AbstractLeAcme2TestCase;
 use LE_ACME2\Utilities;
 
-class CertificateTest extends AbstractTest {
+class CertificateTest extends AbstractLeAcme2TestCase {
 
     /**
      * @depends \LE_ACME2Tests\AccountTest::testCreate

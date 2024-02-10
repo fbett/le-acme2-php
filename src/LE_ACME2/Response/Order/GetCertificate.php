@@ -36,7 +36,7 @@ class GetCertificate extends AbstractResponse {
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getAlternativeLinks() : array {
 

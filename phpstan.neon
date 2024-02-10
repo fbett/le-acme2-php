@@ -1,0 +1,10 @@
+parameters:
+	level: 3
+	tmpDir: temp/phpstan/default
+	ignoreErrors:
+		- '/^Deprecated in PHP 8.0: Required parameter .* follows optional parameter .*\.$/'
+
+	paths:
+		- src
+	bootstrapFiles:
+	reportUnmatchedIgnoredErrors: false

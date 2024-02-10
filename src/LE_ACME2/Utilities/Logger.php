@@ -20,22 +20,13 @@ class Logger {
         $this->_desiredLevel = $desiredLevel;
     }
 
-    /** @var \Psr\Log\LoggerInterface|null $_psrLogger */
-    private $_psrLogger = null;
+    private \Psr\Log\LoggerInterface|null $_psrLogger = null;
 
-    /**
-     * @param \Psr\Log\LoggerInterface|null $psrLogger
-     */
-    public function setPSRLogger($psrLogger) {
+    public function setPSRLogger(\Psr\Log\LoggerInterface|null $psrLogger) : void {
         $this->_psrLogger = $psrLogger;
     }
 
-    /**
-     * @param int $level
-     * @param string $message
-     * @param array $data
-     */
-    public function add(int $level, string $message, array $data = array()) {
+    public function add(int $level, string $message, array $data = array()) : void {
 
         if($level > $this->_desiredLevel)
             return;

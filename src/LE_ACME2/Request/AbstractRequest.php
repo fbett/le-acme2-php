@@ -9,9 +9,9 @@ use LE_ACME2\Exception;
 abstract class AbstractRequest {
 
     /**
-     * @return AbstractResponse
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     abstract public function getResponse() : AbstractResponse;
 

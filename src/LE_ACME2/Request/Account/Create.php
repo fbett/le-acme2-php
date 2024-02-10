@@ -21,11 +21,11 @@ class Create extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Account\Create
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Account\Create {
 
         $payload = [
             'contact' => $this->_buildContactPayload($this->_account->getEmail()),

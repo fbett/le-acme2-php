@@ -4,8 +4,7 @@ namespace LE_ACME2\Exception;
 
 class ServiceUnavailable extends AbstractException {
 
-    /** @var string|null */
-    private $retryAfter;
+    private ?string $retryAfter;
 
     public function __construct(string $request, string $detail, string $retryAfter = null) {
 
@@ -27,7 +26,7 @@ class ServiceUnavailable extends AbstractException {
      * Retry-After: <delay-seconds>
      * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
      *
-     * @return string|null <http-date> or <delay-seconds> or null (when not given)
+     * @return ?string  "http-date" or "delay-seconds" or null (when not given)
      */
     public function getRetryAfter() : ?string {
         return $this->retryAfter;

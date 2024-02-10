@@ -18,8 +18,6 @@ class Certificate {
     }
 
     /**
-     * @param Order $order
-     * @return string
      * @throws OpenSSLException
      */
     public static function generateCSR(Order $order) : string {

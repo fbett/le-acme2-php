@@ -5,9 +5,6 @@ trait SingletonTrait {
 
     private static $_instance = NULL;
 
-    /**
-     * @return static
-     */
     final public static function getInstance(): self {
 
         if( self::$_instance === NULL ) {

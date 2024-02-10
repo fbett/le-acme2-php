@@ -27,11 +27,11 @@ class Update extends AbstractLocation {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Account\Update
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Account\Update {
         return new Response\Account\Update($this->_getRawResponse());
     }
 }

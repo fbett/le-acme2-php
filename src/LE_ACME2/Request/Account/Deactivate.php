@@ -16,11 +16,11 @@ class Deactivate extends AbstractLocation {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Account\Deactivate
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Account\Deactivate {
 
         return new Response\Account\Deactivate($this->_getRawResponse());
     }

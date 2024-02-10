@@ -23,11 +23,11 @@ class RevokeCertificate extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Order\RevokeCertificate
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Order\RevokeCertificate {
 
         $certificate = file_get_contents($this->_certificateBundle->path . $this->_certificateBundle->certificate);
         preg_match('~-----BEGIN\sCERTIFICATE-----(.*)-----END\sCERTIFICATE-----~s', $certificate, $matches);

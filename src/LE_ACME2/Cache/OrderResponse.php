@@ -27,10 +27,9 @@ class OrderResponse extends AbstractKeyValuableCache {
     }
 
     /**
-     * @param Order $order
-     * @return Response\Order\AbstractOrder
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function get(Order $order): Response\Order\AbstractOrder {
 

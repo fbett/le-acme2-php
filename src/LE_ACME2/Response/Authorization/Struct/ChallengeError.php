@@ -2,7 +2,7 @@
 
 namespace LE_ACME2\Response\Authorization\Struct;
 
-class ChallengeError {
+class ChallengeError implements ChallengeErrorConstructorInterface {
 
     const TYPE_ERROR_DNS = 'urn:ietf:params:acme:error:dns';
 

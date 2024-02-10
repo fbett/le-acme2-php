@@ -4,7 +4,7 @@ namespace LE_ACME2Tests;
 /**
  * @covers \LE_ACME2\Order
  */
-class OrderTest extends AbstractTest {
+class OrderTest extends AbstractLeAcme2TestCase {
 
     public function testNonExisting() {
 

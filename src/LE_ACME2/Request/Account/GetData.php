@@ -14,11 +14,11 @@ class GetData extends AbstractLocation {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Account\GetData
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Account\GetData {
         
         return new Response\Account\GetData($this->_getRawResponse());
     }

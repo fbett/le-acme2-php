@@ -41,9 +41,6 @@ class Connector {
 
     /**
      * Delay the response to prevent bleaching rate limits
-     *
-     * @param int $milliSeconds
-     * @return void
      */
     public function delayResponse(int $milliSeconds) : void {
         $this->_delayedResponseTime = $milliSeconds;
@@ -54,11 +51,11 @@ class Connector {
      *
      * @param string	$method	The HTTP method to use. Accepting GET, POST and HEAD requests.
      * @param string 	$url 	The URL to make the request to.
-     * @param string 	$data  	The body to attach to a POST request. Expected as a JSON encoded string.
+     * @param string|null 	$data  	The body to attach to a POST request. Expected as a JSON encoded string.
      *
-     * @return RawResponse
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function request(string $method, string $url, string $data = null) : RawResponse {
 
@@ -118,10 +115,9 @@ class Connector {
     }
 
     /**
-     * @param RawResponse $rawResponse
-     * @param string $method
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     private function _saveNewNonceFrom(RawResponse $rawResponse, string $method) : void {
 

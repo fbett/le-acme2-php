@@ -21,11 +21,11 @@ class Get extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Account\Get
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Account\Get {
 
         $payload = [
             'onlyReturnExisting' => true,

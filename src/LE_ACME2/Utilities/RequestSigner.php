@@ -9,7 +9,6 @@ class RequestSigner {
      *
      * @param array 	$payload		The payload to add to the signature.
      * @param string	$url 			The URL to use in the signature.
-     * @param string    $nonce
      * @param string 	$privateKeyDir  The directory to get the private key from. Default to the account keys directory given in the constructor. (optional)
      * @param string 	$privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
      *
@@ -53,7 +52,6 @@ class RequestSigner {
      *
      * @param array 	$payload		The payload to add to the signature.
      * @param string	$url 			The URL to use in the signature.
-     * @param string    $nonce
      * @param string 	$privateKeyDir  The directory to get the private key from. Default to the account keys directory given in the constructor. (optional)
      * @param string 	$privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
      *
@@ -71,7 +69,6 @@ class RequestSigner {
      * @param array|null 	$payload		The payload to add to the signature.
      * @param string	$kid			The Key ID to use in the signature.
      * @param string	$url 			The URL to use in the signature.
-     * @param string    $nonce
      * @param string 	$privateKeyDir  The directory to get the private key from.
      * @param string 	$privateKeyFile The private key to sign the request with. Defaults to 'private.pem'. (optional)
      *

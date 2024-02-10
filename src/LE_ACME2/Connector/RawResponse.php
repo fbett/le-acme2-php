@@ -15,7 +15,7 @@ class RawResponse {
 
     public static function createFrom(string $method, string $url, string $response, int $headerSize) : self {
 
-        $result = new static();
+        $result = new self();
 
         $header = substr($response, 0, $headerSize);
         $body = substr($response, $headerSize);

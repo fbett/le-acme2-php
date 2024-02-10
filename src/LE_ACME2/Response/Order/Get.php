@@ -10,10 +10,9 @@ class Get extends AbstractOrder {
     /**
      * Get constructor.
      *
-     * @param RawResponse $raw
-     * @param $orderURL
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function __construct(RawResponse $raw, string $orderURL) {
 

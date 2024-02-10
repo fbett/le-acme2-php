@@ -26,10 +26,6 @@ class Get extends AbstractAuthorization {
         return $this->_raw->body['challenges'];
     }
 
-    /**
-     * @param string $type
-     * @return Struct\Challenge|null
-     */
     public function getChallenge(string $type) : ?Struct\Challenge {
 
         foreach($this->getChallenges() as $challenge) {

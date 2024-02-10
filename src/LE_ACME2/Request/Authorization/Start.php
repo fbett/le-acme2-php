@@ -28,12 +28,12 @@ class Start extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Authorization\Start
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Authorization\Start {
 
         Cache\OrderAuthorizationResponse::getInstance()->clear($this->_order);
 

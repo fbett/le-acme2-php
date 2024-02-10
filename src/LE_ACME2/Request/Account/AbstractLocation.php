@@ -20,9 +20,9 @@ abstract class AbstractLocation extends AbstractRequest {
     }
 
     /**
-     * @return Connector\RawResponse
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     protected function _getRawResponse() : Connector\RawResponse {
 

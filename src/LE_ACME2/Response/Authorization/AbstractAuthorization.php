@@ -20,17 +20,17 @@ class AbstractAuthorization extends AbstractResponse {
 
     /**
      * AbstractAuthorization constructor.
-     * @param RawResponse $raw
+     *
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
+     * @throws Exception\ServiceUnavailable
      */
     public function __construct(RawResponse $raw) {
         parent::__construct($raw);
     }
 
     /**
-     * @return bool
      * @throws Exception\ExpiredAuthorization
      */
     protected function _isValid() : bool {

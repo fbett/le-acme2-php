@@ -24,12 +24,12 @@ class Get extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Authorization\Get
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Authorization\Get {
 
         $kid = Utilities\RequestSigner::KID(
             null,

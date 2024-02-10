@@ -4,14 +4,14 @@ namespace LE_ACME2Tests;
 use PHPUnit\Framework\TestCase;
 use LE_ACME2;
 
-abstract class AbstractTest extends EnhancedTestCase {
+abstract class AbstractLeAcme2TestCase extends EnhancedTestCase {
 
     protected $_accountEmail = 'le_acme2_php_client@test.com';
     protected $_orderSubjects = [];
     protected $_umlautsOrderSubjects = [];
 
-    public function __construct() {
-        parent::__construct();
+    public function __construct(string $name) {
+        parent::__construct($name);
 
         $this->_orderSubjects[] = 'test.de';
 

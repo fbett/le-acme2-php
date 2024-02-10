@@ -24,12 +24,12 @@ class Finalize extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Order\Finalize
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\OpenSSLException
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Order\Finalize {
 
         $csr = Utilities\Certificate::generateCSR($this->_order);
 

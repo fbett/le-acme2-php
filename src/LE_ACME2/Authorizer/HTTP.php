@@ -40,14 +40,11 @@ class HTTP extends AbstractAuthorizer {
     }
 
     /**
-     * @param Response\Authorization\Struct\Challenge $challenge
-     * @param Response\Authorization\Get $authorizationResponse
-     * @return bool
-     *
      * @throws Exception\AuthorizationInvalid
      * @throws Exception\ExpiredAuthorization
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     protected function _existsNotValidChallenges(Response\Authorization\Struct\Challenge $challenge,
                                                  Response\Authorization\Get $authorizationResponse
@@ -89,10 +86,6 @@ class HTTP extends AbstractAuthorizer {
     }
 
     /**
-     * @param string $domain
-     * @param Response\Authorization\Struct\Challenge $challenge
-     * @return bool
-     *
      * @throws Exception\HTTPAuthorizationInvalid
      */
     private function _validateFile(string $domain, Response\Authorization\Struct\Challenge $challenge) : bool {

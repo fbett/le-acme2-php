@@ -17,7 +17,6 @@ class Order extends AbstractKeyValuable {
 
     /**
      * @deprecated
-     * @param $directoryPath
      */
     public static function setHTTPAuthorizationDirectoryPath(string $directoryPath) {
 
@@ -144,17 +143,14 @@ class Order extends AbstractKeyValuable {
         return $order;
     }
 
-    /** @var Authorizer\AbstractAuthorizer|Authorizer\HTTP|null $_authorizer  */
-    protected $_authorizer = null;
+    protected Authorizer\AbstractAuthorizer|Authorizer\HTTP|Authorizer\DNS|null $_authorizer = null;
 
     /**
-     * @param $type
-     * @return Authorizer\AbstractAuthorizer|Authorizer\HTTP|null
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
      */
-    protected function _getAuthorizer(string $type) : Authorizer\AbstractAuthorizer {
+    protected function _getAuthorizer(string $type) : Authorizer\AbstractAuthorizer|Authorizer\HTTP|Authorizer\DNS|null {
 
         if($this->_authorizer === null) {
 
@@ -188,8 +184,6 @@ class Order extends AbstractKeyValuable {
     }
 
     /**
-     * @return bool
-     * @param $type
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      */
@@ -206,8 +200,6 @@ class Order extends AbstractKeyValuable {
     }
 
     /**
-     * @param $type
-     * @return bool
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\AuthorizationInvalid
@@ -232,8 +224,9 @@ class Order extends AbstractKeyValuable {
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\OpenSSLException
+     * @throws Exception\ServiceUnavailable
      */
-    public function finalize() {
+    public function finalize() : void {
 
         if(!is_object($this->_authorizer) || !$this->_authorizer->hasFinished()) {
 
@@ -385,7 +378,7 @@ class Order extends AbstractKeyValuable {
      * @param int|null $renewBefore Unix timestamp
      * @throws Exception\AbstractException
      */
-    public function enableAutoRenewal(string $keyType = null, int $renewBefore = null) {
+    public function enableAutoRenewal(string $keyType = null, int $renewBefore = null) : void {
 
         if($keyType === null) {
             $keyType = self::KEY_TYPE_RSA;
@@ -429,8 +422,8 @@ class Order extends AbstractKeyValuable {
     /**
      * @param int $reason The reason to revoke the LetsEncrypt Order instance certificate.
      *                    Possible reasons can be found in section 5.3.1 of RFC5280.
-     * @return bool
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function revokeCertificate(int $reason = 0) : bool {
 

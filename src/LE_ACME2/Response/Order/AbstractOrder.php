@@ -32,7 +32,7 @@ abstract class AbstractOrder extends AbstractResponse {
     }
 
     /**
-     * @return string[] Authorization urls
+     * @return array<string> Authorization urls
      */
     public function getAuthorizations() : array {
         return $this->_raw->body['authorizations'];
@@ -47,8 +47,7 @@ abstract class AbstractOrder extends AbstractResponse {
     }
 
     /**
-     * @return bool
-     * @throws Exception\StatusInvalid
+     * @throws Exception\OrderStatusInvalid
      */
     protected function _isValid(): bool {
 

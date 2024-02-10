@@ -19,9 +19,6 @@ abstract class AbstractAuthorizer {
     /**
      * AbstractAuthorizer constructor.
      *
-     * @param Account $account
-     * @param Order $order
-     *
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
      * @throws Exception\ExpiredAuthorization
@@ -123,10 +120,6 @@ abstract class AbstractAuthorizer {
     }
 
     /**
-     * @param Response\Authorization\Struct\Challenge $challenge
-     * @param Response\Authorization\Get $authorizationResponse
-     * @return bool
-     *
      * @throws Exception\AuthorizationInvalid
      */
     protected function _existsNotValidChallenges(Response\Authorization\Struct\Challenge $challenge,

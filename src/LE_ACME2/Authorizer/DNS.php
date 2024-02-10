@@ -24,15 +24,12 @@ class DNS extends AbstractAuthorizer {
     }
 
     /**
-     * @param Response\Authorization\Struct\Challenge $challenge
-     * @param Response\Authorization\Get $authorizationResponse
-     * @return bool
-     *
      * @throws Exception\AuthorizationInvalid
      * @throws Exception\DNSAuthorizationInvalid
      * @throws Exception\ExpiredAuthorization
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     protected function _existsNotValidChallenges(Response\Authorization\Struct\Challenge $challenge,
                                                  Response\Authorization\Get $authorizationResponse

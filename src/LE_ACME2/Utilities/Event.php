@@ -13,7 +13,6 @@ class Event {
     private $_subscriber = [];
 
     /**
-     * @param string $event
      * @param callable $callable function(string $event, array $payload = null)
      */
     public function subscribe(string $event, callable $callable) : void {

@@ -22,12 +22,10 @@ class OrderAuthorizationResponse extends AbstractKeyValuableCache {
     }
 
     /**
-     * @param Order $order
-     * @param string $authorizationUrl
-     * @return Response\Authorization\Get
      * @throws Exception\ExpiredAuthorization
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function get(Order $order, string $authorizationUrl, string $challengeType): Response\Authorization\Get {
 
@@ -107,10 +105,9 @@ class OrderAuthorizationResponse extends AbstractKeyValuableCache {
      * - Order has ended (certificate received)
      * - Authorization::Start
      *
-     * @param Order $order
-     * @throws Exception\ExpiredAuthorization
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function clear(Order $order) : void {
 

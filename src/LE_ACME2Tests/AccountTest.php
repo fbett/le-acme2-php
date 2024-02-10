@@ -6,12 +6,12 @@ use LE_ACME2\Exception\InvalidResponse;
 /**
  * @covers \LE_ACME2\Account
  */
-class AccountTest extends AbstractTest {
+class AccountTest extends AbstractLeAcme2TestCase {
     
     private $_commonKeyDirectoryPath;
 
-    public function __construct() {
-        parent::__construct();
+    public function __construct(string $name) {
+        parent::__construct($name);
 
         $this->_commonKeyDirectoryPath = TestHelper::getInstance()->getTempPath() . 'le-storage/';
     }
@@ -97,7 +97,7 @@ class AccountTest extends AbstractTest {
         );
         $this->assertEquals(
             'Invalid response received: ' .
-            'urn:ietf:params:acme:error:invalidEmail' .
+            'urn:ietf:params:acme:error:invalidContact' .
             ' - ' .
             'Error creating new account :: invalid contact domain. Contact emails @example.org are forbidden',
             $e->getMessage(),

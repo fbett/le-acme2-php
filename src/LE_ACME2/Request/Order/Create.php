@@ -22,11 +22,11 @@ class Create extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Order\Create
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Order\Create {
 
         $identifiers = [];
         foreach($this->_order->getSubjects() as $subject) {

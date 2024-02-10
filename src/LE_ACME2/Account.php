@@ -35,8 +35,6 @@ class Account extends AbstractKeyValuable {
     }
 
     /**
-     * @param string $email
-     * @return Account|null
      * @throws Exception\AbstractException
      */
     public static function create(string $email) : Account {
@@ -90,9 +88,9 @@ class Account extends AbstractKeyValuable {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Account\GetData
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function getData() : Response\Account\GetData {
 
@@ -101,9 +99,8 @@ class Account extends AbstractKeyValuable {
     }
 
     /**
-     * @param string $email
-     * @return bool
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function update(string $email) : bool {
 
@@ -127,8 +124,8 @@ class Account extends AbstractKeyValuable {
     }
 
     /**
-     * @return bool
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function changeKeys() : bool {
 
@@ -151,8 +148,8 @@ class Account extends AbstractKeyValuable {
     }
 
     /**
-     * @return bool
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function deactivate() : bool {
 

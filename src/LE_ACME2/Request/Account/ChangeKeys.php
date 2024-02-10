@@ -21,11 +21,11 @@ class ChangeKeys extends AbstractRequest {
     }
 
     /**
-     * @return Response\AbstractResponse|Response\Account\ChangeKeys
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\Account\ChangeKeys {
 
         $currentPrivateKey = openssl_pkey_get_private(
             file_get_contents($this->_account->getKeyDirectoryPath() . 'private.pem')

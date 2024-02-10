@@ -11,11 +11,11 @@ use LE_ACME2\Exception;
 class GetNewNonce extends AbstractRequest {
 
     /**
-     * @return Response\AbstractResponse|Response\GetNewNonce
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
-    public function getResponse() : Response\AbstractResponse {
+    public function getResponse() : Response\GetNewNonce {
 
         $result = Connector\Connector::getInstance()->request(
             Connector\Connector::METHOD_HEAD,

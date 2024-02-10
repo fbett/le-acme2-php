@@ -6,9 +6,6 @@ use LE_ACME2\Exception;
 class ChallengeHTTP {
 
     /**
-     * @param string $domain
-     * @param string $token
-     * @return string
      * @throws Exception\HTTPAuthorizationInvalid
      */
     public static function fetch(string $domain, string $token) : string {

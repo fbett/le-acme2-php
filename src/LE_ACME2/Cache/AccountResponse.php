@@ -19,10 +19,9 @@ class AccountResponse extends AbstractKeyValuableCache {
     private $_responses = [];
 
     /**
-     * @param Account $account
-     * @return Response\Account\AbstractAccount
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function get(Account $account): Response\Account\AbstractAccount {
 

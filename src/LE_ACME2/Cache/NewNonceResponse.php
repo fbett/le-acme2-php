@@ -17,9 +17,9 @@ class NewNonceResponse {
     private $_index = 0;
 
     /**
-     * @return Response\GetNewNonce
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function get() : Response\GetNewNonce {
 

@@ -22,9 +22,9 @@ class DirectoryResponse {
     private $_index = 0;
 
     /**
-     * @return Response\GetDirectory
      * @throws Exception\InvalidResponse
      * @throws Exception\RateLimitReached
+     * @throws Exception\ServiceUnavailable
      */
     public function get() : Response\GetDirectory {
 
