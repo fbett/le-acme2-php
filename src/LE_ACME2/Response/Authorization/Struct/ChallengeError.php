@@ -21,4 +21,19 @@ class ChallengeError {
         $this->detail = $detail;
         $this->status = $status;
     }
+
+    public static function createFrom(array $array) : static {
+        return new static(
+            $array['type'],
+            $array['detail'],
+            $array['status'],
+        );
+    }
+
+    public function hasStatusServerError() : bool {
+        return
+            $this->status >= 500
+            && $this->status < 600
+        ;
+    }
 }

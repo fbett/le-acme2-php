@@ -4,6 +4,7 @@ namespace LE_ACME2\Response\Order;
 
 use LE_ACME2\Response\AbstractResponse;
 use LE_ACME2\Exception;
+use LE_ACME2\Response\Order\Struct\OrderError;
 
 abstract class AbstractOrder extends AbstractResponse {
 
@@ -67,5 +68,17 @@ abstract class AbstractOrder extends AbstractResponse {
         }
 
         return true;
+    }
+
+    public function getError() : ?Struct\OrderError {
+
+        if(
+            !isset($this->_raw->body['error'])
+            || !is_array($this->_raw->body['error'])
+        ) {
+            return null;
+        }
+
+        return OrderError::createFrom($this->_raw->body['error']);
     }
 }
