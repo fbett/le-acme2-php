@@ -36,6 +36,9 @@ class GetTest extends EnhancedTestCase {
         }
     }
 
+    /**
+     * @covers \LE_ACME2\Response\Order\Struct\OrderError
+     */
     public function testOrderInvalid() {
 
         $rawResponse = Connector\RawResponse::createDummyFrom(
