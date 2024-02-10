@@ -76,7 +76,9 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: cimg/php:8.2
+      image: default-bionic
+      environment:
+        php: 8.2
 
     <<: *shared-code
       
