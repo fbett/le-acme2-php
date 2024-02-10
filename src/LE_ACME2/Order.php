@@ -326,6 +326,10 @@ class Order extends AbstractKeyValuable {
 
         $path = $this->getKeyDirectoryPath() . self::BUNDLE_DIRECTORY_PREFIX . $certificateValidToTimeTimestamp . DIRECTORY_SEPARATOR;
 
+        if(file_exists($path)) {
+            throw new \RuntimeException('Target directory already exist? ' . $path);
+        }
+
         mkdir($path);
         rename($this->getKeyDirectoryPath() . 'private.pem', $path . 'private.pem');
         file_put_contents($path . 'certificate.crt', $certificate);
