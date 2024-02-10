@@ -74,11 +74,11 @@ jobs:
   "php-82-build":
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      # Specify the version you desire here
-      image: default-bionic
-      environment:
-        php: 8.2
+    nodes:
+      analysis:
+        image: default-bionic
+        environment:
+          php: 8.2
 
     <<: *shared-code
       
