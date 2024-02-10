@@ -68,7 +68,7 @@ class OrderResponse extends AbstractKeyValuableCache {
                     get_class() . '::' . __FUNCTION__ . ' (cache did not satisfy, status "' . $response->getStatus() . '")'
                 );
 
-                $request = new Request\Order\Get($order, $response);
+                $request = new Request\Order\Get($order, $response->getLocation());
                 $response = $request->getResponse();
                 $this->set($order, $response);
                 return $response;
