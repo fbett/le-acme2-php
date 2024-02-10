@@ -1,3 +1,5 @@
 .idea
 phpunit.xml
 temp
+composer.lock
+vendor/
