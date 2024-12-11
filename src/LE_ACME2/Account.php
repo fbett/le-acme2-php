@@ -17,7 +17,7 @@ class Account extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_DEBUG,
-            get_class() . '::' . __FUNCTION__ .
+            static::class . '::' . __FUNCTION__ .
             ' email: "' . $email . '" ' .
             ' path: ' . $this->getKeyDirectoryPath()
         );
@@ -41,7 +41,7 @@ class Account extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
+            static::class . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
         );
 
         $account = new self($email);
@@ -76,7 +76,7 @@ class Account extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
+            static::class . '::' . __FUNCTION__ .  ' email: "' . $email . '"'
         );
 
         $account = new self($email);

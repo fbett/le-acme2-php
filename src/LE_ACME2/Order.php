@@ -52,7 +52,7 @@ class Order extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_DEBUG,
-            get_class() . '::' . __FUNCTION__ .
+            static::class . '::' . __FUNCTION__ .
             ' subject: "' . implode(':', $this->getSubjects()) . '" ' .
             ' path: ' . $this->getKeyDirectoryPath()
         );
