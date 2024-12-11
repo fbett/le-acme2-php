@@ -13,7 +13,6 @@ This library is inspired by [yourivw/LEClient](https://github.com/yourivw/LEClie
 - Managed HTTP authentication process
 - Response caching mechanism
 - Prevents blocking while waiting for server results
-- Optional certificate feature "OCSP Must-Staple"
 - Optional set a preferred chain
 
 The aim of this client is to make an easy-to-use and integrated solution to create a LetsEncrypt-issued SSL/TLS certificate with PHP.
@@ -30,17 +29,9 @@ Wildcard certificates can only be requested by using the dns authentication.
 
 Tested with LetsEncrypt staging and production servers.
 
-[Transitioning to ISRG's Root](https://letsencrypt.org/2019/04/15/transitioning-to-isrg-root.html):
-
-This library supports it to set a preferred chain in `Order::setPreferredChain($issuerCN))`.
-
-If the preferred chain is not set or set to IdenTrust’s chain, 
-this library will try to use the IdenTrust’s chain as long as possible.
-Please see: https://letsencrypt.org/docs/dst-root-ca-x3-expiration-september-2021/
-
 ## Prerequisites
 
-The minimum required PHP version is 7.3.
+The minimum required PHP version is 8.2.
 
 This client also depends on cURL and OpenSSL.
 
