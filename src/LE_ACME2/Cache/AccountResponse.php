@@ -49,7 +49,7 @@ class AccountResponse extends AbstractKeyValuableCache {
 
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ . ' response from cache'
+                static::class . '::' . __FUNCTION__ . ' response from cache'
             );
 
             return $response;

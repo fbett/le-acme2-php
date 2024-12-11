@@ -64,7 +64,7 @@ class OrderResponse extends AbstractKeyValuableCache {
 
                 Utilities\Logger::getInstance()->add(
                     Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ . ' (cache did not satisfy, status "' . $response->getStatus() . '")'
+                    static::class . '::' . __FUNCTION__ . ' (cache did not satisfy, status "' . $response->getStatus() . '")'
                 );
 
                 $request = new Request\Order\Get($order, $response->getLocation());
@@ -75,7 +75,7 @@ class OrderResponse extends AbstractKeyValuableCache {
 
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ .  ' (from cache, status "' . $response->getStatus() . '")'
+                static::class . '::' . __FUNCTION__ .  ' (from cache, status "' . $response->getStatus() . '")'
             );
 
             $this->_responses[$accountIdentifier][$orderIdentifier] = $response;

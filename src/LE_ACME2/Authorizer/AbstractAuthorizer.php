@@ -45,7 +45,7 @@ abstract class AbstractAuthorizer {
 
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ . ' result suppressed (Order has finished already)',
+                static::class . '::' . __FUNCTION__ . ' result suppressed (Order has finished already)',
             );
 
             return;
@@ -74,7 +74,7 @@ abstract class AbstractAuthorizer {
 
                 Utilities\Logger::getInstance()->add(
                     Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ . ' "Pending challenge found',
+                    static::class . '::' . __FUNCTION__ . ' "Pending challenge found',
                     [get_class($challenge) => $challenge]
                 );
 
@@ -130,7 +130,7 @@ abstract class AbstractAuthorizer {
 
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ . ' "Non valid challenge found',
+                static::class . '::' . __FUNCTION__ . ' "Non valid challenge found',
                 [get_class($challenge) => $challenge]
             );
 

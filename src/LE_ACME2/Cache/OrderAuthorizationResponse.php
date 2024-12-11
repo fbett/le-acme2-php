@@ -55,7 +55,7 @@ class OrderAuthorizationResponse extends AbstractKeyValuableCache {
 
                 Utilities\Logger::getInstance()->add(
                     Utilities\Logger::LEVEL_DEBUG,
-                    get_class() . '::' . __FUNCTION__ . ' (cache did not satisfy, status "' . $response->getStatus() . '")'
+                    static::class . '::' . __FUNCTION__ . ' (cache did not satisfy, status "' . $response->getStatus() . '")'
                 );
 
                 $request = new Request\Authorization\Get($order->getAccount(), $authorizationUrl);
@@ -65,7 +65,7 @@ class OrderAuthorizationResponse extends AbstractKeyValuableCache {
 
             Utilities\Logger::getInstance()->add(
                 Utilities\Logger::LEVEL_DEBUG,
-                get_class() . '::' . __FUNCTION__ .  ' (from cache, status "' . $response->getStatus() . '")'
+                static::class . '::' . __FUNCTION__ .  ' (from cache, status "' . $response->getStatus() . '")'
             );
 
             $this->_responses[$accountIdentifier][$orderIdentifier][$authorizationUrl] = $response;

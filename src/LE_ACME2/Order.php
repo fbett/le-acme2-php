@@ -74,7 +74,7 @@ class Order extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
+            static::class . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
         );
 
         $order = new self($account, $subjects);
@@ -132,7 +132,7 @@ class Order extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
+            static::class . '::' . __FUNCTION__ .  ' "' . implode(':', $subjects) . '"'
         );
 
         $order = new self($account, $subjects);
@@ -172,7 +172,7 @@ class Order extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ . ' "Will clear after expired authorization'
+            static::class . '::' . __FUNCTION__ . ' "Will clear after expired authorization'
         );
 
         $this->clear();
@@ -235,7 +235,7 @@ class Order extends AbstractKeyValuable {
 
         Utilities\Logger::getInstance()->add(
             Utilities\Logger::LEVEL_INFO,
-            get_class() . '::' . __FUNCTION__ . ' "Will finalize'
+            static::class . '::' . __FUNCTION__ . ' "Will finalize'
         );
 
         $orderResponse = Cache\OrderResponse::getInstance()->get($this);
