@@ -92,14 +92,14 @@ class AccountTest extends AbstractLeAcme2TestCase {
         $e = $this->catchExpectedException(
             InvalidResponse::class,
             function() {
-                \LE_ACME2\Account::create('test@example.org');
+                \LE_ACME2\Account::create('test_php' . phpversion() . '@example.org');
             }
         );
         $this->assertEquals(
             'Invalid response received: ' .
             'urn:ietf:params:acme:error:invalidContact' .
             ' - ' .
-            'Error creating new account :: invalid contact domain. Contact emails @example.org are forbidden',
+            'Error creating new account :: contact email has forbidden domain "example.org"',
             $e->getMessage(),
         );
     }

@@ -78,7 +78,15 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: cimg/php:8.2.14
+      - image: cimg/php:8.2.26
+
+    <<: *shared-code
+  "php-83-build":
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      # Specify the version you desire here
+      - image: cimg/php:8.3.14
 
     <<: *shared-code
       
@@ -87,3 +95,6 @@ workflows:
   php_82_jobs:
     jobs:
       - "php-82-build"
+  php_83_jobs:
+    jobs:
+      - "php-83-build"
