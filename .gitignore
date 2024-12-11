@@ -3,3 +3,4 @@ phpunit.xml
 temp
 composer.lock
 vendor/
+phpstan-php*.neon
