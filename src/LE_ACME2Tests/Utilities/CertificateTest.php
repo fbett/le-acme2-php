@@ -23,15 +23,6 @@ class CertificateTest extends AbstractLeAcme2TestCase {
 
         $order = \LE_ACME2\Order::get($account, $this->_orderSubjects);
 
-        // - "ocsp must staple" feature disable
-        Utilities\Certificate::disableFeatureOCSPMustStaple();
-
-        $csr = Utilities\Certificate::generateCSR($order);
-        $this->assertTrue($csr !== null && is_string($csr));
-
-        // - "ocsp must staple" feature enabled
-        Utilities\Certificate::enableFeatureOCSPMustStaple();
-
         $csr = Utilities\Certificate::generateCSR($order);
         $this->assertTrue($csr !== null && is_string($csr));
     }
@@ -39,15 +30,6 @@ class CertificateTest extends AbstractLeAcme2TestCase {
     private function _testOrderUmlautsGenerateCSR(\LE_ACME2\Account $account) {
 
         $order = \LE_ACME2\Order::get($account, $this->_umlautsOrderSubjects);
-
-        // - "ocsp must staple" feature disable
-        Utilities\Certificate::disableFeatureOCSPMustStaple();
-
-        $csr = Utilities\Certificate::generateCSR($order);
-        $this->assertTrue($csr !== null && is_string($csr));
-
-        // - "ocsp must staple" feature enabled
-        Utilities\Certificate::enableFeatureOCSPMustStaple();
 
         $csr = Utilities\Certificate::generateCSR($order);
         $this->assertTrue($csr !== null && is_string($csr));

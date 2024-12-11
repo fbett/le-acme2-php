@@ -7,16 +7,6 @@ use LE_ACME2\Exception\OpenSSLException;
 
 class Certificate {
 
-    protected static $_featureOCSPMustStapleEnabled = false;
-
-    public static function enableFeatureOCSPMustStaple() {
-        self::$_featureOCSPMustStapleEnabled = true;
-    }
-
-    public static function disableFeatureOCSPMustStaple() {
-        self::$_featureOCSPMustStapleEnabled = false;
-    }
-
     /**
      * @throws OpenSSLException
      */
@@ -47,10 +37,6 @@ class Certificate {
 			basicConstraints = CA:FALSE
 			subjectAltName = ' . $san . '
 			keyUsage = nonRepudiation, digitalSignature, keyEncipherment';
-
-        if(self::$_featureOCSPMustStapleEnabled) {
-            $config .= PHP_EOL . 'tlsfeature=status_request';
-        }
 
         file_put_contents($configFilePath, $config);
 
