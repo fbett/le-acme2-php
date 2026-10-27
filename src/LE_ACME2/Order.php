@@ -408,7 +408,7 @@ class Order extends AbstractKeyValuable {
         $expireTime = self::_getExpireTimeFromCertificateDirectoryPath($directory);
 
         if($renewBefore === null) {
-            $renewBefore = strtotime('-30 days', $expireTime);
+            $renewBefore = strtotime('-5 days', $expireTime);
         }
 
         if($renewBefore < time()) {
