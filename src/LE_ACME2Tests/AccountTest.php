@@ -99,7 +99,7 @@ class AccountTest extends AbstractLeAcme2TestCase {
             'Invalid response received: ' .
             'urn:ietf:params:acme:error:invalidContact' .
             ' - ' .
-            'Error creating new account :: contact email has forbidden domain "example.org"',
+            'Error validating contact(s) :: contact email has forbidden domain "example.org"',
             $e->getMessage(),
         );
     }
